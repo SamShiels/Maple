@@ -11,7 +11,7 @@ namespace Renderer.Utilities
     public static Matrix4 CreatePerspectiveMatrix(float verticalFOV, float aspect, float near, float far)
     {
       float range = near - far;
-      float tanHalfFOV = (float)Math.Tan(verticalFOV / 2.0f);
+      float tanHalfFOV = (float)System.Math.Tan(verticalFOV / 2.0f);
 
       Matrix4 matrix = new Matrix4(
         1.0f / (tanHalfFOV * aspect),

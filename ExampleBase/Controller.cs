@@ -9,7 +9,7 @@ namespace ExampleBase
 {
   public class Controller
   {
-    public Firefly graphics { private set; get; }
+    public Renderer.Firefly graphics { private set; get; }
     public WorldObject stage { private set; get; }
 
     private int windowWidth;
@@ -75,11 +75,11 @@ namespace ExampleBase
       Uniform curvature = new Uniform("curvature", new Vector2(2, 2));
       Material material = new Material(CRT, new Uniform[] { curvature });
       canvasMaterial = material;
-      graphics = new Firefly(2560, 1440, windowWidth, windowHeight, material, true);
+      graphics = new Renderer.Firefly(2560, 1440, windowWidth, windowHeight, material, true);
       graphics.ProjectionType = Renderer.Utilities.ProjectionType.Perspective;
       graphics.VerticalFieldOfView = 90;
       stage = new WorldObject();
-      graphics.UpdateBackgroundColor(new OpenTK.Mathematics.Color4(0.3f, 0.2f, 0.4f, 1.0f));
+      graphics.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
     }
 
     /// <summary>

@@ -180,7 +180,7 @@ namespace Renderer.Rendering
         float y = bounds[bound + 1];
         float z = bounds[bound + 2];
 
-        (float, float, float) pos = MathUtilities.TransformPoint(pm, x, y, z);
+        (float, float, float) pos = Utilities.Math.TransformPoint(pm, x, y, z);
 
         Console.WriteLine(pos.Item2);
 

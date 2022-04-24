@@ -13,7 +13,7 @@ namespace Renderer.Cameras
 
     public ProjectionType ProjectionType = ProjectionType.Perspective;
 
-    public float VerticalFov = (float)Math.PI / 2.5f;
+    public float VerticalFov = (float)System.Math.PI / 2.5f;
     public float OrthographicSize = 18f;
 
     public Texture RenderTexture { get; private set; }

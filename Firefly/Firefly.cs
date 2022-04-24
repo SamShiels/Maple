@@ -73,7 +73,7 @@ namespace Renderer
       }
     }
 
-    private float verticalFieldOfView = (float)Math.PI / 2.5f;
+    private float verticalFieldOfView = (float)System.Math.PI / 2.5f;
     public float VerticalFieldOfView {
       get
       {

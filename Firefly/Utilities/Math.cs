@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Renderer.Utilities
 {
-  public class MathUtilities
+  public class Math
   {
 
     public static Vector3 TransformPoint(Matrix4 matrix, Vector3 point)

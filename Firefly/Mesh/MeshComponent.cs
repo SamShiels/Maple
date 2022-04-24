@@ -79,7 +79,7 @@ namespace Renderer.Mesh
 				float y = verts[vert + 1];
 				float z = verts[vert + 2];
 
-				(float, float, float) point = MathUtilities.TransformPoint(m, x, y, z);
+				(float, float, float) point = Utilities.Math.TransformPoint(m, x, y, z);
 
 				worldVertices[vert] = point.Item1;
 				worldVertices[vert + 1] = point.Item2;
@@ -98,7 +98,7 @@ namespace Renderer.Mesh
 				float y = bounds[bound + 1];
 				float z = bounds[bound + 2];
 
-				(float, float, float) point = MathUtilities.TransformPoint(m, x, y, z);
+				(float, float, float) point = Utilities.Math.TransformPoint(m, x, y, z);
 
 				worldBounds[bound] = point.Item1;
 				worldBounds[bound + 1] = point.Item2;
