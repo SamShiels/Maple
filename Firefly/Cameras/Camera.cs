@@ -1,11 +1,11 @@
-﻿using Renderer.Core;
-using Renderer.Textures;
-using Renderer.Utilities;
+﻿using Firefly.Core;
+using Firefly.Textures;
+using Firefly.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Cameras
+namespace Firefly.Cameras
 {
   public class Camera : WorldObject
   {

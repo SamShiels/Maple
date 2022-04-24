@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace Renderer.Textures
+namespace Firefly.Textures
 {
   public class Image
   {

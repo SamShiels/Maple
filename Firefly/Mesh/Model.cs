@@ -1,5 +1,5 @@
 ﻿
-namespace Renderer.Mesh
+namespace Firefly.Mesh
 {
   public class Model
   {

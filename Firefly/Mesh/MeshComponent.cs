@@ -1,10 +1,10 @@
 ﻿using OpenTK.Mathematics;
-using Renderer.Utilities;
+using Firefly.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Mesh
+namespace Firefly.Mesh
 {
   public class MeshComponent
 	{

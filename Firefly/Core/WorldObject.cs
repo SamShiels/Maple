@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Core
+namespace Firefly.Core
 {
   public class WorldObject
   {

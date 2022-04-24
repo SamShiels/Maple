@@ -1,6 +1,6 @@
-﻿using Renderer.Textures.Settings;
+﻿using Firefly.Textures.Settings;
 
-namespace Renderer.Textures
+namespace Firefly.Textures
 {
   public class Texture
   {

@@ -1,8 +1,8 @@
-﻿using Renderer.Core;
-using Renderer.Materials;
-using Renderer.Textures;
+﻿using Firefly.Core;
+using Firefly.Materials;
+using Firefly.Textures;
 
-namespace Renderer.Mesh
+namespace Firefly.Mesh
 {
   public class MeshObject : WorldObject
   {

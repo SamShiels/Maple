@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System;
 
-namespace Renderer.Textures
+namespace Firefly.Textures
 {
   public class TextureComponent
   {

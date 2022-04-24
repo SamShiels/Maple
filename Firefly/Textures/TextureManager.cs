@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Renderer.Textures
+namespace Firefly.Textures
 {
   public class TextureManager
   {

@@ -1,9 +1,9 @@
-﻿using Renderer.Materials;
+﻿using Firefly.Materials;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Shaders
+namespace Firefly.Shaders
 {
 	public class ShaderManager
 	{

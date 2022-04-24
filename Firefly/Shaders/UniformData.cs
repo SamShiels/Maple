@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Shaders
+namespace Firefly.Shaders
 {
 
   public static class UniformData

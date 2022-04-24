@@ -29,4 +29,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="World\" />
+  </ItemGroup>
+
 </Project>

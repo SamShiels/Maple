@@ -1,5 +1,5 @@
 ﻿
-namespace Renderer.Shaders
+namespace Firefly.Shaders
 {
   public class Shader
   {

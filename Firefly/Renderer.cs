@@ -1,21 +1,21 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using Renderer.Buffer;
-using Renderer.Core;
-using Renderer.Materials;
-using Renderer.Mesh;
-using Renderer.Rendering;
-using Renderer.Shaders;
-using Renderer.Textures;
-using Renderer.Utilities;
+using Firefly.Buffer;
+using Firefly.Core;
+using Firefly.Materials;
+using Firefly.Mesh;
+using Firefly.Rendering;
+using Firefly.Shaders;
+using Firefly.Textures;
+using Firefly.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace Renderer
+namespace Firefly
 {
-  public class Firefly
+  public class Renderer
   {
     private Pipeline pipeline;
     private CanvasHandler canvasHandler;
@@ -86,7 +86,7 @@ namespace Renderer
       }
     }
 
-    public Firefly(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, Material canvasMaterial, bool debug)
+    public Renderer(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, Material canvasMaterial, bool debug)
     {
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());

@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System.Collections.Generic;
 
-namespace Renderer.Buffer
+namespace Firefly.Buffer
 {
   public class IndexBufferObject : VertexBufferObject<int>
   {

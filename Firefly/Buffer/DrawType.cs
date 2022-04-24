@@ -1,5 +1,5 @@
 ﻿
-namespace Renderer.Buffer
+namespace Firefly.Buffer
 {
   public enum DrawType
   {

@@ -1,5 +1,5 @@
 ﻿
-namespace Renderer
+namespace Firefly
 {
   public class Constants
   {

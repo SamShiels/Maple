@@ -1,14 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using Renderer.Buffer;
-using Renderer.Materials;
-using Renderer.Mesh;
-using Renderer.Shaders;
-using Renderer.Textures;
+using Firefly.Buffer;
+using Firefly.Materials;
+using Firefly.Mesh;
+using Firefly.Shaders;
+using Firefly.Textures;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Rendering
+namespace Firefly.Rendering
 {
   public class MeshBufferHandler
   {

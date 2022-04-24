@@ -1,12 +1,12 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using Renderer.Buffer;
-using Renderer.Materials;
-using Renderer.Shaders;
+using Firefly.Buffer;
+using Firefly.Materials;
+using Firefly.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Rendering
+namespace Firefly.Rendering
 {
   public class CanvasHandler
   {

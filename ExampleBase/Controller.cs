@@ -1,15 +1,15 @@
 ﻿using OpenTK.Mathematics;
-using Renderer;
-using Renderer.Core;
-using Renderer.Materials;
-using Renderer.Shaders;
+using Firefly;
+using Firefly.Core;
+using Firefly.Materials;
+using Firefly.Shaders;
 using System;
 
 namespace ExampleBase
 {
   public class Controller
   {
-    public Renderer.Firefly graphics { private set; get; }
+    public Renderer renderer { private set; get; }
     public WorldObject stage { private set; get; }
 
     private int windowWidth;
@@ -75,11 +75,11 @@ namespace ExampleBase
       Uniform curvature = new Uniform("curvature", new Vector2(2, 2));
       Material material = new Material(CRT, new Uniform[] { curvature });
       canvasMaterial = material;
-      graphics = new Renderer.Firefly(2560, 1440, windowWidth, windowHeight, material, true);
-      graphics.ProjectionType = Renderer.Utilities.ProjectionType.Perspective;
-      graphics.VerticalFieldOfView = 90;
+      renderer = new Renderer(2560, 1440, windowWidth, windowHeight, material, true);
+      renderer.ProjectionType = Firefly.Utilities.ProjectionType.Perspective;
+      renderer.VerticalFieldOfView = 90;
       stage = new WorldObject();
-      graphics.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
+      renderer.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
     }
 
     /// <summary>
@@ -102,13 +102,13 @@ namespace ExampleBase
       test += 0.03f;
       float resScale = ((float)Math.Sin(test) + 1) / 2;
 
-      graphics.UpdateResolution((int)Math.Round(2560.0f * resScale), (int)Math.Round(1440.0f * resScale));
-      graphics.Render(stage);
+      renderer.UpdateResolution((int)Math.Round(2560.0f * resScale), (int)Math.Round(1440.0f * resScale));
+      renderer.Render(stage);
     }
     
     public virtual void OnUnload()
     {
-      graphics.Destroy();
+      renderer.Destroy();
     }
   }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Shaders
+namespace Firefly.Shaders
 {
   public class ShaderLibrary
   {

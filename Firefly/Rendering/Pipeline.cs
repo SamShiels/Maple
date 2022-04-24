@@ -1,15 +1,15 @@
-﻿using Renderer.Core;
-using Renderer.Mesh;
-using Renderer.Textures;
-using Renderer.Materials;
-using Renderer.Shaders;
+﻿using Firefly.Core;
+using Firefly.Mesh;
+using Firefly.Textures;
+using Firefly.Materials;
+using Firefly.Shaders;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System;
-using Renderer.Utilities;
+using Firefly.Utilities;
 
-namespace Renderer.Rendering
+namespace Firefly.Rendering
 {
 
   public class Pipeline

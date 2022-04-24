@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Mesh
+namespace Firefly.Mesh
 {
   public class ModelLibrary
   {

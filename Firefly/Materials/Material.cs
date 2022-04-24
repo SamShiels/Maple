@@ -1,6 +1,6 @@
-﻿using Renderer.Shaders;
+﻿using Firefly.Shaders;
 
-namespace Renderer.Materials
+namespace Firefly.Materials
 {
   public class Material
   {

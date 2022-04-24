@@ -1,6 +1,6 @@
 ﻿using ExampleBase;
-using Renderer;
-using Renderer.Core;
+using Firefly;
+using Firefly.Core;
 
 namespace SpriteExample
 {

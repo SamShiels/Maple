@@ -1,14 +1,14 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using Renderer;
+using Firefly;
 using ExampleBase;
 using System;
-using Renderer.Sprites;
-using Renderer.Shaders;
-using Renderer.Mesh;
-using Renderer.Materials;
-using Renderer.Textures;
-using Renderer.Textures.Settings;
+using Firefly.Sprites;
+using Firefly.Shaders;
+using Firefly.Mesh;
+using Firefly.Materials;
+using Firefly.Textures;
+using Firefly.Textures.Settings;
 using System.Reflection;
 
 namespace SpriteExample

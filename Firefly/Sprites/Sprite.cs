@@ -1,7 +1,7 @@
-﻿using Renderer.Mesh;
-using Renderer.Textures;
+﻿using Firefly.Mesh;
+using Firefly.Textures;
 
-namespace Renderer.Sprites
+namespace Firefly.Sprites
 {
 
   public class Sprite : MeshObject

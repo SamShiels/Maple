@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Buffer
+namespace Firefly.Buffer
 {
   public class VertexArrayObject
   {

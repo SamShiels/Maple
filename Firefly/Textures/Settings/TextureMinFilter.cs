@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Textures
+namespace Firefly.Textures
 {
   //
   // Summary:

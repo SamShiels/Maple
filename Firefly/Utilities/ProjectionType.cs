@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Renderer.Utilities
+namespace Firefly.Utilities
 {
   public enum ProjectionType
   {
