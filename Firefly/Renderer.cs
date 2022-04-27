@@ -1,17 +1,15 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using Firefly.Buffer;
 using Firefly.Core;
-using Firefly.Materials;
-using Firefly.Mesh;
 using Firefly.Rendering;
-using Firefly.Shaders;
-using Firefly.Textures;
+using Firefly.Texturing;
 using Firefly.Utilities;
+using Firefly.Core.Shader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Firefly.Core.Texture;
 
 namespace Firefly
 {
@@ -21,6 +19,7 @@ namespace Firefly
     private CanvasHandler canvasHandler;
     private TextureManager textureManager;
     private ShaderManager shaderManager;
+    private Color4 ambientLight;
     private Color4 clearColor;
 
     /// <summary>
@@ -104,6 +103,10 @@ namespace Firefly
       }
     }
 
+    /// <summary>
+    /// Render an object and all of its children.
+    /// </summary>
+    /// <param name="obj"></param>
     public void Render(WorldObject obj)
     {
       canvasHandler.BindFrameBuffer();
@@ -112,9 +115,22 @@ namespace Firefly
       canvasHandler.DrawCanvas();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="color"></param>
     public void UpdateBackgroundColor(Color4 color)
     {
       clearColor = color;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="color"></param>
+    public void UpdateAmbientLight(Color4 color)
+    {
+      ambientLight = color;
     }
 
     /// <summary>
@@ -149,7 +165,7 @@ namespace Firefly
     public void Clear()
     {
       Color4 c = clearColor;
-      GL.ClearColor(c.R, c.G, c.B, c.A);
+      GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 

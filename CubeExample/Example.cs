@@ -3,13 +3,12 @@ using OpenTK.Windowing.Common;
 using Firefly;
 using ExampleBase;
 using System;
-using Firefly.Sprites;
-using Firefly.Shaders;
-using Firefly.Mesh;
-using Firefly.Materials;
-using Firefly.Textures;
-using Firefly.Textures.Settings;
+using Firefly.Texturing;
+using Firefly.Texturing.Settings;
 using System.Reflection;
+using Firefly.World;
+using Firefly.Rendering;
+using Firefly.World.Mesh;
 
 namespace SpriteExample
 {

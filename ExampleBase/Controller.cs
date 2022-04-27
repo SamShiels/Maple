@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using Firefly;
 using Firefly.Core;
-using Firefly.Materials;
-using Firefly.Shaders;
+using Firefly.Rendering;
 using System;
+using Firefly.Utilities;
 
 namespace ExampleBase
 {
@@ -70,13 +70,13 @@ namespace ExampleBase
       //vec2 curvature = curveFunction(texCoords);
 
       //float warp = sin(texCoords.x * PI) * (texCoords.x - 0.5) * -0.5;
-      Shader CRT = new Shader(vs, fs);
+      ShaderProgram CRT = new ShaderProgram(vs, fs);
 
       Uniform curvature = new Uniform("curvature", new Vector2(2, 2));
-      Material material = new Material(CRT, new Uniform[] { curvature });
+      Material material = new Material(CRT, null);
       canvasMaterial = material;
       renderer = new Renderer(2560, 1440, windowWidth, windowHeight, material, true);
-      renderer.ProjectionType = Firefly.Utilities.ProjectionType.Perspective;
+      renderer.ProjectionType = ProjectionType.Perspective;
       renderer.VerticalFieldOfView = 90;
       stage = new WorldObject();
       renderer.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
@@ -100,9 +100,9 @@ namespace ExampleBase
       //if (test == true) return;
       //graphics.Clear();
       test += 0.03f;
-      float resScale = ((float)Math.Sin(test) + 1) / 2;
+      float resScale = ((float)System.Math.Sin(test) + 1) / 2;
 
-      renderer.UpdateResolution((int)Math.Round(2560.0f * resScale), (int)Math.Round(1440.0f * resScale));
+      renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
       renderer.Render(stage);
     }
     
