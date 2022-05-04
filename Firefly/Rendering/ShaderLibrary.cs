@@ -6,7 +6,7 @@ namespace Firefly.Rendering
 {
   public class ShaderLibrary
   {
-    private Dictionary<string, ShaderProgram> library;
+    private Dictionary<string, Shader> library;
 
     private static ShaderLibrary instance = null;
     public static ShaderLibrary Instance
@@ -23,21 +23,21 @@ namespace Firefly.Rendering
 
     public ShaderLibrary()
     {
-      library = new Dictionary<string, ShaderProgram>();
+      library = new Dictionary<string, Shader>();
       Sprite();
       Diffuse();
       Canvas();
       CanvasInverted();
     }
 
-    public ShaderProgram GetShader(string shaderName)
+    public Shader GetShader(string shaderName)
     {
-      ShaderProgram shader;
+      Shader shader;
       library.TryGetValue(shaderName, out shader);
       return shader;
     }
 
-    private void SetShader(string shaderName, ShaderProgram shader)
+    private void SetShader(string shaderName, Shader shader)
     {
       library.Add(shaderName, shader);
     }
@@ -72,7 +72,7 @@ namespace Firefly.Rendering
         }
       ";
 
-      ShaderProgram shader = new ShaderProgram(vertex, fragment);
+      Shader shader = new Shader(vertex, fragment);
       SetShader("canvas", shader);
     }
 
@@ -114,7 +114,7 @@ namespace Firefly.Rendering
         }
       ";
 
-      ShaderProgram shader = new ShaderProgram(vertex, fragment);
+      Shader shader = new Shader(vertex, fragment);
       SetShader("canvasInverted", shader);
     }
 
@@ -157,7 +157,7 @@ namespace Firefly.Rendering
         }
       ";
 
-      ShaderProgram shader = new ShaderProgram(vertex, fragment);
+      Shader shader = new Shader(vertex, fragment);
       SetShader("spriteBasic", shader);
     }
 
@@ -171,12 +171,15 @@ namespace Firefly.Rendering
 		    <normal_attribute>
         <3d_projection_uniform>
 
+        out vec3 FragPos;
+
         void main()
         {
           <normal_vert_main>
           <texcoord_vert_main>
           <3d_projection>
-          gl_Position = position;
+          FragPos = worldPosition.xyz;
+          gl_Position = viewPosition;
         }
       ";
 
@@ -184,13 +187,44 @@ namespace Firefly.Rendering
         #version 450 core
 
         out vec4 FragColor;
+        in vec3 FragPos;
+
         <texcoord_frag>
 		    <normal_frag>
 
+        uniform float u_shininess;
         uniform vec3 u_ambientLight;
         uniform vec3 u_lightDirection;
 
+        struct PointLight {
+					vec3 position;
+
+					vec3 diffuse;
+					vec3 specular;
+				};
+
+				#define NO_POINT_LIGHTS 16
+				uniform PointLight u_pointLight;
+
         uniform sampler2D u_images[1];
+
+        vec3 CalculatePointLight(vec3 light, vec3 normal, vec3 fragPos, vec3 viewDir)
+        {
+          vec3 lightDir = normalize(light - fragPos);
+          float diff = max(dot(normal, lightDir), 0.0);
+
+          vec3 reflectDir = reflect(-lightDir, normal);
+          float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+
+          float distance = length(light - fragPos);
+          float atten = 1.0 / (distance);
+
+          vec3 diffuse = diff * vec3(texture(u_images[0], texcoord));
+
+          diffuse *= atten;
+
+          return (diffuse);
+        }
 
         void main()
         {
@@ -199,12 +233,34 @@ namespace Firefly.Rendering
           vec4 light = max(vec4(u_ambientLight.xyz, 1.0), directionalLight);
           vec4 albedo = texture(u_images[0], texcoord);
           albedo *= light;
+
+          vec3 norm = normalize(normal);
+          vec3 viewDir = normalize(vec3(0.0) - FragPos);
+
+          vec3 result = vec3(0.0);
+          for (int i = 0; i < 1; i++)
+          {
+            result = CalculatePointLight(u_pointLight.position, norm, FragPos, viewDir);
+          }
           
-          FragColor = albedo;
+          FragColor = vec4(result, 1.0);
         }
       ";
 
-      ShaderProgram shader = new ShaderProgram(vertex, fragment);
+      string test = @"
+
+        vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos)
+        {
+          vec3 lightDir = normalize(light.position - fragPos);
+          float diff = max(dot(normal, lightDir), 0.0);
+
+          vec3 reflectDir = reflect(-lightDir, normal);
+          float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+
+          return reflectDir;
+        }";
+
+      Shader shader = new Shader(vertex, fragment);
       SetShader("diffuse", shader);
     }
   }

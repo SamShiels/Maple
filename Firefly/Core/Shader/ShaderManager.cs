@@ -39,8 +39,8 @@ namespace Firefly.Core.Shader
 
 			string projectionMatrixUsage3d =
 			@"
-				vec4 position = a_position * u_modelMatrix;
-				position = u_projectionMatrix * position;
+				vec4 worldPosition = a_position * u_modelMatrix;
+				vec4 viewPosition = u_projectionMatrix * worldPosition;
 			";
 			shaderChunks.Add("3d_projection", projectionMatrixUsage3d);
 
@@ -71,17 +71,21 @@ namespace Firefly.Core.Shader
 				struct PointLight {
 					vec3 position;
 
-					vec3 ambient;
 					vec3 diffuse;
 					vec3 specular;
-				}
+				};
+
+				#define NO_POINT_LIGHTS 16
+				uniform PointLight u_pointLights[16];
 			";
+
+			shaderChunks.Add("point_lighting_dec", pointLightDeclaration);
 		}
 
 		public ShaderComponent GetComponent(Material material)
 		{
 			ShaderComponent component;
-			Rendering.ShaderProgram shader = material.Shader;
+			Rendering.Shader shader = material.Shader;
 			bool exists = components.TryGetValue(shader.Id, out component);
 			if (!exists)
       {
@@ -90,7 +94,7 @@ namespace Firefly.Core.Shader
 			return component;
 		}
 
-		private ShaderComponent CreateComponent(Rendering.ShaderProgram shader, Uniform[] Uniforms) {
+		private ShaderComponent CreateComponent(Rendering.Shader shader, Uniform[] Uniforms) {
 			ShaderComponent component = new ShaderComponent(shader.VertexShaderSource, shader.FragmentShaderSource, Uniforms, shaderChunks);
 			components.Add(shader.Id, component);
 			return component;

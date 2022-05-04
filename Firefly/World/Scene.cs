@@ -8,27 +8,41 @@ namespace Firefly.World
 {
   public class Scene
   {
-    private WorldObject rootObject;
-    private List<PointLight> lights;
+
+    public WorldObject RootObject
+    {
+      get; private set;
+    }
+
+    public List<PointLight> Lights
+    {
+      get; private set;
+    }
+
+    public Scene()
+    {
+      RootObject = new WorldObject();
+      Lights = new List<PointLight>();
+    }
 
     public void AddObject(WorldObject worldObject)
     {
-      rootObject.Transform.AddChild(worldObject.Transform);
+      RootObject.Transform.AddChild(worldObject.Transform);
     }
 
     public void RemoveObject(WorldObject worldObject)
     {
-      rootObject.Transform.RemoveChild(worldObject.Transform);
+      RootObject.Transform.RemoveChild(worldObject.Transform);
     }
 
     public void AddLight(PointLight light)
     {
-      lights.Add(light);
+      Lights.Add(light);
     }
 
     public void RemoveLight(PointLight light)
     {
-      lights.Remove(light);
+      Lights.Remove(light);
     }
   }
 }

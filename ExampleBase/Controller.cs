@@ -4,13 +4,14 @@ using Firefly.Core;
 using Firefly.Rendering;
 using System;
 using Firefly.Utilities;
+using Firefly.World;
 
 namespace ExampleBase
 {
   public class Controller
   {
     public Renderer renderer { private set; get; }
-    public WorldObject stage { private set; get; }
+    public Scene scene { private set; get; }
 
     private int windowWidth;
     private int windowHeight;
@@ -70,7 +71,7 @@ namespace ExampleBase
       //vec2 curvature = curveFunction(texCoords);
 
       //float warp = sin(texCoords.x * PI) * (texCoords.x - 0.5) * -0.5;
-      ShaderProgram CRT = new ShaderProgram(vs, fs);
+      Shader CRT = new Shader(vs, fs);
 
       Uniform curvature = new Uniform("curvature", new Vector2(2, 2));
       Material material = new Material(CRT, null);
@@ -78,7 +79,7 @@ namespace ExampleBase
       renderer = new Renderer(2560, 1440, windowWidth, windowHeight, material, true);
       renderer.ProjectionType = ProjectionType.Perspective;
       renderer.VerticalFieldOfView = 90;
-      stage = new WorldObject();
+      scene = new Scene();
       renderer.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
     }
 
@@ -102,8 +103,8 @@ namespace ExampleBase
       test += 0.03f;
       float resScale = ((float)System.Math.Sin(test) + 1) / 2;
 
-      renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
-      renderer.Render(stage);
+      //renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
+      renderer.Render(scene);
     }
     
     public virtual void OnUnload()

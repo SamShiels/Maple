@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Firefly.Core.Texture;
+using Firefly.World;
 
 namespace Firefly
 {
@@ -107,11 +108,11 @@ namespace Firefly
     /// Render an object and all of its children.
     /// </summary>
     /// <param name="obj"></param>
-    public void Render(WorldObject obj)
+    public void Render(Scene scene)
     {
       canvasHandler.BindFrameBuffer();
       Clear();
-      pipeline.RenderObject(obj);
+      pipeline.RenderScene(scene);
       canvasHandler.DrawCanvas();
     }
 

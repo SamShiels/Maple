@@ -10,6 +10,7 @@ using Firefly.Utilities;
 using Firefly.World;
 using Firefly.Core.Texture;
 using Firefly.World.Mesh;
+using Firefly.World.Lighting;
 
 namespace Firefly.Core
 {
@@ -29,6 +30,8 @@ namespace Firefly.Core
     private int resolutionWidth;
     private int resolutionHeight;
 
+    private List<PointLight> lighting;
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -44,14 +47,15 @@ namespace Firefly.Core
     /// Push an object into the pipeline and render it, along with all of its children.
     /// </summary>
     /// <param name="obj"></param>
-    public void RenderObject(WorldObject obj)
+    public void RenderScene(Scene scene)
     {
-      BufferObject(obj);
+      DefineLighting(scene.Lights);
+      BufferObject(scene.RootObject);
       FlushBatchBuffers();
     }
 
     /// <summary>
-    /// Update the projection matrix
+    /// Update the projection matrix.
     /// </summary>
     /// <param name="projectionMatrix"></param>
     public void UpdateProjectionMatrix(Matrix4 projectionMatrix)
@@ -60,7 +64,7 @@ namespace Firefly.Core
     }
 
     /// <summary>
-    /// Update the projection matrix
+    /// Update the projection matrix.
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -70,6 +74,19 @@ namespace Firefly.Core
       resolutionHeight = height;
     }
 
+    /// <summary>
+    /// Define the list of light objects to use when rendering.
+    /// </summary>
+    /// <param name="pointLights"></param>
+    private void DefineLighting(List<PointLight> pointLights)
+    {
+      lighting = pointLights;
+    }
+
+    /// <summary>
+    /// Evaluate an object and add it to the appropriate buffer.
+    /// </summary>
+    /// <param name="obj">The object to buffer</param>
     private void BufferObject(WorldObject obj)
     {
       if (obj.TYPE != "Container")
@@ -116,7 +133,6 @@ namespace Firefly.Core
     /// </summary>
     private void FlushBatchBuffers()
     {
-      //modelBufferHandler.Unbind();
       int batchSize = dynamicBatchHandler.GetBatchSize();
       if (batchSize > 0) {
         dynamicBatchHandler.BindAndEnablePointers();
@@ -150,6 +166,23 @@ namespace Firefly.Core
       GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
       GL.UniformMatrix4(modelMatrixLocation, false, ref modelMatrix);
+
+      //int pointLightingLocation = shaderComponent.GetUniformLocation("u_pointLights");
+      //if (pointLightingLocation > -1)
+      //{
+        int pointLightCount = lighting.Count;
+        //for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
+        //{
+          PointLight light = lighting[0];
+
+          int positionLocation = shaderComponent.GetUniformLocation("u_pointLight.position");
+          GL.Uniform3(positionLocation, light.Transform.Position);
+          //int diffuseLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].diffuse", i.ToString()));
+          //GL.Uniform3(diffuseLocation, light.Diffuse.R, light.Diffuse.G, light.Diffuse.B);
+          //int specularLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].specular", i.ToString()));
+          //GL.Uniform3(specularLocation, light.Specular.R, light.Specular.G, light.Specular.B);
+        //}
+      //}
 
       if (material.Uniforms != null)
       {

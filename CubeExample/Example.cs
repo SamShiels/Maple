@@ -67,7 +67,7 @@ namespace SpriteExample
       sprite.Transform.Position = new Vector3(0f, 0f, -5f);
 
       //game.stage.Transform.AddChild(sprite.Transform);
-      game.stage.Transform.AddChild(cubeMesh.Transform);
+      game.scene.AddObject(cubeMesh);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)

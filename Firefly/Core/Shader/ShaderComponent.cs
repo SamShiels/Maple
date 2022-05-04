@@ -18,6 +18,7 @@ namespace Firefly.Core.Shader
 		private bool disposedValue = false;
 
 		private Dictionary<string, int> uniformLocations;
+		private Dictionary<string, int> pointLightUniformLocations;
 
 		public ShaderComponent(string vertexShaderSource, string fragmentShaderSource, Rendering.Uniform[] uniforms, Dictionary<string, string> shaderChunks)
     {
@@ -68,6 +69,21 @@ namespace Firefly.Core.Shader
 				uniformLocations.Add("u_images", imagesLocation);
 			}
 
+			//int pointLightLocation = GL.GetUniformLocation(program, "u_pointLight");
+			//if (pointLightLocation != -1)
+			//{
+				pointLightUniformLocations = new Dictionary<string, int>();
+
+				for (int i = 0; i < 1; i++)
+				{
+					string id = i.ToString();
+					uniformLocations.Add("u_pointLight.position", GL.GetUniformLocation(program, string.Format(@"u_pointLight.position", id)));
+					uniformLocations.Add("u_pointLight.diffuse", GL.GetUniformLocation(program, string.Format(@"u_pointLight.diffuse", id)));
+					uniformLocations.Add("u_pointLight.specular", GL.GetUniformLocation(program, string.Format(@"u_pointLight.specular", id)));
+				}
+        //uniformLocations.Add("u_pointLight", pointLightLocation);
+			//}
+
 			if (uniforms != null) {
 				for (int i = 0; i < uniforms.Length; i++)
 				{
@@ -85,7 +101,7 @@ namespace Firefly.Core.Shader
     {
 			bool texUnitLocation = vertexShaderSource.Contains("a_texUnit");
 			usesTextureUnits = texUnitLocation;
-    }
+		}
 
 		/// <summary>
 		/// Create our shaders and link the program.

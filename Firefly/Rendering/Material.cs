@@ -13,13 +13,13 @@ namespace Firefly.Rendering
     /// <summary>
     /// Shader program.
     /// </summary>
-    public ShaderProgram Shader { get; private set; }
+    public Shader Shader { get; private set; }
     /// <summary>
     /// Uniform data and definitions.
     /// </summary>
     public Uniform[] Uniforms { get; private set; }
 
-    public Material(ShaderProgram Shader, Uniform[] Uniforms)
+    public Material(Shader Shader, Uniform[] Uniforms)
     {
       this.Shader = Shader;
       this.Uniforms = Uniforms;
