@@ -171,18 +171,21 @@ namespace Firefly.Core
       //if (pointLightingLocation > -1)
       //{
         int pointLightCount = lighting.Count;
-        //for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
-        //{
-          PointLight light = lighting[0];
+        for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
+        {
+          PointLight light = lighting[i];
 
-          int positionLocation = shaderComponent.GetUniformLocation("u_pointLight.position");
+          int usedLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.used{0}", i.ToString()));
+          GL.Uniform1(usedLocation, 1);
+          int positionLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.position{0}", i.ToString()));
           GL.Uniform3(positionLocation, light.Transform.Position);
-          //int diffuseLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].diffuse", i.ToString()));
-          //GL.Uniform3(diffuseLocation, light.Diffuse.R, light.Diffuse.G, light.Diffuse.B);
-          //int specularLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].specular", i.ToString()));
-          //GL.Uniform3(specularLocation, light.Specular.R, light.Specular.G, light.Specular.B);
-        //}
-      //}
+        int rangeLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.range{0}", i.ToString()));
+        GL.Uniform1(rangeLocation, light.Radius);
+        //int diffuseLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].diffuse", i.ToString()));
+        //GL.Uniform3(diffuseLocation, light.Diffuse.R, light.Diffuse.G, light.Diffuse.B);
+        //int specularLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].specular", i.ToString()));
+        //GL.Uniform3(specularLocation, light.Specular.R, light.Specular.G, light.Specular.B);
+      }
 
       if (material.Uniforms != null)
       {

@@ -74,12 +74,12 @@ namespace Firefly.Core.Shader
 			//{
 				pointLightUniformLocations = new Dictionary<string, int>();
 
-				for (int i = 0; i < 1; i++)
+				for (int i = 0; i < 16; i++)
 				{
-					string id = i.ToString();
-					uniformLocations.Add("u_pointLight.position", GL.GetUniformLocation(program, string.Format(@"u_pointLight.position", id)));
-					uniformLocations.Add("u_pointLight.diffuse", GL.GetUniformLocation(program, string.Format(@"u_pointLight.diffuse", id)));
-					uniformLocations.Add("u_pointLight.specular", GL.GetUniformLocation(program, string.Format(@"u_pointLight.specular", id)));
+					string index = i.ToString();
+					uniformLocations.Add(string.Format("u_pointLights.used{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].used", index)));
+					uniformLocations.Add(string.Format("u_pointLights.position{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].position", index)));
+					uniformLocations.Add(string.Format("u_pointLights.range{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].range", index)));
 				}
         //uniformLocations.Add("u_pointLight", pointLightLocation);
 			//}

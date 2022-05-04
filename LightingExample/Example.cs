@@ -16,6 +16,7 @@ namespace SpriteExample
   public class Example : Window
   {
     private MeshObject houseMesh;
+    private PointLight light;
 
     public Example(int width, int height, string title) : base(width, height, title) { }
 
@@ -37,19 +38,28 @@ namespace SpriteExample
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
-      houseMesh.Transform.Position = new Vector3(0f, 0f, -5f);
+      houseMesh.Transform.Position = new Vector3(0f, -2f, -5f);
+      houseMesh.Transform.Rotation = new Vector3(0f, -(float)Math.PI / 2f, 0f);
       houseMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
       houseMesh.Textures = new Texture[] { textureHouse };
       houseMesh.Material = material;
 
-      PointLight light = new PointLight();
-      light.Transform.Position = new Vector3(-1f, 0f, -5f);
+      light = new PointLight();
+      light.Transform.Position = new Vector3(-1f, -2f, -5f);
       light.Diffuse = Color4.White;
-      light.Radius = 100f;
+      light.Radius = 5f;
 
       game.scene.AddObject(houseMesh);
       game.scene.AddObject(light);
       game.scene.AddLight(light);
+
+      PointLight light2 = new PointLight();
+      light2.Transform.Position = new Vector3(0f, 2f, -5f);
+      light2.Diffuse = Color4.White;
+      light2.Radius = 15f;
+
+      game.scene.AddObject(light2);
+      game.scene.AddLight(light2);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -61,9 +71,10 @@ namespace SpriteExample
 
     protected override void OnRenderFrame(FrameEventArgs args)
     {
-      Time += 0.01f;
-      float position = (float)Math.Sin(Time) * 7;
-      houseMesh.Transform.Position = new Vector3(position, 0f, -5f);
+      Time += 0.02f;
+      float positionX = (float)Math.Sin(Time) * 4f;
+      float positionZ = (float)Math.Cos(Time) * 4f;
+      light.Transform.Position = new Vector3(positionX, 0.0f, positionZ);
 
       base.OnRenderFrame(args);
     }

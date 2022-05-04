@@ -197,27 +197,29 @@ namespace Firefly.Rendering
         uniform vec3 u_lightDirection;
 
         struct PointLight {
+          int used;
 					vec3 position;
+          float range;
 
 					vec3 diffuse;
 					vec3 specular;
 				};
 
 				#define NO_POINT_LIGHTS 16
-				uniform PointLight u_pointLight;
+				uniform PointLight u_pointLights[16];
 
         uniform sampler2D u_images[1];
 
-        vec3 CalculatePointLight(vec3 light, vec3 normal, vec3 fragPos, vec3 viewDir)
+        vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
         {
-          vec3 lightDir = normalize(light - fragPos);
+          vec3 lightDir = normalize(light.position - fragPos);
           float diff = max(dot(normal, lightDir), 0.0);
 
           vec3 reflectDir = reflect(-lightDir, normal);
           float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
 
-          float distance = length(light - fragPos);
-          float atten = 1.0 / (distance);
+          float distance = length(light.position - fragPos);
+          float atten = 1.0 / (distance / light.range);
 
           vec3 diffuse = diff * vec3(texture(u_images[0], texcoord));
 
@@ -238,9 +240,11 @@ namespace Firefly.Rendering
           vec3 viewDir = normalize(vec3(0.0) - FragPos);
 
           vec3 result = vec3(0.0);
-          for (int i = 0; i < 1; i++)
+          for (int i = 0; i < 16; i++)
           {
-            result = CalculatePointLight(u_pointLight.position, norm, FragPos, viewDir);
+            if (u_pointLights[i].used == 1) {
+              result += CalculatePointLight(u_pointLights[i], norm, FragPos, viewDir);
+            }
           }
           
           FragColor = vec4(result, 1.0);
