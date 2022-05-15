@@ -15,9 +15,11 @@ namespace Firefly.Core
     private int windowWidth;
     private int windowHeight;
 
-    private int FBOHandler;
-    private int RBOHandler;
-    private int TextureHandler;
+    private int FBOHandle;
+    private int MultiSampleFBOHandle;
+    private int RBOHandle;
+    private int TextureHandle;
+    private int MultiSampleTextureHandle;
 
     private bool initialised = false;
 
@@ -47,22 +49,8 @@ namespace Firefly.Core
     /// </summary>
     public void BindFrameBuffer()
     {
-      if (!initialised)
-      {
-        CreateVBOs();
-        CreateFrameBuffer();
-        CreateTexture();
-        CreateRenderBuffer();
-        GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-        if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
-        {
-          Console.WriteLine("Frame buffer is not complete");
-        }
-        initialised = true;
-      }
-
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandler);
+      Initialize();
+      GL.BindFramebuffer(FramebufferTarget.Framebuffer, MultiSampleFBOHandle);
     }
 
     /// <summary>
@@ -71,6 +59,10 @@ namespace Firefly.Core
     public void DrawCanvas()
     {
       ShaderComponent shader = shaderManager.GetComponent(currentMaterial);
+      GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, MultiSampleFBOHandle);
+      GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, FBOHandle);
+      GL.BlitFramebuffer(0, 0, textureResolutionWidth, textureResolutionHeight, 0, 0, textureResolutionWidth, textureResolutionHeight, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
+
       GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
       GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -97,7 +89,7 @@ namespace Firefly.Core
       GL.Viewport(0, 0, windowWidth, windowHeight);
       //Console.WriteLine("Canvas - Viewport set to " + windowWidth + ", " + windowWidth);
 
-      GL.BindTexture(TextureTarget.Texture2D, TextureHandler);
+      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
       GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
 
@@ -134,24 +126,66 @@ namespace Firefly.Core
 
     #region Private Methods
 
-    /// <summary>
-    /// Create the frame buffer handle.
-    /// </summary>
-    private void CreateFrameBuffer()
+    private void Initialize()
     {
-      FBOHandler = GL.GenFramebuffer();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandler);
+      if (!initialised)
+      {
+        CreateVBOs();
+
+        // MSAA shit
+        MultiSampleFBOHandle = CreateFrameBuffer();
+        CreateMultiSampleTexture();
+        CreateRenderBuffer();
+        if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+        {
+          Console.WriteLine("MSAA Frame buffer is not complete");
+        }
+        //
+
+        FBOHandle = CreateFrameBuffer();
+        CreateTexture();
+        GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+        if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+        {
+          Console.WriteLine("Frame buffer is not complete");
+        }
+        initialised = true;
+      }
     }
 
     /// <summary>
-    /// Create the texture used for rendering.
+    /// Create a frame buffer handle.
+    /// </summary>
+    private int CreateFrameBuffer()
+    {
+      int handle = GL.GenFramebuffer();
+      GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
+
+      return handle;
+    }
+
+    /// <summary>
+    /// Create a texture used for rendering.
+    /// </summary>
+    private void CreateMultiSampleTexture()
+    {
+      MultiSampleTextureHandle = GL.GenTexture();
+      GL.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
+      GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, 16, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
+      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, MultiSampleTextureHandle, 0);
+      GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
+    }
+
+    /// <summary>
+    /// Create a texture used for rendering.
     /// </summary>
     private void CreateTexture()
     {
-      TextureHandler = GL.GenTexture();
+      TextureHandle = GL.GenTexture();
       AllocateTextureMemory();
 
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandler, 0);
+      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
     }
 
     /// <summary>
@@ -159,9 +193,16 @@ namespace Firefly.Core
     /// </summary>
     private void CreateRenderBuffer()
     {
-      RBOHandler = GL.GenRenderbuffer();
+      RBOHandle = GL.GenRenderbuffer();
       AllocateRenderBufferMemory();
-      GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandler);
+      GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandle);
+    }
+
+    private void AllocateRenderBufferMemory()
+    {
+      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
+      GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, 16, RenderbufferStorage.DepthComponent24, textureResolutionWidth, textureResolutionHeight);
+      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
     }
 
     /// <summary>
@@ -169,23 +210,13 @@ namespace Firefly.Core
     /// </summary>
     private void AllocateTextureMemory()
     {
-      GL.BindTexture(TextureTarget.Texture2D, TextureHandler);
+      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
       GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
-    }
-
-    /// <summary>
-    /// Allocate render buffer memory with a depth buffer.
-    /// </summary>
-    private void AllocateRenderBufferMemory()
-    {
-      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandler);
-      GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, textureResolutionWidth, textureResolutionHeight);
-      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
     }
 
     private void CreateVBOs()
