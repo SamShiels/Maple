@@ -212,6 +212,9 @@ namespace Firefly.Rendering
 
         vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
         {
+          if (light.used == 0) {
+            return vec3(0.0);
+          }
           vec3 lightDir = normalize(light.position - fragPos);
           float diff = max(dot(normal, lightDir), 0.0);
 
@@ -240,11 +243,9 @@ namespace Firefly.Rendering
           vec3 viewDir = normalize(vec3(0.0) - FragPos);
 
           vec3 result = vec3(0.0);
-          for (int i = 0; i < 16; i++)
+          for (int i = 0; i < NO_POINT_LIGHTS; i++)
           {
-            if (u_pointLights[i].used == 1) {
-              result += CalculatePointLight(u_pointLights[i], norm, FragPos, viewDir);
-            }
+            result += CalculatePointLight(u_pointLights[i], norm, FragPos, viewDir);
           }
           
           FragColor = vec4(result, 1.0);
