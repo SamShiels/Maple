@@ -86,12 +86,12 @@ namespace Firefly
       }
     }
 
-    public Renderer(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, Material canvasMaterial, bool debug)
+    public Renderer(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, Material canvasMaterial, bool debug)
     {
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
       pipeline = new Pipeline(textureManager, shaderManager);
-      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight);
+      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, numberOfSamples);
 
       clearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
       UpdateWindowDimensions(windowWidth, windowHeight);
@@ -158,6 +158,15 @@ namespace Firefly
       canvasHandler.UpdateResolution(resolutionWidth, resolutionHeight);
       pipeline.UpdateResolution(resolutionWidth, resolutionHeight);
       CalculateProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+    }
+
+    /// <summary>
+    /// Update the MSAA sample count.
+    /// </summary>
+    /// <param name="numberOfSamples">The number of samples for each pixel.</param>
+    public void UpdateMSAA(int numberOfSamples)
+    {
+      canvasHandler.UpdateMSAA(numberOfSamples);
     }
 
     /// <summary>

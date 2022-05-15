@@ -12,6 +12,7 @@ namespace Firefly.Core
   {
     private int textureResolutionWidth;
     private int textureResolutionHeight;
+    private int numberOfSamples;
     private int windowWidth;
     private int windowHeight;
 
@@ -30,12 +31,13 @@ namespace Firefly.Core
     private VertexBufferObject<float> Positions { get; set; }
     private VertexBufferObject<float> TextureCoordinates { get; set; }
 
-    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight)
+    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples)
     {
       this.textureResolutionWidth = textureResolutionWidth;
       this.textureResolutionHeight = textureResolutionHeight;
       this.windowWidth = windowWidth;
       this.windowHeight = windowHeight;
+      this.numberOfSamples = numberOfSamples;
       initialised = false;
 
       this.shaderManager = shaderManager;
@@ -113,8 +115,17 @@ namespace Firefly.Core
     {
       this.textureResolutionWidth = textureResolutionWidth;
       this.textureResolutionHeight = textureResolutionHeight;
-      AllocateTextureMemory();
-      AllocateRenderBufferMemory();
+      UpdateResolution();
+    }
+
+    /// <summary>
+    /// Update the resolution settings and re-allocate texture and render buffer memory.
+    /// </summary>
+    /// <param name="numberOfSamples">The number of samples</param>
+    public void UpdateMSAA(int numberOfSamples)
+    {
+      this.numberOfSamples = numberOfSamples;
+      UpdateResolution();
     }
 
     public void UpdateMaterial(Material material)
@@ -154,6 +165,15 @@ namespace Firefly.Core
       }
     }
 
+    private void UpdateResolution()
+    {
+      AllocateTextureMemory();
+      GL.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
+      GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, numberOfSamples, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
+      GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
+      AllocateRenderBufferMemory();
+    }
+
     /// <summary>
     /// Create a frame buffer handle.
     /// </summary>
@@ -172,7 +192,7 @@ namespace Firefly.Core
     {
       MultiSampleTextureHandle = GL.GenTexture();
       GL.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
-      GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, 16, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
+      GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, numberOfSamples, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
       GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, MultiSampleTextureHandle, 0);
       GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
     }
@@ -201,7 +221,7 @@ namespace Firefly.Core
     private void AllocateRenderBufferMemory()
     {
       GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
-      GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, 16, RenderbufferStorage.DepthComponent24, textureResolutionWidth, textureResolutionHeight);
+      GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, numberOfSamples, RenderbufferStorage.DepthComponent24, textureResolutionWidth, textureResolutionHeight);
       GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
     }
 
