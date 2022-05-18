@@ -133,7 +133,7 @@ namespace Firefly.Rendering
           <texcoord_vert_main>
           <texture_unit_vert>
           <3d_projection>
-          gl_Position = position;
+          gl_Position = viewPosition;
         }
       ";
 

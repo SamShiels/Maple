@@ -141,7 +141,11 @@ namespace Firefly.Core.Shader
 
 			string infoLogVert = GL.GetShaderInfoLog(shader);
 			if (infoLogVert != string.Empty)
+			{
 				Console.WriteLine(infoLogVert);
+				Console.WriteLine(type.ToString());
+				Console.WriteLine(source);
+			}
 
 			return shader;
 		}
