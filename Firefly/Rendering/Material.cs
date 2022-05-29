@@ -28,6 +28,15 @@ namespace Firefly.Rendering
       NextId++;
     }
 
+    public Material(Shader Shader)
+    {
+      this.Shader = Shader;
+      this.Uniforms = null;
+
+      Id = NextId;
+      NextId++;
+    }
+
     public void Destroy()
     {
       Shader.Destroy();

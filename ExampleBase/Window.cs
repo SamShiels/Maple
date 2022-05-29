@@ -14,6 +14,7 @@ namespace ExampleBase
       GameWindowSettings.Default,
       new NativeWindowSettings()
       {
+        APIVersion = new Version(4, 6),
         Size = new Vector2i()
         {
           X = width,

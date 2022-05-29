@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31702.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Firefly", "Firefly\Firefly.csproj", "{62E1F7FB-A6BD-44D2-B817-19861C074D0A}"
 EndProject
@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleBase", "ExampleBase\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeExample", "CubeExample\CubeExample.csproj", "{94539C28-CD50-4D38-91AC-B3B2AB8F598E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightingExample", "LightingExample\LightingExample.csproj", "{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightingExample", "LightingExample\LightingExample.csproj", "{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SceneEditor", "SceneEditor\SceneEditor.csproj", "{200AAADD-6F5A-453C-85FC-0857D07E20A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{200AAADD-6F5A-453C-85FC-0857D07E20A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{200AAADD-6F5A-453C-85FC-0857D07E20A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{200AAADD-6F5A-453C-85FC-0857D07E20A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{200AAADD-6F5A-453C-85FC-0857D07E20A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

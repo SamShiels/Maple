@@ -117,6 +117,16 @@ namespace Firefly
     }
 
     /// <summary>
+    /// Render an object and all of its children directly to the window.
+    /// </summary>
+    /// <param name="obj"></param>
+    public void RenderRaw(Scene scene)
+    {
+      Clear();
+      pipeline.RenderScene(scene);
+    }
+
+    /// <summary>
     /// 
     /// </summary>
     /// <param name="color"></param>

@@ -73,8 +73,7 @@ namespace ExampleBase
       //float warp = sin(texCoords.x * PI) * (texCoords.x - 0.5) * -0.5;
       Shader CRT = new Shader(vs, fs);
 
-      Uniform curvature = new Uniform("curvature", new Vector2(2, 2));
-      Material material = new Material(CRT, null);
+      Material material = new Material(CRT);
       canvasMaterial = material;
       renderer = new Renderer(2560, 1440, windowWidth, windowHeight, 8, material, true);
       renderer.ProjectionType = ProjectionType.Perspective;
@@ -105,7 +104,7 @@ namespace ExampleBase
 
       //renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
       //renderer.UpdateMSAA((int)System.Math.Round(32f * resScale));
-      renderer.Render(scene);
+      renderer.RenderRaw(scene);
     }
     
     public virtual void OnUnload()
