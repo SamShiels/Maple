@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Firefly.Core.Shader
 {
-  public class ShaderComponent : IDisposable
+  internal class ShaderComponent : IDisposable
   {
 		private int program;
     private string vertexShaderSource;

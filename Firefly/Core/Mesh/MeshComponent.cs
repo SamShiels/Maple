@@ -3,7 +3,7 @@ using Firefly.World.Mesh;
 
 namespace Firefly.Core.Mesh
 {
-  public class MeshComponent
+	internal class MeshComponent
 	{
 		private uint LastVertexDirtyId;
 		private uint LastBoundDirtyId;

@@ -1,7 +1,7 @@
 ﻿
 namespace Firefly.Core.Buffer
 {
-  public enum DrawType
+  internal enum DrawType
   {
     Dynamic,
     Static

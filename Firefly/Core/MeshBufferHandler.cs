@@ -9,7 +9,7 @@ using Firefly.World.Mesh;
 
 namespace Firefly.Core
 {
-  public class MeshBufferHandler
+  internal class MeshBufferHandler
   {
     private Dictionary<uint, VertexArrayObject> VAOList;
     private TextureManager textureManager;

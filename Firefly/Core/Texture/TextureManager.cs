@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace Firefly.Core.Texture
 {
-  public class TextureManager
+  internal class TextureManager
   {
     /// <summary>
     /// Texture components used for binding.

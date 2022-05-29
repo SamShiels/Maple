@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace Firefly.Core
 {
-  public class LightBufferHandler
+  internal class LightBufferHandler
   {
     private int bufferHandler;
 

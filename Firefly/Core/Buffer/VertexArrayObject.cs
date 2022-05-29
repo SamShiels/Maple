@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Firefly.Core.Buffer
 {
-  public class VertexArrayObject
+  internal class VertexArrayObject
   {
     private VertexBufferObject<float> Positions { get; set; }
     private VertexBufferObject<float> TextureCoordinates { get; set; }

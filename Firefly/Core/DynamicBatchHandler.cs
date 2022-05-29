@@ -12,7 +12,7 @@ using Firefly.World.Mesh;
 
 namespace Firefly.Core
 {
-  public class DynamicBatchHandler
+  internal class DynamicBatchHandler
   {
     private int maxBatchIndices;
     private int maxObjectIndices;

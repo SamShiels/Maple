@@ -12,7 +12,7 @@ namespace Firefly.World.Mesh
     public Material Material { get; set; }
     public Texture[] Textures { get; set; }
     public bool Visible { get; set; }
-    public MeshComponent Component { get; private set; }
+    internal MeshComponent Component { get; private set; }
 
     public MeshObject() : base()
     {
@@ -24,7 +24,6 @@ namespace Firefly.World.Mesh
     public override void Destroy()
     {
       base.Destroy();
-      Model.Destroy();
       Model = null;
       Material = null;
       Textures = null;

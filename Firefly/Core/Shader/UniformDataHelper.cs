@@ -7,7 +7,7 @@ using System.Text;
 namespace Firefly.Core.Shader
 {
 
-  public static class UniformDataHelper
+  internal static class UniformDataHelper
   {
     public static void UploadUniformData(int location, object data)
     {

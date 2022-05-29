@@ -15,7 +15,7 @@ using Firefly.World.Lighting;
 namespace Firefly.Core
 {
 
-  public class Pipeline
+  internal class Pipeline
   {
     private const int BATCH_BUFFER_MAX_INDICES = 4096;
     private const int BATCH_BUFFER_MAX_INDICES_PER_OBJECT = 36;
@@ -89,7 +89,7 @@ namespace Firefly.Core
     /// <param name="obj">The object to buffer</param>
     private void BufferObject(WorldObject obj)
     {
-      if (obj.TYPE != "Container")
+      if (obj is MeshObject)
       {
         // this is not a container. We only use meshes at the moment, so just cast it
         MeshObject mesh = (MeshObject)obj;
@@ -153,8 +153,6 @@ namespace Firefly.Core
       // test vertex depth
       GL.Enable(EnableCap.DepthTest);
 
-      GL.Enable(EnableCap.Multisample);
-
       GL.DepthFunc(DepthFunction.Lequal);
       GL.Enable(EnableCap.Blend);
       GL.BlendEquation(BlendEquationMode.FuncAdd);
@@ -167,24 +165,17 @@ namespace Firefly.Core
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
       GL.UniformMatrix4(modelMatrixLocation, false, ref modelMatrix);
 
-      //int pointLightingLocation = shaderComponent.GetUniformLocation("u_pointLights");
-      //if (pointLightingLocation > -1)
-      //{
-        int pointLightCount = lighting.Count;
-        for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
-        {
-          PointLight light = lighting[i];
+      int pointLightCount = lighting.Count;
+      for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
+      {
+        PointLight light = lighting[i];
 
-          int usedLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.used{0}", i.ToString()));
-          GL.Uniform1(usedLocation, 1);
-          int positionLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.position{0}", i.ToString()));
-          GL.Uniform3(positionLocation, light.Transform.Position);
+        int usedLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.used{0}", i.ToString()));
+        GL.Uniform1(usedLocation, 1);
+        int positionLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.position{0}", i.ToString()));
+        GL.Uniform3(positionLocation, light.Transform.Position);
         int rangeLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.range{0}", i.ToString()));
         GL.Uniform1(rangeLocation, light.Radius);
-        //int diffuseLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].diffuse", i.ToString()));
-        //GL.Uniform3(diffuseLocation, light.Diffuse.R, light.Diffuse.G, light.Diffuse.B);
-        //int specularLocation = shaderComponent.GetUniformLocation(string.Format(@"u_pointLights[{0}].specular", i.ToString()));
-        //GL.Uniform3(specularLocation, light.Specular.R, light.Specular.G, light.Specular.B);
       }
 
       if (material.Uniforms != null)

@@ -51,7 +51,6 @@ namespace SpriteExample
 
       game.scene.AddObject(houseMesh);
       game.scene.AddObject(light);
-      game.scene.AddLight(light);
 
       PointLight light2 = new PointLight();
       light2.Transform.Position = new Vector3(0f, 2f, -5f);
@@ -59,7 +58,6 @@ namespace SpriteExample
       light2.Radius = 15f;
 
       game.scene.AddObject(light2);
-      game.scene.AddLight(light2);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)

@@ -20,7 +20,6 @@ namespace ExampleBase
           Y = height
         },
         Title = title,
-        NumberOfSamples = 4,
         WindowState = WindowState.Normal,
       })
     {

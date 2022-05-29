@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Firefly.Core.Buffer
 {
-  public class IndexBufferObject : VertexBufferObject<int>
+  internal class IndexBufferObject : VertexBufferObject<int>
   {
     private int[] fixedData;
     private List<int> dynamicData;

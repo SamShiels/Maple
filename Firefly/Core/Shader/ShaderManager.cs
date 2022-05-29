@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Firefly.Core.Shader
 {
-	public class ShaderManager
+	internal class ShaderManager
 	{
 		private Dictionary<int, ShaderComponent> components;
 		private Dictionary<string, string> shaderChunks;

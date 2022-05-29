@@ -8,6 +8,8 @@ namespace Firefly.World.Lighting
 {
   public class PointLight : WorldObject
   {
+    public override string TYPE { get; protected set; } = "PointLight";
+
     public float Radius = 5.0f;
     public Color4 Diffuse = Color4.White;
     public Color4 Specular = Color4.White;

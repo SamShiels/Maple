@@ -8,7 +8,7 @@ using Firefly.Core.Shader;
 
 namespace Firefly.Core
 {
-  public class CanvasHandler
+  internal class CanvasHandler
   {
     private int textureResolutionWidth;
     private int textureResolutionHeight;

@@ -30,19 +30,21 @@ namespace Firefly.World
       RootObject.Transform.AddChild(worldObject.Transform);
     }
 
+    public void AddObject(PointLight pointLight)
+    {
+      RootObject.Transform.AddChild(pointLight.Transform);
+      Lights.Add(pointLight);
+    }
+
     public void RemoveObject(WorldObject worldObject)
     {
       RootObject.Transform.RemoveChild(worldObject.Transform);
     }
 
-    public void AddLight(PointLight light)
+    public void RemoveObject(PointLight pointLight)
     {
-      Lights.Add(light);
-    }
-
-    public void RemoveLight(PointLight light)
-    {
-      Lights.Remove(light);
+      RootObject.Transform.RemoveChild(pointLight.Transform);
+      Lights.Remove(pointLight);
     }
   }
 }

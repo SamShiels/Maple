@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Firefly.Core.Buffer
 {
-  public class VertexBufferObject<T> where T: struct
+  internal class VertexBufferObject<T> where T: struct
   {
     protected const int MaximumSize = 1048576;
 

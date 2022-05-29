@@ -82,6 +82,7 @@ namespace Firefly.World.Mesh
 			set
 			{
 				indices = value;
+				IncrementDirtyId();
 			}
 		}
 

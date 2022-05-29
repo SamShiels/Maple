@@ -4,7 +4,7 @@ using System;
 
 namespace Firefly.Core.Texture
 {
-  public class TextureComponent
+  internal class TextureComponent
   {
     private Texturing.Texture texture;
     private Image image;
