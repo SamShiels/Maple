@@ -3,10 +3,12 @@ using Firefly.Rendering;
 using Firefly.Texturing;
 using Firefly.Utilities;
 using Firefly.World;
+using Firefly.World.Lighting;
 using Firefly.World.Mesh;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
+using SceneEditor.Editor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +32,14 @@ namespace SceneEditor
   /// </summary>
   public partial class MainWindow : Window
   {
-    public Renderer renderer { private set; get; }
-    public Scene scene { private set; get; }
+    private RendererManager rendererManager;
+    private SceneManager sceneManager;
+
+    private Model cube;
+    private Material material;
+    private Texture texture;
+
+    private bool rendererInitialized;
 
     public MainWindow()
     {
@@ -43,82 +51,67 @@ namespace SceneEditor
       };
 
       OpenTkControl.Start(settings);
-
-      string vs = @"
-        #version 450 core
-        layout (location = 0) in vec3 a_Position;
-        layout (location = 1) in vec2 a_TexCoords;
-
-        out vec2 texCoords;
-
-        void main()
-        {
-          texCoords = a_TexCoords;
-          gl_Position = vec4(a_Position, 1.0); 
-        }
-      ";
-
-      string fs = @"
-        #version 450 core
-        #define PI 3.1415926538
-
-        in vec2 texCoords;
-
-        out vec4 FragColor;
-
-        uniform vec2 curvature;
-        uniform sampler2D frameBufferTexture;
-
-        vec2 curveFunction(vec2 texUV)
-        {
-          texUV = texUV * 2.0 - 1.0;
-          vec2 offset = abs(texUV) / curvature;
-          texUV = texUV + texUV * offset * offset;
-          texUV = texUV * 0.5 + 0.5;
-          return texUV;
-        }
-
-        void main()
-        { 
-          vec4 canvasColor = vec4(texture(frameBufferTexture, texCoords));
-          FragColor = canvasColor;
-        }
-      ";
-      //vec2 curvature = curveFunction(texCoords);
-
-      //float warp = sin(texCoords.x * PI) * (texCoords.x - 0.5) * -0.5;
-      Shader CRT = new Shader(vs, fs);
-
-      Material material = new Material(CRT);
-      renderer = new Renderer(800, 450, 800, 450, 0, material, false);
-      renderer.ProjectionType = ProjectionType.Perspective;
-      renderer.VerticalFieldOfView = 90;
-      scene = new Scene();
-      renderer.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
-      Model cube = OBJLoader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.cube.obj"));
-
-      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.0f, 0.0f, 0.0f));
-      Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-      Uniform shininess = new Uniform("u_shininess", 0.5f);
-      Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
-
-      Material material2 = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
-      Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.png"));
-      Texture textureHouse = new Texture(house);
-
-      MeshObject cubeMesh = new MeshObject();
-      cubeMesh.Model = cube;
-      cubeMesh.Transform.Position = new Vector3(0f, 0f, -5f);
-      cubeMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
-      cubeMesh.Textures = new Texture[] { textureHouse };
-      cubeMesh.Material = material2;
-
-      scene.AddObject(cubeMesh);
+      rendererInitialized = false;
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
-      renderer.RenderRaw(scene);
+      if (rendererInitialized == false)
+      {
+        rendererManager = new RendererManager(OpenTkControl.Framebuffer);
+        sceneManager = new SceneManager(treeView);
+        cube = OBJLoader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.cube.obj"));
+
+        Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.2f, 0.2f, 0.2f));
+        Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
+        Uniform[] uniforms = new Uniform[2] { ambientLight, directionalLight };
+
+        material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
+        Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.emu_face.jpg"));
+        texture = new Texture(house);
+
+        MeshObject cubeMesh = sceneManager.CreateObject<MeshObject>();
+        cubeMesh.Model = cube;
+        cubeMesh.Transform.Position = new Vector3(-2f, 0f, -5f);
+        cubeMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
+        cubeMesh.Textures = new Texture[] { texture };
+        cubeMesh.Material = material;
+
+        PointLight light = sceneManager.CreateObject<PointLight>();
+        light.Transform.Position = new Vector3(0f, 3f, -2f);
+        light.Diffuse = Color4.White;
+        light.Radius = 10f;
+
+        rendererInitialized = true;
+      }
+
+      rendererManager.Render(sceneManager.Scene);
+    }
+
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+      rendererManager.Resize(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight);
+    }
+
+    private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+      TreeViewItem item = (TreeViewItem)e.NewValue;
+      sceneManager.NewItemSelected(item);
+    }
+
+    private void Create_Container(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void Create_Mesh(object sender, RoutedEventArgs e)
+    {
+      MeshObject newMesh = sceneManager.CreateObject<MeshObject>();
+      newMesh.Model = cube;
+      newMesh.Transform.Position = new Vector3(2f, 0f, -5f);
+      newMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
+      newMesh.Textures = new Texture[] { texture };
+      newMesh.Material = material;
     }
   }
 }

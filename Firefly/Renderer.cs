@@ -86,22 +86,35 @@ namespace Firefly
       }
     }
 
-    public Renderer(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, Material canvasMaterial, bool debug)
+    public Renderer(int windowWidth, int windowHeight)
     {
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
       pipeline = new Pipeline(textureManager, shaderManager);
-      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, numberOfSamples);
+
+      Material canvasMaterial = new Material(ShaderLibrary.Instance.GetShader("canvas"));
+      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, windowWidth, windowHeight, windowWidth, windowHeight, 0, 0);
+      clearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
+      UpdateWindowDimensions(windowWidth, windowHeight);
+      UpdateResolution(windowWidth, windowHeight);
+
+      GL.Enable(EnableCap.DebugOutput);
+      GL.Enable(EnableCap.DebugOutputSynchronous);
+    }
+
+    public Renderer(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, Material canvasMaterial, int numberOfSamples, int defaultFrameBufferHandle)
+    {
+      textureManager = new TextureManager();
+      shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
+      pipeline = new Pipeline(textureManager, shaderManager);
+      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, numberOfSamples, defaultFrameBufferHandle);
 
       clearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
       UpdateWindowDimensions(windowWidth, windowHeight);
       UpdateResolution(resolutionWidth, resolutionHeight);
 
-      if (debug)
-      { 
-        GL.Enable(EnableCap.DebugOutput);
-        GL.Enable(EnableCap.DebugOutputSynchronous);
-      }
+      GL.Enable(EnableCap.DebugOutput);
+      GL.Enable(EnableCap.DebugOutputSynchronous);
     }
 
     /// <summary>

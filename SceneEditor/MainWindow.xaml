@@ -6,10 +6,37 @@
         xmlns:local="clr-namespace:SceneEditor"
         mc:Ignorable="d"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Scene Editor" Height="720" Width="1280"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        SizeChanged="Window_SizeChanged">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="201*"/>
+            <ColumnDefinition Width="1079*"/>
+        </Grid.ColumnDefinitions>
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
-            Render="OpenTkControl_OnRender"/>
+            Render="OpenTkControl_OnRender" Grid.Column="1" Margin="0,48,0,0"/>
+        <Menu VerticalAlignment = "Top" Grid.ColumnSpan="2" Height="48">
+            <MenuItem Header = "Create">
+                <MenuItem Header = "Container" HorizontalAlignment = "Left" Width = "140" 
+               Click = "Create_Container" />
+
+                <MenuItem Header = "Mesh" HorizontalAlignment = "Left" Width = "140" 
+               Click = "Create_Mesh" />
+            </MenuItem>
+        </Menu>
+        <TreeView
+            SelectedItemChanged="treeView_SelectedItemChanged"
+            x:Name="treeView"
+            Margin="0,48,0,0"
+        />
     </Grid>
 </Window>

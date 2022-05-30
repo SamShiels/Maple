@@ -75,7 +75,7 @@ namespace ExampleBase
 
       Material material = new Material(CRT);
       canvasMaterial = material;
-      renderer = new Renderer(2560, 1440, windowWidth, windowHeight, 8, material, true);
+      renderer = new Renderer(2560, 1440, windowWidth, windowHeight, material, 8, 0);
       renderer.ProjectionType = ProjectionType.Perspective;
       renderer.VerticalFieldOfView = 90;
       scene = new Scene();

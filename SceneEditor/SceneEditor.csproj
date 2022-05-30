@@ -8,11 +8,15 @@
 
   <ItemGroup>
     <None Remove="Resources\cube.obj" />
+    <None Remove="Resources\emu_face.jpg" />
     <None Remove="Resources\house.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\cube.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\emu_face.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\house.png">
@@ -21,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="OpenTK" Version="4.3.0" />
     <PackageReference Include="OpenTK.GLWpfControl" Version="4.1.0" />
   </ItemGroup>

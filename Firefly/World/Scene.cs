@@ -28,12 +28,11 @@ namespace Firefly.World
     public void AddObject(WorldObject worldObject)
     {
       RootObject.Transform.AddChild(worldObject.Transform);
-    }
 
-    public void AddObject(PointLight pointLight)
-    {
-      RootObject.Transform.AddChild(pointLight.Transform);
-      Lights.Add(pointLight);
+      if (worldObject.GetType().Name == "PointLight")
+      {
+        Lights.Add((PointLight)worldObject);
+      }
     }
 
     public void RemoveObject(WorldObject worldObject)

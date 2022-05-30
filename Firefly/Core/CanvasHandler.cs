@@ -13,6 +13,8 @@ namespace Firefly.Core
     private int textureResolutionWidth;
     private int textureResolutionHeight;
     private int numberOfSamples;
+    private int defaultFrameBufferHandle;
+
     private int windowWidth;
     private int windowHeight;
 
@@ -31,13 +33,14 @@ namespace Firefly.Core
     private VertexBufferObject<float> Positions { get; set; }
     private VertexBufferObject<float> TextureCoordinates { get; set; }
 
-    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples)
+    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, int defaultFrameBufferHandle)
     {
       this.textureResolutionWidth = textureResolutionWidth;
       this.textureResolutionHeight = textureResolutionHeight;
       this.windowWidth = windowWidth;
       this.windowHeight = windowHeight;
       this.numberOfSamples = numberOfSamples;
+      this.defaultFrameBufferHandle = defaultFrameBufferHandle;
       initialised = false;
 
       this.shaderManager = shaderManager;
@@ -65,7 +68,7 @@ namespace Firefly.Core
       GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, FBOHandle);
       GL.BlitFramebuffer(0, 0, textureResolutionWidth, textureResolutionHeight, 0, 0, textureResolutionWidth, textureResolutionHeight, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
 
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+      GL.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
       GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit);
       GL.BindVertexArray(VAO);
@@ -155,7 +158,7 @@ namespace Firefly.Core
 
         FBOHandle = CreateFrameBuffer();
         CreateTexture();
-        GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        GL.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
 
         if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
         {
