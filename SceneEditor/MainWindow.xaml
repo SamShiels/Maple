@@ -1,13 +1,14 @@
-﻿<Window x:Class="SceneEditor.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SceneEditor"
-        mc:Ignorable="d"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
-        Title="Scene Editor" Height="720" Width="1280"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:Core="clr-namespace:Firefly.Core;assembly=Firefly" x:Class="SceneEditor.MainWindow"
+        mc:Ignorable="d"
+        Title="Scene Editor" Height="1080" Width="1920"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -17,13 +18,6 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         SizeChanged="Window_SizeChanged">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="201*"/>
-            <ColumnDefinition Width="1079*"/>
-        </Grid.ColumnDefinitions>
-        <glWpfControl:GLWpfControl 
-            x:Name="OpenTkControl" 
-            Render="OpenTkControl_OnRender" Grid.Column="1" Margin="0,48,0,0"/>
         <Menu VerticalAlignment = "Top" Grid.ColumnSpan="2" Height="48">
             <MenuItem Header = "Create">
                 <MenuItem Header = "Container" HorizontalAlignment = "Left" Width = "140" 
@@ -36,7 +30,28 @@
         <TreeView
             SelectedItemChanged="treeView_SelectedItemChanged"
             x:Name="treeView"
-            Margin="0,48,0,0"
+            Margin="0,48,0,0" Background="Transparent" HorizontalAlignment="Left" Width="280"
         />
+        <glWpfControl:GLWpfControl 
+            x:Name="OpenTkControl" 
+            Render="OpenTkControl_OnRender" Margin="280,48,280,0"/>
+        <materialDesign:Card Margin="0,48,0,0" VerticalAlignment="Top" Height="196" HorizontalAlignment="Right" Width="280">
+            <Grid x:Name="Transform" Margin="0,0,0,69">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="xPos" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Center" Width="73"/>
+                <TextBox x:Name="yPos" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding [1]}" VerticalAlignment="Center" Width="73" Grid.Column="1"/>
+                <TextBox x:Name="zPos" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding [2]}" VerticalAlignment="Center" Width="73" Grid.Column="2"/>
+            </Grid>
+
+        </materialDesign:Card>
     </Grid>
 </Window>

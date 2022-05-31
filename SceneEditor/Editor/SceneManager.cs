@@ -18,30 +18,31 @@ namespace SceneEditor.Editor
   {
     internal Scene Scene { get; private set; }
     private TreeViewItem selectedObject;
-    private TreeViewItem root;
     private TreeView treeView;
 
     internal SceneManager(TreeView treeView)
     {
       Scene = new Scene();
       this.treeView = treeView;
-
-      root = new TreeViewItem();
-      root.Header = "Scene";
-      root.DataContext = Scene.RootObject;
-      this.treeView.Items.Add(root);
     }
 
     internal T CreateObject<T>() where T : WorldObject
     {
       T worldObject = (T)Activator.CreateInstance(typeof(T));
-      Scene.AddObject(worldObject);
+
+      if (selectedObject == null)
+      {
+        Scene.AddObject(worldObject);
+      } else
+      {
+        Scene.RootObject.Transform.AddChild(worldObject.Transform);
+      }
 
       TreeViewItem item = new TreeViewItem();
       item.Header = worldObject.TYPE;
       item.DataContext = worldObject;
 
-      ItemCollection collection = selectedObject != null ? selectedObject.Items : root.Items;
+      ItemCollection collection = selectedObject != null ? selectedObject.Items : treeView.Items;
       collection.Add(item);
       return worldObject;
     }

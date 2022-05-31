@@ -1,4 +1,5 @@
 ﻿using Firefly;
+using Firefly.Core;
 using Firefly.Rendering;
 using Firefly.Texturing;
 using Firefly.Utilities;
@@ -97,6 +98,10 @@ namespace SceneEditor
     {
       TreeViewItem item = (TreeViewItem)e.NewValue;
       sceneManager.NewItemSelected(item);
+
+      xPos.DataContext = ((WorldObject)item.DataContext).Transform.Position;
+      yPos.DataContext = ((WorldObject)item.DataContext).Transform.Position;
+      zPos.DataContext = ((WorldObject)item.DataContext).Transform.Position;
     }
 
     private void Create_Container(object sender, RoutedEventArgs e)
