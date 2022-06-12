@@ -20,28 +20,73 @@ namespace Firefly
     private CanvasHandler canvasHandler;
     private TextureManager textureManager;
     private ShaderManager shaderManager;
-    private Color4 ambientLight;
-    private Color4 clearColor;
+
+    public Color4 AmbientLight;
+    public Color4 ClearColor;
 
     /// <summary>
     /// Window width.
     /// </summary>
     private int resolutionWidth;
+
+    public int ResolutionWidth
+    {
+      get
+      {
+        return resolutionWidth;
+      }
+      set
+      {
+        resolutionWidth = value;
+        ResolutionUpdated();
+      }
+    }
     /// <summary>
     /// Window height.
     /// </summary>
     private int resolutionHeight;
 
+    public int ResolutionHeight
+    {
+      get
+      {
+        return resolutionHeight;
+      }
+      set
+      {
+        resolutionHeight = value;
+        ResolutionUpdated();
+      }
+    }
+
     /// <summary>
-    /// World units on the x-axis.
+    /// Current amount of MSAA samples.
+    /// </summary>
+    private int msaaSamples = 4;
+
+    public int MSAASamples
+    {
+      get
+      {
+        return MSAASamples;
+      }
+      set
+      {
+        msaaSamples = value;
+        canvasHandler.UpdateMSAA(msaaSamples);
+      }
+    }
+
+    /// <summary>
+    /// The current width of the window.
     /// </summary>
     private int windowWidth;
     /// <summary>
-    /// World units on the y-axis.
+    /// The current width of the window.
     /// </summary>
     private int windowHeight;
-    private Matrix4 projectionMatrix;
 
+    private Matrix4 projectionMatrix;
     private ProjectionType projectionType = ProjectionType.Perspective;
 
     public ProjectionType ProjectionType
@@ -56,7 +101,6 @@ namespace Firefly
         CalculateProjectionMatrix((float)windowWidth / (float)windowHeight);
       }
     }
-
 
     public float orthographicSize = 18.0f;
 
@@ -93,25 +137,13 @@ namespace Firefly
       pipeline = new Pipeline(textureManager, shaderManager);
 
       Material canvasMaterial = new Material(ShaderLibrary.Instance.GetShader("canvas"));
-      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, windowWidth, windowHeight, windowWidth, windowHeight, 0, 0);
-      clearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
-      UpdateWindowDimensions(windowWidth, windowHeight);
-      UpdateResolution(windowWidth, windowHeight);
+      resolutionWidth = windowWidth;
+      resolutionHeight = windowHeight;
+      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
 
-      GL.Enable(EnableCap.DebugOutput);
-      GL.Enable(EnableCap.DebugOutputSynchronous);
-    }
-
-    public Renderer(int resolutionWidth, int resolutionHeight, int windowWidth, int windowHeight, Material canvasMaterial, int numberOfSamples, int defaultFrameBufferHandle)
-    {
-      textureManager = new TextureManager();
-      shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
-      pipeline = new Pipeline(textureManager, shaderManager);
-      canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, numberOfSamples, defaultFrameBufferHandle);
-
-      clearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
-      UpdateWindowDimensions(windowWidth, windowHeight);
-      UpdateResolution(resolutionWidth, resolutionHeight);
+      ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
+      UpdateGLViewport(windowWidth, windowHeight);
+      ResolutionUpdated();
 
       GL.Enable(EnableCap.DebugOutput);
       GL.Enable(EnableCap.DebugOutputSynchronous);
@@ -140,29 +172,11 @@ namespace Firefly
     }
 
     /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="color"></param>
-    public void UpdateBackgroundColor(Color4 color)
-    {
-      clearColor = color;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="color"></param>
-    public void UpdateAmbientLight(Color4 color)
-    {
-      ambientLight = color;
-    }
-
-    /// <summary>
-    /// Update the GL viewport.
+    /// Update the GL viewport. Call this when the window resizes.
     /// </summary>
     /// <param name="windowWidth">Window width.</param>
     /// <param name="windowHeight">Window height.</param>
-    public void UpdateWindowDimensions(int windowWidth, int windowHeight)
+    public void UpdateGLViewport(int windowWidth, int windowHeight)
     {
       this.windowWidth = windowWidth;
       this.windowHeight = windowHeight;
@@ -170,36 +184,20 @@ namespace Firefly
     }
 
     /// <summary>
-    /// Update the canvas resolution.
-    /// </summary>
-    /// <param name="resolutionWidth">Resolution width.</param>
-    /// <param name="resolutionWidth">Resolution height.</param>
-    public void UpdateResolution(int resolutionWidth, int resolutionHeight)
-    {
-      this.resolutionWidth = resolutionWidth;
-      this.resolutionHeight = resolutionHeight;
-      canvasHandler.UpdateResolution(resolutionWidth, resolutionHeight);
-      pipeline.UpdateResolution(resolutionWidth, resolutionHeight);
-      CalculateProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-    }
-
-    /// <summary>
-    /// Update the MSAA sample count.
-    /// </summary>
-    /// <param name="numberOfSamples">The number of samples for each pixel.</param>
-    public void UpdateMSAA(int numberOfSamples)
-    {
-      canvasHandler.UpdateMSAA(numberOfSamples);
-    }
-
-    /// <summary>
     /// Clear the screen and set OpenGL states to prepare for rendering.
     /// </summary>
     public void Clear()
     {
-      Color4 c = clearColor;
+      Color4 c = ClearColor;
       GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+    }
+
+    private void ResolutionUpdated()
+    {
+      canvasHandler.UpdateResolution(resolutionWidth, resolutionHeight);
+      pipeline.UpdateResolution(resolutionWidth, resolutionHeight);
+      CalculateProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
     }
 
     /// <summary>

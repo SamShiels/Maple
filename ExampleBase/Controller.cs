@@ -75,11 +75,11 @@ namespace ExampleBase
 
       Material material = new Material(CRT);
       canvasMaterial = material;
-      renderer = new Renderer(2560, 1440, windowWidth, windowHeight, material, 8, 0);
+      renderer = new Renderer(windowWidth, windowHeight);
       renderer.ProjectionType = ProjectionType.Perspective;
       renderer.VerticalFieldOfView = 90;
       scene = new Scene();
-      renderer.UpdateBackgroundColor(new Color4(0.3f, 0.2f, 0.4f, 1.0f));
+      renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
     }
 
     /// <summary>
@@ -104,7 +104,9 @@ namespace ExampleBase
 
       //renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
       //renderer.UpdateMSAA((int)System.Math.Round(32f * resScale));
-      renderer.RenderRaw(scene);
+      renderer.ResolutionWidth = (int)System.Math.Round(1920f * resScale);
+      renderer.ResolutionHeight = (int)System.Math.Round(1080f * resScale);
+      renderer.Render(scene);
     }
     
     public virtual void OnUnload()

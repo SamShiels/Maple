@@ -18,11 +18,10 @@ namespace SceneEditor.Editor
 
     internal RendererManager(int frameBufferHandle)
     {
-      Material material = new Material(ShaderLibrary.Instance.GetShader("canvas"));
-      renderer = new Renderer(1280, 720, 1280, 720, material, 0, 0);
+      renderer = new Renderer(1280, 720);
       renderer.ProjectionType = ProjectionType.Perspective;
       renderer.VerticalFieldOfView = 90;
-      renderer.UpdateBackgroundColor(new Color4(0.5f, 0.5f, 0.5f, 1.0f));
+      renderer.ClearColor = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 
     internal void Render(Scene scene)
@@ -32,8 +31,9 @@ namespace SceneEditor.Editor
 
     internal void Resize(int width, int height)
     {
-      renderer.UpdateWindowDimensions(width, height);
-      renderer.UpdateResolution(width, height);
+      renderer.UpdateGLViewport(width, height);
+      renderer.ResolutionWidth = width;
+      renderer.ResolutionHeight = height;
     }
   }
 }

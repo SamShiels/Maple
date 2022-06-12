@@ -26,6 +26,9 @@ namespace Firefly.Core
     private MeshBufferHandler modelBufferHandler;
 
     private Matrix4 projectionMatrix;
+    private Matrix4 viewMatrix;
+
+    private Camera camera;
 
     private int resolutionWidth;
     private int resolutionHeight;
@@ -52,6 +55,15 @@ namespace Firefly.Core
       DefineLighting(scene.Lights);
       BufferObject(scene.RootObject);
       FlushBatchBuffers();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="camera"></param>
+    public void AssignCamera(Camera camera)
+    {
+      this.camera = camera;
     }
 
     /// <summary>
@@ -164,6 +176,8 @@ namespace Firefly.Core
       GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
       GL.UniformMatrix4(modelMatrixLocation, false, ref modelMatrix);
+      //int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
+     // GL.UniformMatrix4(viewMatrixLocation, false, ref modelMatrix);
 
       int pointLightCount = lighting.Count;
       for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)

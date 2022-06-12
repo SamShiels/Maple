@@ -10,8 +10,33 @@ namespace Firefly.World
 
     public ProjectionType ProjectionType = ProjectionType.Perspective;
 
-    public float VerticalFov = (float)System.Math.PI / 2.5f;
-    public float OrthographicSize = 18f;
+    private float verticalFov = (float)System.Math.PI / 2.5f;
+
+    public float VerticalFov
+    {
+      get
+      {
+        return verticalFov;
+      }
+      set
+      {
+        verticalFov = value;
+      }
+    }
+
+    public float orthographicSize = 18f;
+
+    public float OrthographicSize
+    {
+      get
+      {
+        return orthographicSize;
+      }
+      set
+      {
+        orthographicSize = value;
+      }
+    }
 
     public Texture RenderTexture { get; private set; }
 
