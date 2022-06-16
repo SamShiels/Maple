@@ -71,9 +71,9 @@ namespace Firefly.Core
       float yRotation = camera.Transform.Rotation.Y;
 
       Vector3 front = new Vector3(
-        (float)System.Math.Cos(yRotation) * (float)System.Math.Cos(xRotation),
+        (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation),
         (float)System.Math.Sin(xRotation),
-        (float)System.Math.Sin(yRotation) * (float)System.Math.Cos(xRotation)
+        (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation)
         );
 
       front.Normalize();
@@ -94,8 +94,8 @@ namespace Firefly.Core
           0f, 0f, 0f, 1f
         );
 
-      return camera.Transform.GetLocalMatrix();
-      //return Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
+      //return Matrix4.Mult(viewMatrix, translationMatrix);
+      return Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
     }
   }
 }
