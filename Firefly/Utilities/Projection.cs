@@ -13,29 +13,31 @@ namespace Firefly.Utilities
       float range = near - far;
       float tanHalfFOV = (float)System.Math.Tan(verticalFOV / 2.0f);
 
-      Matrix4 matrix = new Matrix4(
-        1.0f / (tanHalfFOV * aspect),
-        0.0f,
-        0.0f,
-        0.0f,
+      Matrix4 pers = Matrix4.CreatePerspectiveFieldOfView(verticalFOV, aspect, near, far);
 
-        0.0f,
-        1.0f / tanHalfFOV,
-        0.0f,
-        0.0f,
+      //Matrix4 matrix = new Matrix4(
+      //  1.0f / (tanHalfFOV * aspect),
+      //  0.0f,
+      //  0.0f,
+      //  0.0f,
 
-        0.0f,
-        0.0f,
-       (near + far) / range,
-       -1.0f,
+      //  0.0f,
+      //  1.0f / tanHalfFOV,
+      //  0.0f,
+      //  0.0f,
 
-        0.0f,
-        0.0f,
-        2.0f * far * near / range,
-        0.0f
-        );
+      //  0.0f,
+      //  0.0f,
+      // (near + far) / range,
+      // -1.0f,
 
-      return matrix;
+      //  0.0f,
+      //  0.0f,
+      //  2.0f * far * near / range,
+      //  0.0f
+      //  );
+
+      return pers;
     }
 
     public static Matrix4 CreateOrthographicMatrix(float orthoSize, float aspect, float near, float far)

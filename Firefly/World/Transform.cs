@@ -241,7 +241,14 @@ namespace Firefly.World
 
       Matrix4 Rotation = Matrix4.Mult(Rz, Matrix4.Mult(Ry, Rx));
 
-      LocalToWorldMatrix = Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));
+      Matrix4 modelMatrix = Matrix4.Identity;
+      modelMatrix = modelMatrix * Matrix4.CreateRotationX(rotationX);
+      modelMatrix = modelMatrix * Matrix4.CreateRotationY(rotationY);
+      modelMatrix = modelMatrix * Matrix4.CreateRotationZ(rotationZ);
+      modelMatrix = modelMatrix * Matrix4.CreateTranslation(position);
+      modelMatrix = modelMatrix * Matrix4.CreateScale(localScale);
+
+      LocalToWorldMatrix = modelMatrix;// Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));
 
       //LocalToWorldNormalMatrix = new Matrix4(LocalToWorldMatrix.Row0, LocalToWorldMatrix.Row1, LocalToWorldMatrix.Row2, LocalToWorldMatrix.Row3);
       //LocalToWorldNormalMatrix.Transpose();

@@ -165,7 +165,7 @@ namespace Firefly.Rendering
     {
       string vertex = @"
         #version 450 core
-        layout (location = 0) in vec4 a_position;
+        layout (location = 0) in vec3 a_position;
 
         <texcoord_attribute>
 		    <normal_attribute>
@@ -179,7 +179,7 @@ namespace Firefly.Rendering
           <texcoord_vert_main>
           <3d_projection>
           FragPos = worldPosition.xyz;
-          gl_Position = viewPosition;
+          gl_Position = screenPosition;
         }
       ";
 

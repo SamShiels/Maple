@@ -13,6 +13,8 @@ namespace ExampleBase
     public Renderer renderer { private set; get; }
     public Scene scene { private set; get; }
 
+    public Camera camera;
+
     private int windowWidth;
     private int windowHeight;
 
@@ -76,9 +78,10 @@ namespace ExampleBase
       Material material = new Material(CRT);
       canvasMaterial = material;
       renderer = new Renderer(windowWidth, windowHeight);
-      renderer.ProjectionType = ProjectionType.Perspective;
-      renderer.VerticalFieldOfView = 90;
       scene = new Scene();
+      camera = new Camera();
+      camera.Transform.Position = new Vector3(0.0f, 0.0f, 0.0f);
+      scene.AssignCamera(camera);
       renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
     }
 
@@ -104,8 +107,7 @@ namespace ExampleBase
 
       //renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
       //renderer.UpdateMSAA((int)System.Math.Round(32f * resScale));
-      renderer.ResolutionWidth = (int)System.Math.Round(1920f * resScale);
-      renderer.ResolutionHeight = (int)System.Math.Round(1080f * resScale);
+      //renderer.ResolutionHeight = (int)System.Math.Round(1080f * resScale);
       renderer.Render(scene);
     }
     

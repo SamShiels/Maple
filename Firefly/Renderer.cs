@@ -82,53 +82,9 @@ namespace Firefly
     /// </summary>
     private int windowWidth;
     /// <summary>
-    /// The current width of the window.
+    /// The current height of the window.
     /// </summary>
     private int windowHeight;
-
-    private Matrix4 projectionMatrix;
-    private ProjectionType projectionType = ProjectionType.Perspective;
-
-    public ProjectionType ProjectionType
-    {
-      get
-      {
-        return projectionType;
-      }
-      set
-      {
-        projectionType = value;
-        CalculateProjectionMatrix((float)windowWidth / (float)windowHeight);
-      }
-    }
-
-    public float orthographicSize = 18.0f;
-
-    public float OrthographicSize
-    {
-      get
-      {
-        return orthographicSize;
-      }
-      set
-      {
-        orthographicSize = value;
-        CalculateProjectionMatrix((float)windowWidth / (float)windowHeight);
-      }
-    }
-
-    private float verticalFieldOfView = (float)System.Math.PI / 2.5f;
-    public float VerticalFieldOfView {
-      get
-      {
-        return verticalFieldOfView;
-      }
-      set
-      {
-        verticalFieldOfView = value;
-        CalculateProjectionMatrix((float)windowWidth / (float)windowHeight);
-      }
-    }
 
     public Renderer(int windowWidth, int windowHeight)
     {
@@ -197,23 +153,6 @@ namespace Firefly
     {
       canvasHandler.UpdateResolution(resolutionWidth, resolutionHeight);
       pipeline.UpdateResolution(resolutionWidth, resolutionHeight);
-      CalculateProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-    }
-
-    /// <summary>
-    /// Calculate the screen to clip-space matrix.
-    /// </summary>
-    private void CalculateProjectionMatrix(float aspect)
-    {
-      if (projectionType == ProjectionType.Perspective)
-      {
-        projectionMatrix = Projection.CreatePerspectiveMatrix(verticalFieldOfView, aspect, 0.001f, 1000f);
-      } else if (projectionType == ProjectionType.Orthographic)
-      {
-        projectionMatrix = Projection.CreateOrthographicMatrix(orthographicSize, aspect, 0.001f, 1000f);
-      }
-
-      pipeline.UpdateProjectionMatrix(projectionMatrix);
     }
 
     private void DebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)

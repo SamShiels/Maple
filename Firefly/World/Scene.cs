@@ -8,8 +8,12 @@ namespace Firefly.World
 {
   public class Scene
   {
-
     public WorldObject RootObject
+    {
+      get; private set;
+    }
+
+    public Camera Camera
     {
       get; private set;
     }
@@ -33,6 +37,11 @@ namespace Firefly.World
       {
         Lights.Add((PointLight)worldObject);
       }
+    }
+
+    public void AssignCamera(Camera camera)
+    {
+      Camera = camera;
     }
 
     public void RemoveObject(WorldObject worldObject)

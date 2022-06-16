@@ -24,11 +24,7 @@ namespace Firefly.Core
     private ShaderManager shaderManager;
     private DynamicBatchHandler dynamicBatchHandler;
     private MeshBufferHandler modelBufferHandler;
-
-    private Matrix4 projectionMatrix;
-    private Matrix4 viewMatrix;
-
-    private Camera camera;
+    private CameraHandler cameraHandler;
 
     private int resolutionWidth;
     private int resolutionHeight;
@@ -44,6 +40,7 @@ namespace Firefly.Core
       this.shaderManager = shaderManager;
       dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
+      cameraHandler = new CameraHandler();
     }
 
     /// <summary>
@@ -52,27 +49,10 @@ namespace Firefly.Core
     /// <param name="obj"></param>
     public void RenderScene(Scene scene)
     {
-      DefineLighting(scene.Lights);
+      lighting = scene.Lights;
+      AssignCamera(scene.Camera);
       BufferObject(scene.RootObject);
       FlushBatchBuffers();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="camera"></param>
-    public void AssignCamera(Camera camera)
-    {
-      this.camera = camera;
-    }
-
-    /// <summary>
-    /// Update the projection matrix.
-    /// </summary>
-    /// <param name="projectionMatrix"></param>
-    public void UpdateProjectionMatrix(Matrix4 projectionMatrix)
-    {
-      this.projectionMatrix = projectionMatrix;
     }
 
     /// <summary>
@@ -87,12 +67,12 @@ namespace Firefly.Core
     }
 
     /// <summary>
-    /// Define the list of light objects to use when rendering.
+    /// Assign the view matrix from the camera's local matrix.
     /// </summary>
-    /// <param name="pointLights"></param>
-    private void DefineLighting(List<PointLight> pointLights)
+    /// <param name="camera"></param>
+    private void AssignCamera(Camera camera)
     {
-      lighting = pointLights;
+      cameraHandler.AssignCamera(camera);
     }
 
     /// <summary>
@@ -124,7 +104,7 @@ namespace Firefly.Core
 
             Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
-            Render(mesh.Material, mesh.Model.Indices.Length, modelMatrix, Matrix4.Identity);
+            Render(mesh.Material, mesh.Model.Indices.Length, modelMatrix);
             textureManager.ClearAllTextureSlots();
           }
         }
@@ -149,13 +129,13 @@ namespace Firefly.Core
       if (batchSize > 0) {
         dynamicBatchHandler.BindAndEnablePointers();
         dynamicBatchHandler.UploadSamplerPositions();
-        Render(dynamicBatchHandler.GetBatchMaterial(), batchSize, Matrix4.Identity, Matrix4.Identity);
+        Render(dynamicBatchHandler.GetBatchMaterial(), batchSize, Matrix4.Identity);
         dynamicBatchHandler.Reset();
         textureManager.ClearAllTextureSlots();
       }
     }
 
-    private void Render(Material material, int count, Matrix4 modelMatrix, Matrix4 normalMatrix)
+    private void Render(Material material, int count, Matrix4 modelMatrix)
     {
       // Reset viewport
       GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
@@ -172,12 +152,20 @@ namespace Firefly.Core
 
       ShaderComponent shaderComponent = shaderManager.GetComponent(material);
       shaderComponent.Use();
+
+      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
+
       int screenToClipLocation = shaderComponent.GetUniformLocation("u_projectionMatrix");
-      GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
+      GL.UniformMatrix4(screenToClipLocation, true, ref projectionMatrix);
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
-      GL.UniformMatrix4(modelMatrixLocation, false, ref modelMatrix);
-      //int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
-     // GL.UniformMatrix4(viewMatrixLocation, false, ref modelMatrix);
+      GL.UniformMatrix4(modelMatrixLocation, true, ref modelMatrix);
+      int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
+      GL.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
+
+      //Matrix4 mvp = Matrix4.Mult(Matrix4.Mult(projectionMatrix, viewMatrix), modelMatrix);
+      //int mvpLocation = shaderComponent.GetUniformLocation("u_mvp");
+      //GL.UniformMatrix4(mvpLocation, false, ref mvp);
 
       int pointLightCount = lighting.Count;
       for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)

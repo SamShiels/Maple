@@ -31,17 +31,21 @@ namespace Firefly.Core.Shader
 			// 3D projection chunks
 			string projectionMatrixDeclaration3d =
 			@"
-				uniform mat4 u_projectionMatrix;
 				uniform mat4 u_modelMatrix;
+				uniform mat4 u_viewMatrix;
+				uniform mat4 u_projectionMatrix;
+				uniform mat4 u_mvp;
 			";
 
 			shaderChunks.Add("3d_projection_uniform", projectionMatrixDeclaration3d);
 
 			string projectionMatrixUsage3d =
 			@"
-				vec4 worldPosition = a_position * u_modelMatrix;
-				vec4 viewPosition = u_projectionMatrix * worldPosition;
+				vec4 worldPosition = vec4(a_position, 1.0) * u_modelMatrix;
+				vec4 screenPosition = vec4(a_position, 1.0) * u_modelMatrix * u_viewMatrix * u_projectionMatrix;
 			";
+			//	vec4 screenPosition = u_mvp * vec4(a_position, 1.0);
+
 			shaderChunks.Add("3d_projection", projectionMatrixUsage3d);
 
 			// Sampler chunks

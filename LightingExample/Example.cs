@@ -38,7 +38,7 @@ namespace SpriteExample
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
-      houseMesh.Transform.Position = new Vector3(0f, -2f, -5f);
+      //houseMesh.Transform.Position = new Vector3(5f, 0f, 0f);
       houseMesh.Transform.Rotation = new Vector3(0f, -(float)Math.PI / 2f, 0f);
       houseMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
       houseMesh.Textures = new Texture[] { textureHouse };
@@ -72,7 +72,10 @@ namespace SpriteExample
       Time += 0.02f;
       float positionX = (float)Math.Sin(Time) * 4f;
       float positionZ = (float)Math.Cos(Time) * 4f;
-      light.Transform.Position = new Vector3(positionX, 0.0f, positionZ);
+      game.camera.Transform.Position = new Vector3(1.0f, 0f, -10.0f);
+      game.camera.Transform.Rotation = new Vector3(0.0f, 1f, 0.0f);
+      houseMesh.Transform.Position = new Vector3(0.0f, 0f, -1f);
+      //houseMesh.Transform.Rotation = new Vector3(0.0f, positionZ, 0.0f);
 
       base.OnRenderFrame(args);
     }
