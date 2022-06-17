@@ -13,7 +13,15 @@ namespace Firefly.Core
     private uint lastCameraDirtyId;
     private float lastAspectRatio;
 
+    private float lastPositionX;
+    private float lastPositionY;
+    private float lastPositionZ;
+
+    private float lastRotationX;
+    private float lastRotationY;
+
     private Matrix4 projectionMatrix;
+    private Matrix4 viewMatrix;
 
     public Camera camera;
 
@@ -70,32 +78,43 @@ namespace Firefly.Core
       float xRotation = camera.Transform.Rotation.X;
       float yRotation = camera.Transform.Rotation.Y;
 
-      Vector3 front = new Vector3(
-        (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation),
-        (float)System.Math.Sin(xRotation),
-        (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation)
-        );
+      if (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY)
+      {
+        Vector3 front = new Vector3(
+          (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation),
+          (float)System.Math.Sin(xRotation),
+          (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation)
+          );
 
-      front.Normalize();
-      Vector3 rightAxis = Vector3.Normalize(Vector3.Cross(front, Vector3.UnitY));
-      Vector3 upAxis = Vector3.Normalize(Vector3.Cross(rightAxis, front));
+        front.Normalize();
+        Vector3 rightAxis = Vector3.Normalize(Vector3.Cross(front, Vector3.UnitY));
+        Vector3 upAxis = Vector3.Normalize(Vector3.Cross(rightAxis, front));
 
-      Matrix4 viewMatrix = new Matrix4(
-          rightAxis.X,        rightAxis.Y,        rightAxis.Z,        0f,
-          upAxis.X,           upAxis.Y,           upAxis.Z,           0f,
-          front.X,            front.Y,            front.Z,            0f,
-          0f,                 0f,                 0f,                 1f
-        );
+        viewMatrix = Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
+        lastPositionX = xPosition;
+        lastPositionY = yPosition;
+        lastPositionZ = zPosition;
 
-      Matrix4 translationMatrix = new Matrix4(
-          1f, 0f, 0f, xPosition,
-          0f, 1f, 0f, yPosition,
-          0f, 0f, 1f, zPosition,
-          0f, 0f, 0f, 1f
-        );
+        lastRotationX = xRotation;
+        lastRotationY = yRotation;
+      }
+
+      //Matrix4 viewMatrix = new Matrix4(
+      //    rightAxis.X,        rightAxis.Y,        rightAxis.Z,        0f,
+      //    upAxis.X,           upAxis.Y,           upAxis.Z,           0f,
+      //    front.X,            front.Y,            front.Z,            0f,
+      //    0f,                 0f,                 0f,                 1f
+      //  );
+
+      //Matrix4 translationMatrix = new Matrix4(
+      //    1f, 0f, 0f, xPosition,
+      //    0f, 1f, 0f, yPosition,
+      //    0f, 0f, 1f, zPosition,
+      //    0f, 0f, 0f, 1f
+      //  );
 
       //return Matrix4.Mult(viewMatrix, translationMatrix);
-      return Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
+      return viewMatrix;
     }
   }
 }
