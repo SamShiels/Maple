@@ -19,8 +19,8 @@ namespace SceneEditor.Editor
     internal RendererManager(int frameBufferHandle)
     {
       renderer = new Renderer(1280, 720);
-      renderer.ProjectionType = ProjectionType.Perspective;
-      renderer.VerticalFieldOfView = 90;
+      //renderer.ProjectionType = ProjectionType.Perspective;
+      //renderer.VerticalFieldOfView = 90;
       renderer.ClearColor = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 

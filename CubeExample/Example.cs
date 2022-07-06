@@ -22,6 +22,7 @@ namespace SpriteExample
     protected override void OnLoad()
     {
       base.OnLoad();
+      OBJLoader loader = new OBJLoader();
 
       Image house = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.house.png"));
       Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.grid.jpg"));
@@ -45,8 +46,8 @@ namespace SpriteExample
       //mesh.Width = 1;
       //mesh.Textures = new Texture[] { textureKronk };
       //mesh.Material = material;
-      Model castleModel = OBJLoader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.house.obj"));
-      Model cube = OBJLoader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
+      Model castleModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.house.obj"));
+      Model cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
 
       cubeMesh = new MeshObject();
       cubeMesh.Model = castleModel;

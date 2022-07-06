@@ -59,9 +59,10 @@ namespace SceneEditor
     {
       if (rendererInitialized == false)
       {
+        OBJLoader loader = new OBJLoader();
         rendererManager = new RendererManager(OpenTkControl.Framebuffer);
         sceneManager = new SceneManager(treeView);
-        cube = OBJLoader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.cube.obj"));
+        cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.cube.obj"));
 
         Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.2f, 0.2f, 0.2f));
         Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
