@@ -23,6 +23,7 @@ namespace SpriteExample
     protected override void OnLoad()
     {
       base.OnLoad();
+      OBJLoader loader = new OBJLoader();
 
       Image house = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.png"));
       Texture textureHouse = new Texture(house);
@@ -34,7 +35,7 @@ namespace SpriteExample
 
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
 
-      Model houseModel = OBJLoader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
+      Model houseModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;

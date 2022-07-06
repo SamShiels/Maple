@@ -10,7 +10,7 @@ namespace Firefly.World.Mesh
 {
   public class OBJLoader
   {
-    public static Model Load(Stream stream)
+    public Model Load(Stream stream)
     {
       List<float> positions = new List<float>();
       List<float> texcoords = new List<float>();
