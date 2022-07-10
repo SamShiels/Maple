@@ -40,7 +40,7 @@ namespace SceneEditor.Editor
         Scene.AddObject(worldObject);
       } else
       {
-        Scene.RootObject.Transform.AddChild(worldObject.Transform);
+        ((WorldObject)selectedObject.DataContext).Transform.AddChild(worldObject.Transform);
       }
 
       TreeViewItem item = new TreeViewItem();

@@ -65,7 +65,7 @@ namespace SceneEditor.Editor
 
       Point delta = new Point(lastMousePosition.X - currentPosition.X, lastMousePosition.Y - currentPosition.Y);
 
-      float xRot = Math.Min(Math.Max(cameraTransform.Rotation.X, -(float)Math.PI / 2f - 0.01f), (float)Math.PI / 2f + 0.01f);
+      float xRot = Math.Min(Math.Max(cameraTransform.Rotation.X, -(float)Math.PI / 2f + 0.01f), (float)Math.PI / 2f - 0.01f);
       float yRot = cameraTransform.Rotation.Y;
       cameraTransform.Rotation = new Vector3(xRot + (float)delta.Y / 100f, yRot + (float)delta.X / 100f, 0.0f);
 

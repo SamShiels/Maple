@@ -42,8 +42,6 @@ namespace SceneEditor
     private Material material;
     private Texture texture;
 
-    private bool rendererInitialized;
-
     public MainWindow()
     {
       InitializeComponent();

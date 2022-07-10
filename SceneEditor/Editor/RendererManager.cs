@@ -21,7 +21,7 @@ namespace SceneEditor.Editor
       renderer = new Renderer(1280, 720);
       //renderer.ProjectionType = ProjectionType.Perspective;
       //renderer.VerticalFieldOfView = 90;
-      renderer.ClearColor = new Color4(0.0f, 0.5f, 0.5f, 1.0f);
+      renderer.ClearColor = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 
     internal void Render(Scene scene)
