@@ -54,47 +54,43 @@ namespace SceneEditor
       };
 
       OpenTkControl.Start(settings);
-      rendererInitialized = false;
+
+      OBJLoader loader = new OBJLoader();
+      rendererManager = new RendererManager(OpenTkControl.Framebuffer);
+      sceneManager = new SceneManager(treeView);
+
+      Camera camera = new Camera();
+      sceneManager.Scene.AddObject(camera);
+      sceneManager.AssignCamera(camera);
+      cameraController = new CameraController(camera, OpenTkControl);
+
+      cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
+
+      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.2f, 0.2f, 0.2f));
+      Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
+      Uniform shininess = new Uniform("u_shininess", 0.5f);
+      Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
+
+      material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
+      Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.emu_face.jpg"));
+      texture = new Texture(house);
+
+      MeshObject cubeMesh = sceneManager.CreateObject<MeshObject>();
+      cubeMesh.Model = cube;
+      cubeMesh.Transform.Position = new Vector3(0f, 0f, 0f);
+      cubeMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
+      cubeMesh.Textures = new Texture[] { texture };
+      cubeMesh.Material = material;
+
+      PointLight light = sceneManager.CreateObject<PointLight>();
+      light.Transform.Position = new Vector3(0f, 3f, 2f);
+      light.Diffuse = Color4.White;
+      light.Radius = 10f;
+
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
-      if (rendererInitialized == false)
-      {
-        OBJLoader loader = new OBJLoader();
-        rendererManager = new RendererManager(OpenTkControl.Framebuffer);
-        sceneManager = new SceneManager(treeView);
-
-        Camera camera = new Camera();
-        sceneManager.Scene.AddObject(camera);
-        sceneManager.AssignCamera(camera);
-        cameraController = new CameraController(camera, OpenTkControl);
-
-        cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
-
-        Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.2f, 0.2f, 0.2f));
-        Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-        Uniform shininess = new Uniform("u_shininess", 0.5f);
-        Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
-
-        material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
-        Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.emu_face.jpg"));
-        texture = new Texture(house);
-
-        MeshObject cubeMesh = sceneManager.CreateObject<MeshObject>();
-        cubeMesh.Model = cube;
-        cubeMesh.Transform.Position = new Vector3(0f, 0f, 0f);
-        cubeMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
-        cubeMesh.Textures = new Texture[] { texture };
-        cubeMesh.Material = material;
-
-        PointLight light = sceneManager.CreateObject<PointLight>();
-        light.Transform.Position = new Vector3(0f, 3f, 2f);
-        light.Diffuse = Color4.White;
-        light.Radius = 10f;
-
-        rendererInitialized = true;
-      }
 
       rendererManager.Render(sceneManager.Scene);
     }

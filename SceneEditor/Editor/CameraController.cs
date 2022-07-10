@@ -33,11 +33,25 @@ namespace SceneEditor.Editor
     {
       Transform cameraTransform = camera.Transform;
 
+      float scrollAmount = e.Delta / 400f;
+
       float xPos = cameraTransform.Position.X;
       float yPos = cameraTransform.Position.Y;
       float zPos = cameraTransform.Position.Z;
-      cameraTransform.Position = new Vector3(xPos, yPos, zPos + e.Delta / 400f);
 
+      float xRot = cameraTransform.Rotation.X;
+      float yRot = cameraTransform.Rotation.Y;
+      float zRot = cameraTransform.Rotation.Z;
+
+      Vector3 direction = new Vector3(0.0f, 0.0f, scrollAmount);
+
+      Matrix4 matrix = Matrix4.Identity;
+      matrix = matrix * Matrix4.CreateRotationX(-xRot);
+      matrix = matrix * Matrix4.CreateRotationY(yRot);
+      matrix = matrix * Matrix4.CreateRotationZ(zRot);
+      direction = Vector3.TransformVector(direction, matrix);
+
+      cameraTransform.Position = new Vector3(xPos + direction.X, yPos + direction.Y, zPos + direction.Z);
     }
 
     private void MouseMoveEventHandler(object sender, MouseEventArgs e)
@@ -51,7 +65,7 @@ namespace SceneEditor.Editor
 
       Point delta = new Point(lastMousePosition.X - currentPosition.X, lastMousePosition.Y - currentPosition.Y);
 
-      float xRot = cameraTransform.Rotation.X;
+      float xRot = Math.Min(Math.Max(cameraTransform.Rotation.X, -(float)Math.PI / 2f - 0.01f), (float)Math.PI / 2f + 0.01f);
       float yRot = cameraTransform.Rotation.Y;
       cameraTransform.Rotation = new Vector3(xRot + (float)delta.Y / 100f, yRot + (float)delta.X / 100f, 0.0f);
 
