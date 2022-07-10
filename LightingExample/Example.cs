@@ -73,8 +73,8 @@ namespace SpriteExample
       Time += 0.02f;
       float positionX = (float)Math.Sin(Time) * 1f;
       float positionZ = (float)Math.Cos(Time) * 4f;
-      game.camera.Transform.Position = new Vector3(positionX, 0f, 0.0f);
-      game.camera.Transform.Rotation = new Vector3(0.0f, Time, 0.0f);
+      //game.camera.Transform.Position = new Vector3(positionX, 0f, 0.0f);
+      //game.camera.Transform.Rotation = new Vector3(0.0f, Time, 0.0f);
       houseMesh.Transform.Position = new Vector3(0.0f, 0f, 0f);
       //houseMesh.Transform.Rotation = new Vector3(0.0f, positionZ, 0.0f);
 

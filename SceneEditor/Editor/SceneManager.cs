@@ -26,6 +26,11 @@ namespace SceneEditor.Editor
       this.treeView = treeView;
     }
 
+    internal void AssignCamera(Camera camera)
+    {
+      Scene.AssignCamera(camera);
+    }
+
     internal T CreateObject<T>() where T : WorldObject
     {
       T worldObject = (T)Activator.CreateInstance(typeof(T));
@@ -50,6 +55,11 @@ namespace SceneEditor.Editor
     internal void NewItemSelected(TreeViewItem selectedObject)
     {
       this.selectedObject = selectedObject;
+    }
+
+    internal void UpdateVector3(Vector3 context, uint dimension, float value)
+    {
+
     }
   }
 }

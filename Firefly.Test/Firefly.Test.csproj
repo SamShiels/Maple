@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExampleBase\ExampleBase.csproj" />
     <ProjectReference Include="..\Firefly\Firefly.csproj" />
   </ItemGroup>
 

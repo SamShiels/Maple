@@ -100,14 +100,6 @@ namespace ExampleBase
     /// </summary>
     public virtual void OnRender()
     {
-      //if (test == true) return;
-      //graphics.Clear();
-      test += 0.03f;
-      float resScale = ((float)System.Math.Sin(test) + 1) / 2;
-
-      //renderer.UpdateResolution((int)System.Math.Round(2560.0f * resScale), (int)System.Math.Round(1440.0f * resScale));
-      //renderer.UpdateMSAA((int)System.Math.Round(32f * resScale));
-      //renderer.ResolutionHeight = (int)System.Math.Round(1080f * resScale);
       renderer.Render(scene);
     }
     

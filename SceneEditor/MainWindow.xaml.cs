@@ -35,6 +35,7 @@ namespace SceneEditor
   {
     private RendererManager rendererManager;
     private SceneManager sceneManager;
+    private WorldObject selectedObject;
 
     private Model cube;
     private Material material;
@@ -62,11 +63,17 @@ namespace SceneEditor
         OBJLoader loader = new OBJLoader();
         rendererManager = new RendererManager(OpenTkControl.Framebuffer);
         sceneManager = new SceneManager(treeView);
-        cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.cube.obj"));
+
+        Camera camera = new Camera();
+        sceneManager.Scene.AddObject(camera);
+        sceneManager.AssignCamera(camera);
+
+        cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
         Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.2f, 0.2f, 0.2f));
         Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-        Uniform[] uniforms = new Uniform[2] { ambientLight, directionalLight };
+        Uniform shininess = new Uniform("u_shininess", 0.5f);
+        Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
 
         material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
         Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.emu_face.jpg"));
@@ -74,13 +81,13 @@ namespace SceneEditor
 
         MeshObject cubeMesh = sceneManager.CreateObject<MeshObject>();
         cubeMesh.Model = cube;
-        cubeMesh.Transform.Position = new Vector3(-2f, 0f, -5f);
-        cubeMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
+        cubeMesh.Transform.Position = new Vector3(0f, 0f, 0f);
+        cubeMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
         cubeMesh.Textures = new Texture[] { texture };
         cubeMesh.Material = material;
 
         PointLight light = sceneManager.CreateObject<PointLight>();
-        light.Transform.Position = new Vector3(0f, 3f, -2f);
+        light.Transform.Position = new Vector3(0f, 3f, 2f);
         light.Diffuse = Color4.White;
         light.Radius = 10f;
 
@@ -99,10 +106,109 @@ namespace SceneEditor
     {
       TreeViewItem item = (TreeViewItem)e.NewValue;
       sceneManager.NewItemSelected(item);
+      selectedObject = (WorldObject)item.DataContext;
 
-      xPos.DataContext = ((WorldObject)item.DataContext).Transform.Position;
-      yPos.DataContext = ((WorldObject)item.DataContext).Transform.Position;
-      zPos.DataContext = ((WorldObject)item.DataContext).Transform.Position;
+      xPos.DataContext = selectedObject.Transform.Position;
+      yPos.DataContext = selectedObject.Transform.Position;
+      zPos.DataContext = selectedObject.Transform.Position;
+
+      xRot.DataContext = selectedObject.Transform.Rotation;
+      yRot.DataContext = selectedObject.Transform.Rotation;
+      zRot.DataContext = selectedObject.Transform.Rotation;
+
+      xScale.DataContext = selectedObject.Transform.LocalScale;
+      yScale.DataContext = selectedObject.Transform.LocalScale;
+      zScale.DataContext = selectedObject.Transform.LocalScale;
+    }
+
+    private void xPosChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float yPos = selectedObject.Transform.Position.Y;
+      float zPos = selectedObject.Transform.Position.Z;
+      selectedObject.Transform.Position = new Vector3(newValue, yPos, zPos);
+    }
+
+    private void yPosChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float xPos = selectedObject.Transform.Position.X;
+      float zPos = selectedObject.Transform.Position.Z;
+      selectedObject.Transform.Position = new Vector3(xPos, newValue, zPos);
+    }
+
+    private void zPosChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float xPos = selectedObject.Transform.Position.X;
+      float yPos = selectedObject.Transform.Position.Y;
+      selectedObject.Transform.Position = new Vector3(xPos, yPos, newValue);
+    }
+
+    private void xRotChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float yRot = selectedObject.Transform.Rotation.Y;
+      float zRot = selectedObject.Transform.Rotation.Z;
+      selectedObject.Transform.Rotation = new Vector3(newValue, yRot, zRot);
+    }
+
+    private void yRotChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float xRot = selectedObject.Transform.Rotation.X;
+      float zRot = selectedObject.Transform.Rotation.Z;
+      selectedObject.Transform.Rotation = new Vector3(xRot, newValue, zRot);
+    }
+
+    private void zRotChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float xRot = selectedObject.Transform.Rotation.X;
+      float yRot = selectedObject.Transform.Rotation.Y;
+      selectedObject.Transform.Rotation = new Vector3(xRot, yRot, newValue);
+    }
+
+    private void xScaleChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float yScale = selectedObject.Transform.LocalScale.Y;
+      float zScale = selectedObject.Transform.LocalScale.Z;
+      selectedObject.Transform.LocalScale = new Vector3(newValue, yScale, zScale);
+    }
+
+    private void yScaleChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float xScale = selectedObject.Transform.LocalScale.X;
+      float zScale = selectedObject.Transform.LocalScale.Z;
+      selectedObject.Transform.LocalScale = new Vector3(xScale, newValue, zScale);
+    }
+
+    private void zScaleChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      TextBox textBox = (TextBox)sender;
+      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
+
+      float xScale = selectedObject.Transform.LocalScale.X;
+      float yScale = selectedObject.Transform.LocalScale.Y;
+      selectedObject.Transform.LocalScale = new Vector3(xScale, yScale, newValue);
     }
 
     private void Create_Container(object sender, RoutedEventArgs e)

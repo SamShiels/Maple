@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="Resources\cube.obj" />
     <None Remove="Resources\emu_face.jpg" />
+    <None Remove="Resources\house.obj" />
     <None Remove="Resources\house.png" />
   </ItemGroup>
 
@@ -17,6 +18,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\emu_face.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\house.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\house.png">

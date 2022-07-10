@@ -23,11 +23,13 @@ namespace Firefly.Core
     private Matrix4 projectionMatrix;
     private Matrix4 viewMatrix;
 
+    private bool initialized;
+
     public Camera camera;
 
     public CameraHandler()
     {
-
+      initialized = false;
     }
 
     public void AssignCamera(Camera camera)
@@ -78,7 +80,7 @@ namespace Firefly.Core
       float xRotation = camera.Transform.Rotation.X;
       float yRotation = camera.Transform.Rotation.Y;
 
-      if (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY)
+      if (!initialized || (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY))
       {
         Vector3 front = new Vector3(
           (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation),

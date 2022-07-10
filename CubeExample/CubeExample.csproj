@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\castle.obj" />
     <None Remove="Resources\castle.png" />
     <None Remove="Resources\cube.obj" />
     <None Remove="Resources\grid.jpg" />
@@ -15,9 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\castle.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\castle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

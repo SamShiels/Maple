@@ -34,24 +34,53 @@
         />
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
-            Render="OpenTkControl_OnRender" Margin="280,48,280,0"/>
-        <materialDesign:Card Margin="0,48,0,0" VerticalAlignment="Top" Height="196" HorizontalAlignment="Right" Width="280">
-            <Grid x:Name="Transform" Margin="0,0,0,69">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <TextBox x:Name="xPos" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Center" Width="73"/>
-                <TextBox x:Name="yPos" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding [1]}" VerticalAlignment="Center" Width="73" Grid.Column="1"/>
-                <TextBox x:Name="zPos" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding [2]}" VerticalAlignment="Center" Width="73" Grid.Column="2"/>
-            </Grid>
-
-        </materialDesign:Card>
+            Render="OpenTkControl_OnRender" Margin="280,48,300,0"/>
+        <Grid x:Name="Transform" Height="126" VerticalAlignment="Top" HorizontalAlignment="Right" Width="280" Margin="0,133,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="70*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox TextChanged="xPosChangedEventHandler" x:Name="xPos" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Center" Width="46" Margin="20,0,0,0" Grid.Column="2" Height="24" Grid.ColumnSpan="2"/>
+            <TextBox TextChanged="yPosChangedEventHandler" x:Name="yPos" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [1]}" VerticalAlignment="Center" Width="46" Grid.Column="3" Margin="20,0,0,0" Height="24" Grid.ColumnSpan="2"/>
+            <TextBox TextChanged="zPosChangedEventHandler" x:Name="zPos" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [2]}" VerticalAlignment="Center" Width="46" Grid.Column="4" Margin="20,0,0,0" Height="24"/>
+            <Label x:Name="xPosLabel" Content="X" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" Height="22"/>
+            <Label x:Name="yPosLabel" Content="Y" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Grid.Column="3" RenderTransformOrigin="0.733,1.485" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="22"/>
+            <Label x:Name="zPosLabel" Content="Z" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Grid.Column="4" RenderTransformOrigin="0.733,1.485" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="22"/>
+            <Label x:Name="PositionHeader" Content="Position" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="22"/>
+            <TextBox TextChanged="xRotChangedEventHandler" x:Name="xRot" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Center" Width="46" Margin="20,0,0,0" Grid.Column="2" Height="24" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <TextBox TextChanged="yRotChangedEventHandler" x:Name="yRot" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [1]}" VerticalAlignment="Center" Width="46" Grid.Column="3" Margin="20,0,0,0" Height="24" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <TextBox TextChanged="zRotChangedEventHandler" x:Name="zRot" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [2]}" VerticalAlignment="Center" Width="46" Grid.Column="4" Margin="20,0,0,0" Height="24" Grid.Row="1"/>
+            <Label x:Name="xRotLabel" Content="X" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" Height="22" Grid.Row="1"/>
+            <Label x:Name="yRotLabel" Content="Y" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Grid.Column="3" RenderTransformOrigin="0.733,1.485" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="22" Grid.Row="1"/>
+            <Label x:Name="zRotLabel" Content="Z" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Grid.Column="4" RenderTransformOrigin="0.733,1.485" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="22" Grid.Row="1"/>
+            <Label x:Name="RotationHeader" Content="Rotation" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="22" Grid.Row="1"/>
+            <TextBox TextChanged="xScaleChangedEventHandler" x:Name="xScale" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Center" Width="46" Margin="20,0,0,0" Grid.Column="2" Height="24" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <TextBox TextChanged="yScaleChangedEventHandler" x:Name="yScale" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [1]}" VerticalAlignment="Center" Width="46" Grid.Column="3" Margin="20,0,0,0" Height="24" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <TextBox TextChanged="zScaleChangedEventHandler" x:Name="zScale" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding [2]}" VerticalAlignment="Center" Width="46" Grid.Column="4" Margin="20,0,0,0" Height="24" Grid.Row="2"/>
+            <Label x:Name="xScaleLabel" Content="X" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" Height="22" Grid.Row="2"/>
+            <Label x:Name="yScaleLabel" Content="Y" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Grid.Column="3" RenderTransformOrigin="0.733,1.485" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="22" Grid.Row="2"/>
+            <Label x:Name="zScaleLabel" Content="Z" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Grid.Column="4" RenderTransformOrigin="0.733,1.485" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="22" Grid.Row="2"/>
+            <Label x:Name="ScaleHeader" Content="Scale" HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="22" Grid.Row="2"/>
+        </Grid>
+        <Separator HorizontalAlignment="Right" Margin="0,88,15,0" VerticalAlignment="Top" Height="2" RenderTransformOrigin="0.5,0.5" Width="270">
+            <Separator.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1" ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Separator.RenderTransform>
+        </Separator>
+        <Label x:Name="label1" Content="Transform" HorizontalAlignment="Right" Margin="0,103,10,0" VerticalAlignment="Top" Width="280" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14"/>
+        <Label x:Name="label1_Copy" Content="Inspector" HorizontalAlignment="Right" Margin="0,53,15,0" VerticalAlignment="Top" Width="270" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18" FontWeight="Bold"/>
     </Grid>
 </Window>
