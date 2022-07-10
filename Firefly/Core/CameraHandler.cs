@@ -83,9 +83,9 @@ namespace Firefly.Core
       if (!initialized || (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY))
       {
         Vector3 front = new Vector3(
-          (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation),
+          (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation),
           (float)System.Math.Sin(xRotation),
-          (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation)
+          (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation)
           );
 
         front.Normalize();

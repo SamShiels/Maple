@@ -35,6 +35,7 @@ namespace SceneEditor
   {
     private RendererManager rendererManager;
     private SceneManager sceneManager;
+    private CameraController cameraController;
     private WorldObject selectedObject;
 
     private Model cube;
@@ -67,6 +68,7 @@ namespace SceneEditor
         Camera camera = new Camera();
         sceneManager.Scene.AddObject(camera);
         sceneManager.AssignCamera(camera);
+        cameraController = new CameraController(camera, OpenTkControl);
 
         cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
