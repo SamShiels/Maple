@@ -12,6 +12,7 @@ namespace Firefly.Core
   internal class MeshBufferHandler
   {
     private Dictionary<uint, VertexArrayObject> VAOList;
+    private Dictionary<uint, uint> DirtyIDs;
     private TextureManager textureManager;
     private ShaderManager shaderManager;
 
@@ -20,25 +21,53 @@ namespace Firefly.Core
     public MeshBufferHandler(TextureManager textureManager, ShaderManager shaderManager)
     {
       VAOList = new Dictionary<uint, VertexArrayObject>();
+      DirtyIDs = new Dictionary<uint, uint>();
       this.textureManager = textureManager;
       this.shaderManager = shaderManager;
     }
 
     public void BufferMesh(MeshObject mesh)
     {
-      if (mesh.Model == null || VAOList.ContainsKey(mesh.Model.Id))
+      if (mesh.Model == null)
       {
         return;
       }
-
       Model model = mesh.Model;
 
-      VertexArrayObject newVao = new VertexArrayObject(DrawType.Dynamic, false);
-      newVao.AddPositions(model.Vertices);
-      newVao.AddTextureCoordinates(model.Texcoords);
-      newVao.AddNormals(model.Normals);
-      newVao.AddColors(model.Colors);
-      newVao.AddIndices(model.Indices);
+      VertexArrayObject vertexArrayObject;
+      bool vaoExists = VAOList.TryGetValue(mesh.Model.Id, out vertexArrayObject);
+
+      uint dirtyId;
+      bool dirtyIdExists = DirtyIDs.TryGetValue(mesh.Model.Id, out dirtyId);
+
+      if (vaoExists)
+      {
+        // Check if the model has changed in any way. If so, reset the VAO and re-buffer.
+        if (dirtyId != mesh.Model.DirtyId)
+        {
+          vertexArrayObject.Reset();
+          if (dirtyIdExists)
+          {
+            DirtyIDs.Remove(model.Id);
+          }
+          DirtyIDs.Add(model.Id, model.DirtyId);
+        }
+        else
+        {
+          return;
+        }
+      } else
+      {
+        vertexArrayObject = new VertexArrayObject(DrawType.Dynamic, false);
+        VAOList.Add(model.Id, vertexArrayObject);
+        DirtyIDs.Add(model.Id, model.DirtyId);
+      }
+
+      vertexArrayObject.AddPositions(model.Vertices);
+      vertexArrayObject.AddTextureCoordinates(model.Texcoords);
+      vertexArrayObject.AddNormals(model.Normals);
+      vertexArrayObject.AddColors(model.Colors);
+      vertexArrayObject.AddIndices(model.Indices);
 
       if (mesh.Textures != null)
       {
@@ -49,13 +78,11 @@ namespace Firefly.Core
           textureUnits[i] = 0;
         }
 
-        newVao.AddTextureUnits(textureUnits);
+        vertexArrayObject.AddTextureUnits(textureUnits);
       }
 
-      newVao.EnablePointers();
-      newVao.UploadData();
-
-      VAOList.Add(model.Id, newVao);
+      vertexArrayObject.EnablePointers();
+      vertexArrayObject.UploadData();
     }
 
     public void BindMesh(MeshObject mesh)
