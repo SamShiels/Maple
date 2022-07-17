@@ -17,12 +17,21 @@ namespace SceneEditor.Editor
   internal class SceneManager
   {
     internal Scene Scene { get; private set; }
+    private WorldObject sceneContainer;
+    private WorldObject editorGizmoContainer;
+
     private TreeViewItem selectedObject;
     private TreeView treeView;
 
     internal SceneManager(TreeView treeView)
     {
       Scene = new Scene();
+      // Create two containers to seperate the scene content from the editor gizmos
+      sceneContainer = new WorldObject();
+      Scene.AddObject(sceneContainer);
+
+      editorGizmoContainer = new WorldObject();
+      Scene.AddObject(editorGizmoContainer);
       this.treeView = treeView;
     }
 
@@ -31,14 +40,20 @@ namespace SceneEditor.Editor
       Scene.AssignCamera(camera);
     }
 
+    internal void AddEditorObject(WorldObject worldObject)
+    {
+      editorGizmoContainer.Transform.AddChild(worldObject.Transform);
+    }
+
     internal T CreateObject<T>() where T : WorldObject
     {
       T worldObject = (T)Activator.CreateInstance(typeof(T));
 
       if (selectedObject == null)
       {
-        Scene.AddObject(worldObject);
-      } else
+        sceneContainer.Transform.AddChild(worldObject.Transform);
+      }
+      else
       {
         ((WorldObject)selectedObject.DataContext).Transform.AddChild(worldObject.Transform);
       }
@@ -55,11 +70,6 @@ namespace SceneEditor.Editor
     internal void NewItemSelected(TreeViewItem selectedObject)
     {
       this.selectedObject = selectedObject;
-    }
-
-    internal void UpdateVector3(Vector3 context, uint dimension, float value)
-    {
-
     }
   }
 }

@@ -18,11 +18,16 @@ namespace Firefly.Rendering
     /// Uniform data and definitions.
     /// </summary>
     public Uniform[] Uniforms { get; private set; }
+    /// <summary>
+    /// Triangles or lines.
+    /// </summary>
+    public PrimitiveType PrimitiveType { get; set; }
 
     public Material(Shader Shader, Uniform[] Uniforms)
     {
       this.Shader = Shader;
       this.Uniforms = Uniforms;
+      this.PrimitiveType = PrimitiveType.Triangles;
 
       Id = NextId;
       NextId++;
@@ -32,6 +37,7 @@ namespace Firefly.Rendering
     {
       this.Shader = Shader;
       this.Uniforms = null;
+      this.PrimitiveType = PrimitiveType.Triangles;
 
       Id = NextId;
       NextId++;

@@ -36,6 +36,7 @@ namespace SceneEditor
     private RendererManager rendererManager;
     private SceneManager sceneManager;
     private CameraController cameraController;
+    private SceneGrid sceneGrid;
     private WorldObject selectedObject;
 
     private Model cube;
@@ -58,9 +59,14 @@ namespace SceneEditor
       sceneManager = new SceneManager(treeView);
 
       Camera camera = new Camera();
+      SceneGrid sceneGrid = new SceneGrid(camera);
+
+      sceneManager.AddEditorObject(sceneGrid);
+
       sceneManager.Scene.AddObject(camera);
       sceneManager.AssignCamera(camera);
-      cameraController = new CameraController(camera, OpenTkControl);
+
+      cameraController = new CameraController(camera, OpenTkControl, sceneGrid);
 
       cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
@@ -84,7 +90,6 @@ namespace SceneEditor
       light.Transform.Position = new Vector3(0f, 3f, 2f);
       light.Diffuse = Color4.White;
       light.Radius = 10f;
-
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
@@ -117,6 +122,7 @@ namespace SceneEditor
       zScale.DataContext = selectedObject.Transform.LocalScale;
     }
 
+    #region Transform Event Handlers
     private void xPosChangedEventHandler(object sender, TextChangedEventArgs args)
     {
       TextBox textBox = (TextBox)sender;
@@ -206,6 +212,8 @@ namespace SceneEditor
       float yScale = selectedObject.Transform.LocalScale.Y;
       selectedObject.Transform.LocalScale = new Vector3(xScale, yScale, newValue);
     }
+
+    #endregion
 
     private void Create_Container(object sender, RoutedEventArgs e)
     {

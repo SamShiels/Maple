@@ -95,7 +95,7 @@ namespace Firefly.Core
       //Console.WriteLine("Canvas - Viewport set to " + windowWidth + ", " + windowWidth);
 
       GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-      GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+      GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
     }
 
     /// <summary>

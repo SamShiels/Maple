@@ -196,7 +196,13 @@ namespace Firefly.Core
         }
       }
 
-      GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+      if (material.PrimitiveType == Rendering.PrimitiveType.Triangles)
+      {
+        GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+      } else if (material.PrimitiveType == Rendering.PrimitiveType.Lines)
+      {
+        GL.DrawElements(BeginMode.Lines, count, DrawElementsType.UnsignedInt, 0);
+      }
     }
 
     private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 pm)

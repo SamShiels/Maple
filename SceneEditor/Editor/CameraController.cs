@@ -14,14 +14,17 @@ namespace SceneEditor.Editor
     private Camera camera;
     private GLWpfControl UIElement;
 
+    private SceneGrid sceneGrid;
+
     private Point lastMousePosition;
     private Boolean looking = false;
 
-    internal CameraController(Camera camera, GLWpfControl UIElement)
+    internal CameraController(Camera camera, GLWpfControl UIElement, SceneGrid sceneGrid)
     {
       this.camera = camera;
       this.UIElement = UIElement;
       lastMousePosition = new Point();
+      this.sceneGrid = sceneGrid;
 
       Mouse.AddMouseWheelHandler(UIElement, MouseWheelEventHandler);
       Mouse.AddMouseMoveHandler(UIElement, MouseMoveEventHandler);
@@ -52,6 +55,7 @@ namespace SceneEditor.Editor
       direction = Vector3.TransformVector(direction, matrix);
 
       cameraTransform.Position = new Vector3(xPos + direction.X, yPos + direction.Y, zPos + direction.Z);
+      sceneGrid.UpdateGrid();
     }
 
     private void MouseMoveEventHandler(object sender, MouseEventArgs e)
