@@ -50,11 +50,11 @@ namespace Firefly.Core
         ProjectionType projectionType = camera.ProjectionType;
         if (projectionType == ProjectionType.Perspective)
         {
-          projectionMatrix = Projection.CreatePerspectiveMatrix(camera.FieldOfView, aspectRatio, 0.001f, 1000f);
+          projectionMatrix = Projection.CreatePerspectiveMatrix(camera.FieldOfView, aspectRatio, camera.NearClipPlane, camera.FarClipPlane);
         }
         else if (projectionType == ProjectionType.Orthographic)
         {
-          projectionMatrix = Projection.CreateOrthographicMatrix(camera.OrthographicSize, aspectRatio, 0.001f, 1000f);
+          projectionMatrix = Projection.CreateOrthographicMatrix(camera.OrthographicSize, aspectRatio, camera.NearClipPlane, camera.FarClipPlane);
         }
 
         lastCameraId = camera.Id;

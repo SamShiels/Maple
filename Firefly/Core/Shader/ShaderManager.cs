@@ -42,7 +42,7 @@ namespace Firefly.Core.Shader
 			string projectionMatrixUsage3d =
 			@"
 				vec4 worldPosition = vec4(a_position, 1.0) * u_modelMatrix;
-				vec4 screenPosition = vec4(a_position, 1.0) * u_modelMatrix * u_viewMatrix * u_projectionMatrix;
+				vec4 screenPosition = worldPosition * u_viewMatrix * u_projectionMatrix;
 			";
 			//	vec4 screenPosition = u_mvp * vec4(a_position, 1.0);
 

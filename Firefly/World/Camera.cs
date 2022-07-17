@@ -15,8 +15,41 @@ namespace Firefly.World
 
     public ProjectionType ProjectionType = ProjectionType.Perspective;
 
-    private float fieldOfView = (float)System.Math.PI / 2.5f;
+    private float nearClipPlane = 0.01f;
+    /// <summary>
+    /// The distance of the near clip plane from the camera.
+    /// </summary>
+    public float NearClipPlane
+    {
+      get
+      {
+        return nearClipPlane;
+      }
+      set
+      {
+        NearClipPlane = value;
+        IncrementDirtyId();
+      }
+    }
 
+    private float farClipPlane = 1000f;
+    /// <summary>
+    /// The distance of the far clip plane from the camera.
+    /// </summary>
+    public float FarClipPlane
+    {
+      get
+      {
+        return farClipPlane;
+      }
+      set
+      {
+        FarClipPlane = value;
+        IncrementDirtyId();
+      }
+    }
+
+    private float fieldOfView = (float)System.Math.PI / 2.5f;
     /// <summary>
     /// The vertical field of view in rads. Perspective projection only.
     /// </summary>
