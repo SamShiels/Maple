@@ -70,13 +70,13 @@ namespace SceneEditor
 
       cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
-      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.2f, 0.2f, 0.2f));
+      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.7f, 0.7f, 0.7f));
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
       Uniform shininess = new Uniform("u_shininess", 0.5f);
       Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
 
       material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
-      Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.emu_face.jpg"));
+      Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.png"));
       texture = new Texture(house);
 
       MeshObject cubeMesh = sceneManager.CreateObject<MeshObject>();

@@ -17,7 +17,7 @@ namespace SceneEditor.Editor
     private SceneGrid sceneGrid;
 
     private Point lastMousePosition;
-    private Boolean looking = false;
+    private bool looking = false;
 
     internal CameraController(Camera camera, GLWpfControl UIElement, SceneGrid sceneGrid)
     {

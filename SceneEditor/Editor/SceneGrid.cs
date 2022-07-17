@@ -53,7 +53,7 @@ namespace SceneEditor.Editor
       string cameraHeightString = Math.Abs((float)Math.Round(editorCamera.Transform.Position.Y)).ToString();
       int length = cameraHeightString.Length;
 
-      float nearestMajorValue = (float)Math.Pow(10f, (float)length + 1);
+      float nearestMajorValue = (float)Math.Pow(10f, (float)length + 1) / 2;
       float extents = nearestMajorValue;
       int lineCount = 100;
 
