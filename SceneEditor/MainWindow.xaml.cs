@@ -94,7 +94,6 @@ namespace SceneEditor
 
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
-
       rendererManager.Render(sceneManager.Scene);
     }
 

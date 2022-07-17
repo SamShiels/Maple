@@ -49,14 +49,7 @@ namespace SceneEditor.Editor
     {
       T worldObject = (T)Activator.CreateInstance(typeof(T));
 
-      if (selectedObject == null)
-      {
-        sceneContainer.Transform.AddChild(worldObject.Transform);
-      }
-      else
-      {
-        ((WorldObject)selectedObject.DataContext).Transform.AddChild(worldObject.Transform);
-      }
+      Scene.AddObject(worldObject, (WorldObject)selectedObject?.DataContext);
 
       TreeViewItem item = new TreeViewItem();
       item.Header = worldObject.TYPE;

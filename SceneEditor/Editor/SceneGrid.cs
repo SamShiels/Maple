@@ -52,9 +52,13 @@ namespace SceneEditor.Editor
 
       float nearestMajorValue = (float)Math.Pow(10f, (float)length + 1);
       float extents = nearestMajorValue;
-      for (int x = 0; x < 20; x++)
+      int lineCount = 100;
+
+      // Scale the grid depending on how far the camera is above the xz plane
+
+      for (int x = 0; x < lineCount; x++)
       {
-        float xPosition = (float)x / 20 * extents * 2 - extents;
+        float xPosition = (float)x / lineCount * extents * 2 - extents;
         lines.Add(xPosition);
         lines.Add(0f);
         lines.Add(extents);
@@ -65,9 +69,9 @@ namespace SceneEditor.Editor
         indices.Add(x * 2);
         indices.Add(x * 2 + 1);
       }
-      for (int x = 0; x < 20; x++)
+      for (int x = 0; x < lineCount; x++)
       {
-        float zPosition = (float)x / 20 * extents * 2 - extents;
+        float zPosition = (float)x / lineCount * extents * 2 - extents;
         lines.Add(extents);
         lines.Add(0f);
         lines.Add(zPosition);
@@ -75,8 +79,8 @@ namespace SceneEditor.Editor
         lines.Add(0f);
         lines.Add(zPosition);
 
-        indices.Add(40 + (int)x * 2);
-        indices.Add(40 + (int)x * 2 + 1);
+        indices.Add(lineCount * 2 + (int)x * 2);
+        indices.Add(lineCount * 2 + (int)x * 2 + 1);
       }
       Model.Vertices = lines.ToArray();
       Model.Indices = indices.ToArray();

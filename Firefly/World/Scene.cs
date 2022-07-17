@@ -29,9 +29,15 @@ namespace Firefly.World
       Lights = new List<PointLight>();
     }
 
-    public void AddObject(WorldObject worldObject)
+    public void AddObject(WorldObject worldObject, WorldObject parent = null)
     {
-      RootObject.Transform.AddChild(worldObject.Transform);
+      if (parent == null)
+      {
+        RootObject.Transform.AddChild(worldObject.Transform);
+      } else
+      {
+        parent.Transform.AddChild(worldObject.Transform);
+      }
 
       if (worldObject.GetType().Name == "PointLight")
       {

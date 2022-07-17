@@ -36,7 +36,7 @@ namespace SceneEditor.Editor
     {
       Transform cameraTransform = camera.Transform;
 
-      float scrollAmount = e.Delta / 400f;
+      float scrollAmount = e.Delta / 200f;
 
       float xPos = cameraTransform.Position.X;
       float yPos = cameraTransform.Position.Y;
