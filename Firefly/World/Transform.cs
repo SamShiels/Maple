@@ -246,11 +246,11 @@ namespace Firefly.World
       float rotationZ = rotation.Z;
 
       Matrix4 modelMatrix = Matrix4.Identity;
+      modelMatrix = Matrix4.CreateTranslation(position) * modelMatrix;
       modelMatrix = Matrix4.CreateRotationX(rotationX) * modelMatrix;
       modelMatrix = Matrix4.CreateRotationY(rotationY) * modelMatrix;
       modelMatrix = Matrix4.CreateRotationZ(rotationZ) * modelMatrix;
       modelMatrix = Matrix4.CreateScale(localScale) * modelMatrix;
-      modelMatrix = Matrix4.CreateTranslation(position) * modelMatrix;
 
       LocalToWorldMatrix = modelMatrix;
       //LocalToWorldMatrix = Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));

@@ -19,15 +19,20 @@ namespace Firefly.Rendering
     /// </summary>
     public Uniform[] Uniforms { get; private set; }
     /// <summary>
-    /// Triangles or lines.
+    /// Raster technique.
     /// </summary>
     public PrimitiveType PrimitiveType { get; set; }
+    /// <summary>
+    /// Raster technique.
+    /// </summary>
+    public DepthFunction DepthFunction { get; set; }
 
     public Material(Shader Shader, Uniform[] Uniforms)
     {
       this.Shader = Shader;
       this.Uniforms = Uniforms;
       this.PrimitiveType = PrimitiveType.Triangles;
+      this.DepthFunction = DepthFunction.Lequal;
 
       Id = NextId;
       NextId++;

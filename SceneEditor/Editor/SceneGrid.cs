@@ -39,6 +39,7 @@ namespace SceneEditor.Editor
       Shader lineShader = new Shader(vertexShader, fragmentShader);
       Material lineMaterial = new Material(lineShader);
 
+      lineMaterial.DepthFunction = DepthFunction.Lequal;
       lineMaterial.PrimitiveType = PrimitiveType.Lines;
       Material = lineMaterial;
       UpdateGrid();

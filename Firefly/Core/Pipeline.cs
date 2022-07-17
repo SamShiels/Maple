@@ -143,9 +143,13 @@ namespace Firefly.Core
       GL.Enable(EnableCap.CullFace);
 
       // test vertex depth
-      GL.Enable(EnableCap.DepthTest);
 
-      GL.DepthFunc(DepthFunction.Lequal);
+      if (material.DepthFunction != Rendering.DepthFunction.None)
+      {
+        GL.Enable(EnableCap.DepthTest);
+        GL.DepthFunc((OpenTK.Graphics.OpenGL4.DepthFunction)material.DepthFunction);
+      }
+
       GL.Enable(EnableCap.Blend);
       GL.BlendEquation(BlendEquationMode.FuncAdd);
       GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
