@@ -21,7 +21,21 @@ namespace Firefly
     private TextureManager textureManager;
     private ShaderManager shaderManager;
 
-    public Color4 AmbientLight;
+    private Color4 ambientLight;
+
+    public Color4 AmbientLight
+    {
+      get
+      {
+        return ambientLight;
+      }
+      set
+      {
+        ambientLight = value;
+        pipeline.SetAmbientLight(value);
+      }
+    }
+
     public Color4 ClearColor;
 
     /// <summary>
@@ -98,6 +112,8 @@ namespace Firefly
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
+      AmbientLight = new Color4(0.2f, 0.2f, 0.2f, 1.0f);
+
       UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();
 

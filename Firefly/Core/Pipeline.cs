@@ -24,11 +24,13 @@ namespace Firefly.Core
     private ShaderManager shaderManager;
     private DynamicBatchHandler dynamicBatchHandler;
     private MeshBufferHandler modelBufferHandler;
+    private LightBufferHandler lightBufferHandler;
     private CameraHandler cameraHandler;
 
     private int resolutionWidth;
     private int resolutionHeight;
 
+    private Color4 ambientLight;
     private List<PointLight> lighting;
 
     /// <summary>
@@ -40,7 +42,18 @@ namespace Firefly.Core
       this.shaderManager = shaderManager;
       dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
+      lightBufferHandler = new LightBufferHandler(0);
+
       cameraHandler = new CameraHandler();
+    }
+
+    /// <summary>
+    /// Updates the ambient light.
+    /// </summary>
+    /// <param name="ambientLight"></param>
+    public void SetAmbientLight(Color4 ambientLight)
+    {
+      this.ambientLight = ambientLight;
     }
 
     /// <summary>
@@ -137,6 +150,7 @@ namespace Firefly.Core
 
     private void Render(Material material, int count, Matrix4 modelMatrix)
     {
+      lightBufferHandler.BufferLightData(lighting, ambientLight);
       // Reset viewport
       GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
       // cull back faces
@@ -171,18 +185,20 @@ namespace Firefly.Core
       //int mvpLocation = shaderComponent.GetUniformLocation("u_mvp");
       //GL.UniformMatrix4(mvpLocation, false, ref mvp);
 
-      int pointLightCount = lighting.Count;
-      for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
-      {
-        PointLight light = lighting[i];
+      //int pointLightCount = lighting.Count;
+      //for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
+      //{
+      //  PointLight light = lighting[i];
 
-        int usedLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.used{0}", i.ToString()));
-        GL.Uniform1(usedLocation, 1);
-        int positionLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.position{0}", i.ToString()));
-        GL.Uniform3(positionLocation, light.Transform.Position);
-        int rangeLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.range{0}", i.ToString()));
-        GL.Uniform1(rangeLocation, light.Radius);
-      }
+      //  int usedLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.used{0}", i.ToString()));
+      //  GL.Uniform1(usedLocation, 1);
+      //  int positionLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.position{0}", i.ToString()));
+      //  GL.Uniform3(positionLocation, light.Transform.Position);
+      //  int rangeLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.range{0}", i.ToString()));
+      //  GL.Uniform1(rangeLocation, light.Radius);
+      //}
+
+      shaderComponent.BindUniformBlock("PointLightBlock", lightBufferHandler.GetBlockIndex());
 
       if (material.Uniforms != null)
       {

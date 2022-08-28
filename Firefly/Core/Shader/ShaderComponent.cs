@@ -85,8 +85,10 @@ namespace Firefly.Core.Shader
 					uniformLocations.Add(string.Format("u_pointLights.position{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].position", index)));
 					uniformLocations.Add(string.Format("u_pointLights.range{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].range", index)));
 				}
-        //uniformLocations.Add("u_pointLight", pointLightLocation);
+			//uniformLocations.Add("u_pointLight", pointLightLocation);
 			//}
+
+			uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
 
 			if (uniforms != null) {
 				for (int i = 0; i < uniforms.Length; i++)
@@ -96,6 +98,13 @@ namespace Firefly.Core.Shader
 					uniformLocations.Add(uniform.name, location);
 				}
 			}
+    }
+
+		public void BindUniformBlock(string blockName, int blockBindingPoint)
+    {
+			int location = -1;
+			uniformLocations.TryGetValue(blockName, out location);
+			GL.UniformBlockBinding(program, location, blockBindingPoint);
     }
 
 		/// <summary>

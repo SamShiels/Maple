@@ -52,7 +52,7 @@ namespace SceneEditor.Editor
       Scene.AddObject(worldObject, (WorldObject)selectedObject?.DataContext);
 
       TreeViewItem item = new TreeViewItem();
-      item.Header = worldObject.TYPE;
+      item.Header = worldObject.GetType();
       item.DataContext = worldObject;
 
       ItemCollection collection = selectedObject != null ? selectedObject.Items : treeView.Items;

@@ -26,6 +26,7 @@ namespace Firefly.Rendering
       library = new Dictionary<string, Shader>();
       Sprite();
       Diffuse();
+      DiffuseUBO();
       Canvas();
       CanvasInverted();
     }
@@ -267,6 +268,108 @@ namespace Firefly.Rendering
 
       Shader shader = new Shader(vertex, fragment);
       SetShader("diffuse", shader);
+    }
+
+    private void DiffuseUBO()
+    {
+      string vertex = @"
+        #version 450 core
+        layout (location = 0) in vec3 a_position;
+
+        <texcoord_attribute>
+		    <normal_attribute>
+        <3d_projection_uniform>
+
+        out vec3 FragPos;
+
+        void main()
+        {
+          <normal_vert_main>
+          <texcoord_vert_main>
+          <3d_projection>
+          FragPos = worldPosition.xyz;
+          gl_Position = screenPosition;
+        }
+      ";
+
+      string fragment = @"
+        #version 450 core
+
+        out vec4 FragColor;
+        in vec3 FragPos;
+
+        <texcoord_frag>
+		    <normal_frag>
+
+        uniform float u_shininess;
+        uniform vec3 u_ambientLight;
+        uniform vec3 u_lightDirection;
+
+        struct PointLight {
+          vec3 position;
+          float range;
+        };
+
+        layout (std140) uniform PointLightBlock {
+					PointLight lights[2];
+        };
+
+        uniform sampler2D u_images[1];
+
+        vec3 CalculatePointLight(vec3 lightPosition, float lightRange, vec3 normal, vec3 fragPos, vec3 viewDir)
+        {
+          vec3 lightDir = normalize(lightPosition - fragPos);
+          float diff = max(dot(normal, lightDir), 0.0);
+
+          vec3 reflectDir = reflect(-lightDir, normal);
+          float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+
+          float distance = length(lightPosition - fragPos);
+          float atten = 1.0 / (distance / lightRange);
+
+          vec3 diffuse = diff * vec3(texture(u_images[0], texcoord));
+
+          diffuse *= atten;
+
+          return (diffuse);
+        }
+
+        void main()
+        {
+			    float directionalLight = dot(normal, u_lightDirection);
+
+          vec4 light = max(vec4(u_ambientLight.xyz, 1.0), directionalLight);
+          vec4 albedo = texture(u_images[0], texcoord);
+          albedo *= light;
+
+          vec3 norm = normalize(normal);
+          vec3 viewDir = normalize(vec3(0.0) - FragPos);
+
+          vec3 result = vec3(0.0);
+          for (int i = 0; i < 2; i++)
+          {
+            result += CalculatePointLight(lights[i].position, lights[i].range, norm, FragPos, viewDir);
+          }
+          
+          FragColor = vec4(result, 1.0);
+        }
+      ";
+
+      string test = @"
+
+        vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos)
+        {
+          vec3 lightDir = normalize(light.position - fragPos);
+          float diff = max(dot(normal, lightDir), 0.0);
+
+          vec3 reflectDir = reflect(-lightDir, normal);
+          float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+
+          return reflectDir;
+        }";
+
+      Shader shader = new Shader(vertex, fragment);
+      SetShader("diffuseUBO", shader);
     }
   }
 }

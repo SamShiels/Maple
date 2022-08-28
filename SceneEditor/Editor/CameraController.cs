@@ -26,6 +26,9 @@ namespace SceneEditor.Editor
       lastMousePosition = new Point();
       this.sceneGrid = sceneGrid;
 
+      camera.Transform.Position = new Vector3(-8, 10, -8);
+      camera.Transform.Rotation = new Vector3(-(float)Math.PI / 4f, (float)Math.PI / 4f, 0.0f);
+
       Mouse.AddMouseWheelHandler(UIElement, MouseWheelEventHandler);
       Mouse.AddMouseMoveHandler(UIElement, MouseMoveEventHandler);
       Mouse.AddMouseDownHandler(UIElement, MouseButtonEventHandler);
