@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpriteExample
+namespace CubeExample
 {
   class Program
   {

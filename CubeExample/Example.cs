@@ -9,8 +9,9 @@ using System.Reflection;
 using Firefly.World;
 using Firefly.Rendering;
 using Firefly.World.Mesh;
+using Firefly.World.Lighting;
 
-namespace SpriteExample
+namespace CubeExample
 {
   public class Example : Window
   {
@@ -67,8 +68,20 @@ namespace SpriteExample
       sprite.Material = material2;
       sprite.Transform.Position = new Vector3(0f, 0f, -5f);
 
+      PointLight light = new PointLight();
+      light.Transform.Position = new Vector3(0f, 3f, 2f);
+      light.Diffuse = Color4.White;
+      light.Radius = 10f;
+
+      PointLight light2 = new PointLight();
+      light.Transform.Position = new Vector3(3f, 3f, 2f);
+      light.Diffuse = Color4.White;
+      light.Radius = 10f;
+
       //game.stage.Transform.AddChild(sprite.Transform);
       game.scene.AddObject(cubeMesh);
+      game.scene.AddObject(light);
+      game.scene.AddObject(light2);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)

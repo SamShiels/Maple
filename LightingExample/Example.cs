@@ -30,35 +30,41 @@ namespace SpriteExample
 
       Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.0f, 0.0f, 0.0f));
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-      Uniform shininess = new Uniform("u_shininess", 0.5f);
-      Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
+      Uniform[] uniforms = new Uniform[2] { ambientLight, directionalLight };
 
-      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
+      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuseUBO"), uniforms);
 
       Model houseModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
-      //houseMesh.Transform.Position = new Vector3(5f, 0f, 0f);
-      houseMesh.Transform.Rotation = new Vector3(0f, 0.0f, 0f);
+      houseMesh.Transform.Rotation = new Vector3(0f, (float)Math.PI / 2f, 0f);
       houseMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
       houseMesh.Textures = new Texture[] { textureHouse };
       houseMesh.Material = material;
 
-      light = new PointLight();
-      light.Transform.Position = new Vector3(-1f, -2f, -5f);
-      light.Diffuse = Color4.White;
-      light.Radius = 5f;
-
       game.scene.AddObject(houseMesh);
+
+      light = new PointLight();
+      light.Transform.Position = new Vector3(0f, -5f, -5f);
+      light.Diffuse = Color4.Red;
+      light.Radius = 15f;
+
       game.scene.AddObject(light);
 
       PointLight light2 = new PointLight();
-      light2.Transform.Position = new Vector3(0f, 2f, -5f);
-      light2.Diffuse = Color4.White;
+      light2.Transform.Position = new Vector3(0f, 5f, -5f);
+      light2.Diffuse = Color4.Blue;
       light2.Radius = 15f;
 
       game.scene.AddObject(light2);
+
+      PointLight light3 = new PointLight();
+      light3.Transform.Position = new Vector3(0f, 5f, -5f);
+      light3.Diffuse = Color4.Yellow;
+      light3.Radius = 15f;
+
+      game.scene.AddObject(light3);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -71,12 +77,8 @@ namespace SpriteExample
     protected override void OnRenderFrame(FrameEventArgs args)
     {
       Time += 0.02f;
-      float positionX = (float)Math.Sin(Time) * 1f;
-      float positionZ = (float)Math.Cos(Time) * 4f;
-      //game.camera.Transform.Position = new Vector3(positionX, 0f, 0.0f);
-      //game.camera.Transform.Rotation = new Vector3(0.0f, Time, 0.0f);
-      houseMesh.Transform.Position = new Vector3(0.0f, 0f, 0f);
-      //houseMesh.Transform.Rotation = new Vector3(0.0f, positionZ, 0.0f);
+      float positionX = (float)Math.Sin(Time) * 4f;
+      houseMesh.Transform.Position = new Vector3(positionX, 0f, 10f);
 
       base.OnRenderFrame(args);
     }

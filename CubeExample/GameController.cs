@@ -2,7 +2,7 @@
 using Firefly;
 using Firefly.Core;
 
-namespace SpriteExample
+namespace CubeExample
 {
   public class GameController
   {

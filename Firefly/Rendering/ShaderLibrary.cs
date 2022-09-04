@@ -306,8 +306,8 @@ namespace Firefly.Rendering
         uniform vec3 u_lightDirection;
 
         struct PointLight {
-          vec3 position;
-          float range;
+          vec4 positionRange;
+          vec4 color;
         };
 
         layout (std140) uniform PointLightBlock {
@@ -316,7 +316,7 @@ namespace Firefly.Rendering
 
         uniform sampler2D u_images[1];
 
-        vec3 CalculatePointLight(vec3 lightPosition, float lightRange, vec3 normal, vec3 fragPos, vec3 viewDir)
+        vec3 CalculatePointLight(vec3 lightPosition, float lightRange, vec3 color, vec3 normal, vec3 fragPos, vec3 viewDir)
         {
           vec3 lightDir = normalize(lightPosition - fragPos);
           float diff = max(dot(normal, lightDir), 0.0);
@@ -330,6 +330,7 @@ namespace Firefly.Rendering
           vec3 diffuse = diff * vec3(texture(u_images[0], texcoord));
 
           diffuse *= atten;
+          diffuse *= color;
 
           return (diffuse);
         }
@@ -348,7 +349,7 @@ namespace Firefly.Rendering
           vec3 result = vec3(0.0);
           for (int i = 0; i < 2; i++)
           {
-            result += CalculatePointLight(lights[i].position, lights[i].range, norm, FragPos, viewDir);
+            result += CalculatePointLight(lights[i].positionRange.xyz, lights[i].positionRange.w, lights[i].color.rgb, norm, FragPos, viewDir);
           }
           
           FragColor = vec4(result, 1.0);
