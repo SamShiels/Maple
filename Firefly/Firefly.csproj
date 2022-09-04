@@ -10,6 +10,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Core\Shader\Library\canvas.frag" />
+    <None Remove="Core\Shader\Library\canvas.vert" />
+    <None Remove="Core\Shader\Library\diffuse.frag" />
+    <None Remove="Core\Shader\Library\diffuse.vert" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Shader\Library\canvas.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Shader\Library\canvas.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Shader\Library\diffuse.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Shader\Library\diffuse.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.3.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.2" />
   </ItemGroup>

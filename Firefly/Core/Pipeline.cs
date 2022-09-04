@@ -181,10 +181,6 @@ namespace Firefly.Core
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
       GL.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
 
-      //Matrix4 mvp = Matrix4.Mult(Matrix4.Mult(projectionMatrix, viewMatrix), modelMatrix);
-      //int mvpLocation = shaderComponent.GetUniformLocation("u_mvp");
-      //GL.UniformMatrix4(mvpLocation, false, ref mvp);
-
       //int pointLightCount = lighting.Count;
       //for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
       //{

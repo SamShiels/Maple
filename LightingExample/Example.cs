@@ -32,7 +32,7 @@ namespace SpriteExample
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
       Uniform[] uniforms = new Uniform[2] { ambientLight, directionalLight };
 
-      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuseUBO"), uniforms);
+      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
 
       Model houseModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
 
@@ -61,7 +61,7 @@ namespace SpriteExample
 
       PointLight light3 = new PointLight();
       light3.Transform.Position = new Vector3(0f, 5f, -5f);
-      light3.Diffuse = Color4.Yellow;
+      light3.Diffuse = Color4.SandyBrown;
       light3.Radius = 15f;
 
       game.scene.AddObject(light3);

@@ -75,7 +75,7 @@ namespace SceneEditor
       Uniform shininess = new Uniform("u_shininess", 0.5f);
       Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
 
-      material = new Material(ShaderLibrary.Instance.GetShader("diffuseUBO"), uniforms);
+      material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
       Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.png"));
       texture = new Texture(house);
 
