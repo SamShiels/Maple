@@ -17,24 +17,23 @@ namespace Firefly.Core.Lighting
       AllocateMemory(memoryAllocation);
     }
 
-    private bool buffered = false;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="lights"></param>
     public void BufferLightData(List<PointLight> lights)
     {
-      if (!buffered)
-      {
-        float[] lightData = ConstructLightBuffer(lights, POINT_LIGHT_FLOAT_COUNT);
-        BufferData(lightData);
-       // buffered = true;
-      }
+      float[] lightData = ConstructLightBuffer(lights, POINT_LIGHT_FLOAT_COUNT);
+      BufferData(lightData);
     }
 
-      /// <summary>
-      /// 
-      /// </summary>
-      /// <param name="lights"></param>
-      /// <param name="pointLightFloatAmount">Amount of float values used by a single point light</param>
-      /// <returns></returns>
-      private float[] ConstructLightBuffer(List<PointLight> lights, int pointLightFloatAmount)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="lights"></param>
+    /// <param name="pointLightFloatAmount">Amount of float values used by a single point light</param>
+    /// <returns></returns>
+    private float[] ConstructLightBuffer(List<PointLight> lights, int pointLightFloatAmount)
     {
       float[] lightsArray = new float[Math.Min(pointLightFloatAmount * lights.Count, POINT_LIGHT_COUNT * POINT_LIGHT_FLOAT_COUNT)];
 
@@ -63,28 +62,7 @@ namespace Firefly.Core.Lighting
         lightsArray[floatArrayPosition + 5] = g;
         lightsArray[floatArrayPosition + 6] = b;
         lightsArray[floatArrayPosition + 7] = intensity;
-
-        for (int j = 0; j < 8; j++)
-        {
-          //lightsArray[floatArrayPosition + 8 + j] = 0;
-        }
-        //lightsArray[floatArrayPosition + 4] = r;
-        //lightsArray[floatArrayPosition + 5] = g;
-        //lightsArray[floatArrayPosition + 6] = b;
-        //lightsArray[floatArrayPosition + 7] = a;
       }
-
-      //int ambientLightPosition = lights.Count * pointLightFloatAmount;
-
-      //float ra = ambientLight.R;
-      //float ba = ambientLight.G;
-      //float ga = ambientLight.B;
-      //float aa = ambientLight.A;
-
-      //lightsArray[ambientLightPosition    ] = ra;
-      //lightsArray[ambientLightPosition + 1] = ga;
-      //lightsArray[ambientLightPosition + 2] = ba;
-      //lightsArray[ambientLightPosition + 3] = aa;
 
       return lightsArray;
     }

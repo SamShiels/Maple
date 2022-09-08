@@ -26,24 +26,18 @@ namespace Firefly.Core
       this.shaderManager = shaderManager;
     }
 
-    public void BufferMesh(MeshObject mesh)
+    public void BufferModel(Model model)
     {
-      if (mesh.Model == null)
-      {
-        return;
-      }
-      Model model = mesh.Model;
-
       VertexArrayObject vertexArrayObject;
-      bool vaoExists = VAOList.TryGetValue(mesh.Model.Id, out vertexArrayObject);
+      bool vaoExists = VAOList.TryGetValue(model.Id, out vertexArrayObject);
 
       uint dirtyId;
-      bool dirtyIdExists = DirtyIDs.TryGetValue(mesh.Model.Id, out dirtyId);
+      bool dirtyIdExists = DirtyIDs.TryGetValue(model.Id, out dirtyId);
 
       if (vaoExists)
       {
         // Check if the model has changed in any way. If so, reset the VAO and re-buffer.
-        if (dirtyId != mesh.Model.DirtyId)
+        if (dirtyId != model.DirtyId)
         {
           vertexArrayObject.Reset();
           if (dirtyIdExists)
@@ -69,28 +63,22 @@ namespace Firefly.Core
       vertexArrayObject.AddColors(model.Colors);
       vertexArrayObject.AddIndices(model.Indices);
 
-      if (mesh.Textures != null)
+      float[] textureUnits = new float[model.TexcoordCount];
+      for (int i = 0; i < textureUnits.Length; i++)
       {
-        float[] textureUnits = new float[mesh.Model.TexcoordCount];
-
-        for (int i = 0; i < textureUnits.Length; i++)
-        {
-          textureUnits[i] = 0;
-        }
-
-        vertexArrayObject.AddTextureUnits(textureUnits);
+        textureUnits[i] = 0;
       }
+
+      vertexArrayObject.AddTextureUnits(textureUnits);
 
       vertexArrayObject.EnablePointers();
       vertexArrayObject.UploadData();
     }
 
-    public void BindMesh(MeshObject mesh)
+    public void BindModel(uint modelId, Texturing.Texture[] textures, Material material)
     {
-      Model model = mesh.Model;
-
       VertexArrayObject vao;
-      VAOList.TryGetValue(model.Id, out vao);
+      VAOList.TryGetValue(modelId, out vao);
 
       if (vao != null)
       {
@@ -100,20 +88,34 @@ namespace Firefly.Core
 
       List<int> usedTextureSlots = new List<int>();
 
-      if (mesh.Textures != null && mesh.Textures.Length > 0)
+      if (textures != null && textures.Length > 0)
       {
-        for (int i = 0; i < mesh.Textures.Length; i++)
+        for (int i = 0; i < textures.Length; i++)
         {
-          Texturing.Texture texture = mesh.Textures[i];
+          Texturing.Texture texture = textures[i];
           if (texture == null)
           {
             continue;
           }
-          usedTextureSlots.Add(textureManager.UseTexture(mesh.Textures[i]));
+          usedTextureSlots.Add(textureManager.UseTexture(textures[i]));
         }
       }
 
-      UploadSamplerPositions(mesh, usedTextureSlots);
+      UploadSamplerPositions(material, usedTextureSlots);
+    }
+
+    public void DeleteModel(uint modelId)
+    {
+      VertexArrayObject vertexArrayObject;
+      bool vaoExists = VAOList.TryGetValue(modelId, out vertexArrayObject);
+
+      if (vaoExists)
+      {
+        vertexArrayObject.Reset();
+        vertexArrayObject.Delete();
+
+        VAOList.Remove(modelId);
+      }
     }
 
     public void Unbind()
@@ -124,10 +126,9 @@ namespace Firefly.Core
       }
     }
 
-    private void UploadSamplerPositions(MeshObject mesh, List<int> texturePositions)
+    private void UploadSamplerPositions(Material material, List<int> texturePositions)
     {
-      Material batchMaterial = mesh.Material;
-      ShaderComponent shaderComponent = shaderManager.GetComponent(batchMaterial);
+      ShaderComponent shaderComponent = shaderManager.GetComponent(material);
 
       int samplerLocation = shaderComponent.GetUniformLocation("u_images");
       if (samplerLocation > -1)

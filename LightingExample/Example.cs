@@ -16,6 +16,7 @@ namespace SpriteExample
   public class Example : Window
   {
     private MeshObject houseMesh;
+    private Model houseModel;
     private PointLight light;
 
     public Example(int width, int height, string title) : base(width, height, title) { }
@@ -34,7 +35,7 @@ namespace SpriteExample
 
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
 
-      Model houseModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
+      houseModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
@@ -63,9 +64,23 @@ namespace SpriteExample
 
     protected override void OnRenderFrame(FrameEventArgs args)
     {
-      Time += 0.02f;
-      float positionX = (float)Math.Sin(Time) * 20f;
+      Time += 0.05f;
+      float positionX = (float)Math.Sin(Time) * 10f;
       houseMesh.Transform.Position = new Vector3(positionX, 0f, 10f);
+
+      if (Time > 5)
+      {
+        game.renderer.DeleteModel(houseModel);
+        game.scene.RemoveObject(houseMesh);
+      }
+
+      //if (Time > 10)
+      //{
+      //  game.renderer.UploadModel(houseModel);
+      //  game.scene.AddObject(houseMesh);
+
+      //  Time = 0.0f;
+      //}
 
       base.OnRenderFrame(args);
     }

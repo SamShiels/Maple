@@ -83,6 +83,16 @@ namespace Firefly.Core
       resolutionHeight = height;
     }
 
+    public void UploadModel(Model model)
+    {
+      modelBufferHandler.BufferModel(model);
+    }
+
+    public void DeleteModel(Model model)
+    {
+      modelBufferHandler.BufferModel(model);
+    }
+
     /// <summary>
     /// Assign the view matrix from the camera's local matrix.
     /// </summary>
@@ -106,8 +116,10 @@ namespace Firefly.Core
         {
           if (dynamicBatchHandler.IsMeshBatchable(mesh))
           {
+            // The mesh can be batched
             if (!dynamicBatchHandler.IsMeshCompatible(mesh))
             {
+              // The mesh can be uploaded to the current buffer
               FlushBatchBuffers();
             }
 
@@ -115,9 +127,11 @@ namespace Firefly.Core
           }
           else
           {
+            uint modelId = mesh.Model.Id;
+
             // buffer method for larger objects
-            modelBufferHandler.BufferMesh(mesh);
-            modelBufferHandler.BindMesh(mesh);
+            modelBufferHandler.BufferModel(mesh.Model);
+            modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
 
             Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
@@ -161,7 +175,6 @@ namespace Firefly.Core
       GL.Enable(EnableCap.CullFace);
 
       // test vertex depth
-
       if (material.DepthFunction != Rendering.DepthFunction.None)
       {
         GL.Enable(EnableCap.DepthTest);
@@ -185,19 +198,6 @@ namespace Firefly.Core
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
       GL.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
 
-      //int pointLightCount = lighting.Count;
-      //for (int i = 0; i < System.Math.Min(pointLightCount, 16); i++)
-      //{
-      //  PointLight light = lighting[i];
-
-      //  int usedLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.used{0}", i.ToString()));
-      //  GL.Uniform1(usedLocation, 1);
-      //  int positionLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.position{0}", i.ToString()));
-      //  GL.Uniform3(positionLocation, light.Transform.Position);
-      //  int rangeLocation = shaderComponent.GetUniformLocation(string.Format("u_pointLights.range{0}", i.ToString()));
-      //  GL.Uniform1(rangeLocation, light.Radius);
-      //}
-
       shaderComponent.BindUniformBlock("PointLightBlock", pointLightBufferHandler.GetBlockIndex());
       shaderComponent.BindUniformBlock("AmbientLightBlock", ambientLightBufferHandler.GetBlockIndex());
 
@@ -206,7 +206,7 @@ namespace Firefly.Core
         for (int i = 0; i < material.Uniforms.Length; i++)
         {
           Uniform uniform = material.Uniforms[i];
-          if (uniform.name == "u_images" || uniform.name == "u_projectionMatrix" || uniform.name == "u_modelMatrix")
+          if (uniform.name == "u_images" || uniform.name == "u_projectionMatrix" || uniform.name == "u_modelMatrix" || uniform.name == "u_viewMatrix")
           {
             // Naughty naughty! We are trying to use builtin uniforms
             Console.WriteLine(uniform.name + " cannot be used because it conflicts with built in uniforms.");

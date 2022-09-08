@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Firefly.Core.Texture;
 using Firefly.World;
+using Firefly.World.Mesh;
 
 namespace Firefly
 {
@@ -112,7 +113,7 @@ namespace Firefly
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
-      ambientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
+      AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
       UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();
@@ -163,6 +164,24 @@ namespace Firefly
       Color4 c = ClearColor;
       GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+    }
+
+    /// <summary>
+    /// Upload a model to the GPU.
+    /// </summary>
+    /// <param name="model"></param>
+    public void UploadModel(Model model)
+    {
+      pipeline.UploadModel(model);
+    }
+
+    /// <summary>
+    /// Delete a model on the GPU.
+    /// </summary>
+    /// <param name="model"></param>
+    public void DeleteModel(Model model)
+    {
+      pipeline.DeleteModel(model);
     }
 
     private void ResolutionUpdated()

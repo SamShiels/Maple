@@ -195,6 +195,22 @@ namespace Firefly.Core.Buffer
     }
 
     /// <summary>
+    /// Delete the buffers.
+    /// </summary>
+    public void Delete()
+    {
+      Positions.DestroyBuffer();
+      TextureCoordinates.DestroyBuffer();
+      Normals.DestroyBuffer();
+      Colors.DestroyBuffer();
+      TextureUnits.DestroyBuffer();
+      Indices.DestroyBuffer();
+
+      GL.BindVertexArray(0);
+      GL.DeleteVertexArray(vao);
+    }
+
+    /// <summary>
     /// Enable a vertex attribute.
     /// </summary>
     /// <param name="location">The attribute location.</param>

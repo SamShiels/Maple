@@ -87,9 +87,9 @@ namespace SceneEditor
 
       PointLight light = sceneManager.CreateObject<PointLight>();
       light.Transform.Position = new Vector3(0f, 3f, 2f);
-      light.Diffuse = Color4.White;
-      light.Radius = 3f;
-      light.Intensity = 0.3f;
+      light.Diffuse = Color4.Red;
+      light.Radius = 2f;
+      light.Intensity = 2f;
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
