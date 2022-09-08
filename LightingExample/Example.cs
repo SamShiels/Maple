@@ -28,9 +28,9 @@ namespace SpriteExample
       Image house = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.png"));
       Texture textureHouse = new Texture(house);
 
-      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.0f, 0.0f, 0.0f));
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-      Uniform[] uniforms = new Uniform[2] { ambientLight, directionalLight };
+      Uniform shininess = new Uniform("u_shininess", 0.5f);
+      Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
 
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
 
@@ -46,25 +46,11 @@ namespace SpriteExample
       game.scene.AddObject(houseMesh);
 
       light = new PointLight();
-      light.Transform.Position = new Vector3(0f, -5f, -5f);
+      light.Transform.Position = new Vector3(0f, 0f, 8f);
       light.Diffuse = Color4.Red;
-      light.Radius = 15f;
+      light.Radius = 1f;
 
       game.scene.AddObject(light);
-
-      PointLight light2 = new PointLight();
-      light2.Transform.Position = new Vector3(0f, 5f, -5f);
-      light2.Diffuse = Color4.Blue;
-      light2.Radius = 15f;
-
-      game.scene.AddObject(light2);
-
-      PointLight light3 = new PointLight();
-      light3.Transform.Position = new Vector3(0f, 5f, -5f);
-      light3.Diffuse = Color4.SandyBrown;
-      light3.Radius = 15f;
-
-      game.scene.AddObject(light3);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -77,7 +63,7 @@ namespace SpriteExample
     protected override void OnRenderFrame(FrameEventArgs args)
     {
       Time += 0.02f;
-      float positionX = (float)Math.Sin(Time) * 4f;
+      float positionX = (float)Math.Sin(Time) * 20f;
       houseMesh.Transform.Position = new Vector3(positionX, 0f, 10f);
 
       base.OnRenderFrame(args);

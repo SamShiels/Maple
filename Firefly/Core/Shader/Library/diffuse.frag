@@ -6,12 +6,12 @@ in vec3 FragPos;
 in vec2 texcoord;
 in vec3 normal;
 
-uniform float u_shininess;
-uniform vec3 u_ambientLight;
-uniform vec3 u_lightDirection;
-
 struct PointLight {
     vec4 positionRange;
+    vec4 color;
+};
+
+struct AmbientLight {
     vec4 color;
 };
 
@@ -21,6 +21,12 @@ layout (std140) uniform PointLightBlock {
 	PointLight lights[POINT_LIGHT_COUNT];
 };
 
+layout (std140) uniform AmbientLightBlock {
+	vec4 ambientLight;
+};
+
+uniform float u_shininess;
+uniform vec3 u_lightDirection;
 uniform sampler2D u_images[1];
 
 vec3 CalculatePointLight(vec3 lightPosition, float lightRange, vec3 color, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -34,30 +40,19 @@ vec3 CalculatePointLight(vec3 lightPosition, float lightRange, vec3 color, vec3 
     float distance = length(lightPosition - fragPos);
     float atten = 1.0 / (distance / lightRange);
 
-    vec3 diffuse = diff * vec3(texture(u_images[0], texcoord));
-
-    diffuse *= atten;
-    diffuse *= color;
-
-    return (diffuse);
+    return color * atten;
 }
 
 void main()
 {
-	float directionalLight = dot(normal, u_lightDirection);
-
-    vec4 light = max(vec4(u_ambientLight.xyz, 1.0), directionalLight);
-    vec4 albedo = texture(u_images[0], texcoord);
-    albedo *= light;
-
     vec3 norm = normalize(normal);
     vec3 viewDir = normalize(vec3(0.0) - FragPos);
 
-    vec3 result = vec3(0.0);
+    vec3 diffuse = vec3(ambientLight.rgb);
     for (int i = 0; i < POINT_LIGHT_COUNT; i++)
     {
-        result += CalculatePointLight(lights[i].positionRange.xyz, lights[i].positionRange.w, lights[i].color.rgb, norm, FragPos, viewDir);
+        diffuse += CalculatePointLight(lights[i].positionRange.xyz, lights[i].positionRange.w, lights[i].color.rgb, norm, FragPos, viewDir);
     }
-          
-    FragColor = vec4(result, 1.0);
+    vec4 albedo = texture(u_images[0], texcoord);
+    FragColor = albedo * vec4(diffuse, 1.0);
 }

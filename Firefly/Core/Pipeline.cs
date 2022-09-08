@@ -11,6 +11,7 @@ using Firefly.World;
 using Firefly.Core.Texture;
 using Firefly.World.Mesh;
 using Firefly.World.Lighting;
+using Firefly.Core.Lighting;
 
 namespace Firefly.Core
 {
@@ -24,7 +25,8 @@ namespace Firefly.Core
     private ShaderManager shaderManager;
     private DynamicBatchHandler dynamicBatchHandler;
     private MeshBufferHandler modelBufferHandler;
-    private LightBufferHandler lightBufferHandler;
+    private PointLightBufferHandler pointLightBufferHandler;
+    private AmbientLightBufferHandler ambientLightBufferHandler;
     private CameraHandler cameraHandler;
 
     private int resolutionWidth;
@@ -42,7 +44,8 @@ namespace Firefly.Core
       this.shaderManager = shaderManager;
       dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
-      lightBufferHandler = new LightBufferHandler(0);
+      pointLightBufferHandler = new PointLightBufferHandler(0);
+      ambientLightBufferHandler = new AmbientLightBufferHandler(1);
 
       cameraHandler = new CameraHandler();
     }
@@ -54,6 +57,7 @@ namespace Firefly.Core
     public void SetAmbientLight(Color4 ambientLight)
     {
       this.ambientLight = ambientLight;
+      ambientLightBufferHandler.BufferLightData(ambientLight);
     }
 
     /// <summary>
@@ -150,7 +154,7 @@ namespace Firefly.Core
 
     private void Render(Material material, int count, Matrix4 modelMatrix)
     {
-      lightBufferHandler.BufferLightData(lighting, ambientLight);
+      pointLightBufferHandler.BufferLightData(lighting);
       // Reset viewport
       GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
       // cull back faces
@@ -194,7 +198,8 @@ namespace Firefly.Core
       //  GL.Uniform1(rangeLocation, light.Radius);
       //}
 
-      shaderComponent.BindUniformBlock("PointLightBlock", lightBufferHandler.GetBlockIndex());
+      shaderComponent.BindUniformBlock("PointLightBlock", pointLightBufferHandler.GetBlockIndex());
+      shaderComponent.BindUniformBlock("AmbientLightBlock", ambientLightBufferHandler.GetBlockIndex());
 
       if (material.Uniforms != null)
       {

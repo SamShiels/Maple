@@ -14,6 +14,8 @@
     <None Remove="Core\Shader\Library\canvas.vert" />
     <None Remove="Core\Shader\Library\diffuse.frag" />
     <None Remove="Core\Shader\Library\diffuse.vert" />
+    <None Remove="Core\Shader\Library\diffusetest.frag" />
+    <None Remove="Core\Shader\Library\diffusetest.vert" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +23,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Shader\Library\canvas.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Shader\Library\diffusetest.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Shader\Library\diffusetest.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Shader\Library\diffuse.frag">

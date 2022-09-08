@@ -71,23 +71,6 @@ namespace Firefly.Core.Shader
 				uniformLocations.Add("u_images", imagesLocation);
 			}
 
-			//int pointLightLocation = GL.GetUniformLocation(program, "u_pointLight");
-			//if (pointLightLocation != -1)
-			//{
-				pointLightUniformLocations = new Dictionary<string, int>();
-
-				for (int i = 0; i < 16; i++)
-				{
-					string index = i.ToString();
-					uniformLocations.Add(string.Format("u_pointLights.used{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].used", index)));
-					uniformLocations.Add(string.Format("u_pointLights.position{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].position", index)));
-					uniformLocations.Add(string.Format("u_pointLights.range{0}", index), GL.GetUniformLocation(program, string.Format(@"u_pointLights[{0}].range", index)));
-				}
-			//uniformLocations.Add("u_pointLight", pointLightLocation);
-			//}
-
-			uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
-
 			if (uniforms != null) {
 				for (int i = 0; i < uniforms.Length; i++)
 				{
@@ -96,7 +79,10 @@ namespace Firefly.Core.Shader
 					uniformLocations.Add(uniform.name, location);
 				}
 			}
-    }
+
+			uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
+			uniformLocations.Add("AmbientLightBlock", GL.GetUniformBlockIndex(program, "AmbientLightBlock"));
+		}
 
 		public void BindUniformBlock(string blockName, int blockBindingPoint)
     {

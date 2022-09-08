@@ -70,10 +70,9 @@ namespace SceneEditor
 
       cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
-      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.7f, 0.7f, 0.7f));
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
       Uniform shininess = new Uniform("u_shininess", 0.5f);
-      Uniform[] uniforms = new Uniform[3] { ambientLight, directionalLight, shininess };
+      Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
 
       material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
       Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.png"));
@@ -90,11 +89,6 @@ namespace SceneEditor
       light.Transform.Position = new Vector3(0f, 3f, 2f);
       light.Diffuse = Color4.White;
       light.Radius = 10f;
-
-      PointLight light2 = sceneManager.CreateObject<PointLight>();
-      light2.Transform.Position = new Vector3(3f, 3f, 2f);
-      light2.Diffuse = Color4.White;
-      light2.Radius = 10f;
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
