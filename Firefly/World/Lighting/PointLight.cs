@@ -12,6 +12,7 @@ namespace Firefly.World.Lighting
     public uint Id { get; private set; }
 
     public float Radius = 5.0f;
+    public float Intensity = 1.0f;
     public Color4 Diffuse = Color4.White;
 
     public PointLight()

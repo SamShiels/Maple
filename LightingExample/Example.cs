@@ -49,6 +49,7 @@ namespace SpriteExample
       light.Transform.Position = new Vector3(0f, 0f, 8f);
       light.Diffuse = Color4.Red;
       light.Radius = 1f;
+      light.Intensity = 0.1f;
 
       game.scene.AddObject(light);
     }

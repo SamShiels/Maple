@@ -112,7 +112,7 @@ namespace Firefly
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
-      AmbientLight = new Color4(0.2f, 0.2f, 0.2f, 1.0f);
+      ambientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
       UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();

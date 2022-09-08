@@ -52,7 +52,7 @@ namespace Firefly.Core.Lighting
         float r = light.Diffuse.R;
         float g = light.Diffuse.G;
         float b = light.Diffuse.B;
-        float a = light.Diffuse.A;
+        float intensity = light.Intensity;
 
         lightsArray[floatArrayPosition] = x;
         lightsArray[floatArrayPosition + 1] = y;
@@ -62,7 +62,7 @@ namespace Firefly.Core.Lighting
         lightsArray[floatArrayPosition + 4] = r;
         lightsArray[floatArrayPosition + 5] = g;
         lightsArray[floatArrayPosition + 6] = b;
-        lightsArray[floatArrayPosition + 7] = a;
+        lightsArray[floatArrayPosition + 7] = intensity;
 
         for (int j = 0; j < 8; j++)
         {
