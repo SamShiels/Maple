@@ -10,6 +10,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
 using SceneEditor.Editor;
+using SceneEditor.Editor.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,10 @@ namespace SceneEditor
     private SceneGrid sceneGrid;
     private WorldObject selectedObject;
 
+    private Vector3Controls positionControls;
+    private Vector3Controls rotationControls;
+    private Vector3Controls localScaleControls;
+
     private Model cube;
     private Material material;
     private Texture texture;
@@ -67,6 +72,9 @@ namespace SceneEditor
       sceneManager.AssignCamera(camera);
 
       cameraController = new CameraController(camera, OpenTkControl, sceneGrid);
+      positionControls = new Vector3Controls(xPos, yPos, zPos);
+      rotationControls = new Vector3Controls(xRot, yRot, zRot);
+      localScaleControls = new Vector3Controls(xScale, yScale, zScale);
 
       cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
@@ -108,108 +116,64 @@ namespace SceneEditor
       sceneManager.NewItemSelected(item);
       selectedObject = (WorldObject)item.DataContext;
 
-      xPos.DataContext = selectedObject.Transform.Position;
-      yPos.DataContext = selectedObject.Transform.Position;
-      zPos.DataContext = selectedObject.Transform.Position;
+      Vector3 Position = selectedObject.Transform.Position;
+      positionControls.AttachData(Position);
 
-      xRot.DataContext = selectedObject.Transform.Rotation;
-      yRot.DataContext = selectedObject.Transform.Rotation;
-      zRot.DataContext = selectedObject.Transform.Rotation;
+      Vector3 Rotation = selectedObject.Transform.Rotation;
+      rotationControls.AttachData(Rotation);
 
-      xScale.DataContext = selectedObject.Transform.LocalScale;
-      yScale.DataContext = selectedObject.Transform.LocalScale;
-      zScale.DataContext = selectedObject.Transform.LocalScale;
+      Vector3 LocalScale = selectedObject.Transform.LocalScale;
+      localScaleControls.AttachData(LocalScale);
+
+      positionControls.SetEnabled(true);
+      rotationControls.SetEnabled(true);
+      localScaleControls.SetEnabled(true);
     }
 
     #region Transform Event Handlers
     private void xPosChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float yPos = selectedObject.Transform.Position.Y;
-      float zPos = selectedObject.Transform.Position.Z;
-      selectedObject.Transform.Position = new Vector3(newValue, yPos, zPos);
+      selectedObject.Transform.Position = positionControls.xChangedEventHandler(sender, args);
     }
 
     private void yPosChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float xPos = selectedObject.Transform.Position.X;
-      float zPos = selectedObject.Transform.Position.Z;
-      selectedObject.Transform.Position = new Vector3(xPos, newValue, zPos);
+      selectedObject.Transform.Position = positionControls.yChangedEventHandler(sender, args);
     }
 
     private void zPosChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float xPos = selectedObject.Transform.Position.X;
-      float yPos = selectedObject.Transform.Position.Y;
-      selectedObject.Transform.Position = new Vector3(xPos, yPos, newValue);
+      selectedObject.Transform.Position = positionControls.zChangedEventHandler(sender, args);
     }
 
     private void xRotChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float yRot = selectedObject.Transform.Rotation.Y;
-      float zRot = selectedObject.Transform.Rotation.Z;
-      selectedObject.Transform.Rotation = new Vector3(newValue, yRot, zRot);
+      selectedObject.Transform.Rotation = rotationControls.xChangedEventHandler(sender, args);
     }
 
     private void yRotChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float xRot = selectedObject.Transform.Rotation.X;
-      float zRot = selectedObject.Transform.Rotation.Z;
-      selectedObject.Transform.Rotation = new Vector3(xRot, newValue, zRot);
+      selectedObject.Transform.Rotation = rotationControls.yChangedEventHandler(sender, args);
     }
 
     private void zRotChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float xRot = selectedObject.Transform.Rotation.X;
-      float yRot = selectedObject.Transform.Rotation.Y;
-      selectedObject.Transform.Rotation = new Vector3(xRot, yRot, newValue);
+      selectedObject.Transform.Rotation = rotationControls.zChangedEventHandler(sender, args);
     }
 
     private void xScaleChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float yScale = selectedObject.Transform.LocalScale.Y;
-      float zScale = selectedObject.Transform.LocalScale.Z;
-      selectedObject.Transform.LocalScale = new Vector3(newValue, yScale, zScale);
+      selectedObject.Transform.LocalScale = localScaleControls.xChangedEventHandler(sender, args);
     }
 
     private void yScaleChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float xScale = selectedObject.Transform.LocalScale.X;
-      float zScale = selectedObject.Transform.LocalScale.Z;
-      selectedObject.Transform.LocalScale = new Vector3(xScale, newValue, zScale);
+      selectedObject.Transform.LocalScale = localScaleControls.yChangedEventHandler(sender, args);
     }
 
     private void zScaleChangedEventHandler(object sender, TextChangedEventArgs args)
     {
-      TextBox textBox = (TextBox)sender;
-      float newValue = float.Parse(textBox.Text.Length > 0 ? textBox.Text : "0");
-
-      float xScale = selectedObject.Transform.LocalScale.X;
-      float yScale = selectedObject.Transform.LocalScale.Y;
-      selectedObject.Transform.LocalScale = new Vector3(xScale, yScale, newValue);
+      selectedObject.Transform.LocalScale = localScaleControls.zChangedEventHandler(sender, args);
     }
 
     #endregion

@@ -74,14 +74,6 @@ namespace SpriteExample
         game.scene.RemoveObject(houseMesh);
       }
 
-      //if (Time > 10)
-      //{
-      //  game.renderer.UploadModel(houseModel);
-      //  game.scene.AddObject(houseMesh);
-
-      //  Time = 0.0f;
-      //}
-
       base.OnRenderFrame(args);
     }
   }
