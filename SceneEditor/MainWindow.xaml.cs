@@ -44,6 +44,8 @@ namespace SceneEditor
     private Vector3Controls rotationControls;
     private Vector3Controls localScaleControls;
 
+    private SingleControl radiusControl;
+
     private Model cube;
     private Material material;
     private Texture texture;
@@ -75,6 +77,9 @@ namespace SceneEditor
       positionControls = new Vector3Controls(xPos, yPos, zPos);
       rotationControls = new Vector3Controls(xRot, yRot, zRot);
       localScaleControls = new Vector3Controls(xScale, yScale, zScale);
+      radiusControl = new SingleControl(radius);
+      Settings.Visibility = Visibility.Hidden;
+      PointLight.Visibility = Visibility.Hidden;
 
       cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.obj"));
 
@@ -112,6 +117,7 @@ namespace SceneEditor
 
     private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
+      Settings.Visibility = Visibility.Visible;
       TreeViewItem item = (TreeViewItem)e.NewValue;
       sceneManager.NewItemSelected(item);
       selectedObject = (WorldObject)item.DataContext;
@@ -124,6 +130,21 @@ namespace SceneEditor
 
       Vector3 LocalScale = selectedObject.Transform.LocalScale;
       localScaleControls.AttachData(LocalScale);
+
+      #region Point Light
+      if (selectedObject.GetType() == typeof(PointLight))
+      {
+        PointLight pointLight = (PointLight)selectedObject;
+        radiusControl.AttachData(new FloatBinding { value = pointLight.Radius });
+        radiusControl.SetEnabled(true);
+        PointLight.Visibility = Visibility.Visible;
+      }
+      else
+      {
+        radiusControl.SetEnabled(false);
+        PointLight.Visibility = Visibility.Hidden;
+      }
+      #endregion
 
       positionControls.SetEnabled(true);
       rotationControls.SetEnabled(true);
@@ -174,6 +195,11 @@ namespace SceneEditor
     private void zScaleChangedEventHandler(object sender, TextChangedEventArgs args)
     {
       selectedObject.Transform.LocalScale = localScaleControls.zChangedEventHandler(sender, args);
+    }
+
+    private void radiusChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      ((PointLight)selectedObject).Radius = radiusControl.ChangedEventHandler(sender, args).value;
     }
 
     #endregion
