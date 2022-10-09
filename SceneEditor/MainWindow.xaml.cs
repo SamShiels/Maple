@@ -45,6 +45,7 @@ namespace SceneEditor
     private Vector3Controls localScaleControls;
 
     private SingleControl radiusControl;
+    private SingleControl intensityControl;
 
     private Model cube;
     private Material material;
@@ -78,6 +79,7 @@ namespace SceneEditor
       rotationControls = new Vector3Controls(xRot, yRot, zRot);
       localScaleControls = new Vector3Controls(xScale, yScale, zScale);
       radiusControl = new SingleControl(radius);
+      intensityControl = new SingleControl(intensity);
       Settings.Visibility = Visibility.Hidden;
       PointLight.Visibility = Visibility.Hidden;
 
@@ -137,11 +139,14 @@ namespace SceneEditor
         PointLight pointLight = (PointLight)selectedObject;
         radiusControl.AttachData(new FloatBinding { value = pointLight.Radius });
         radiusControl.SetEnabled(true);
+        intensityControl.AttachData(new FloatBinding { value = pointLight.Intensity });
+        intensityControl.SetEnabled(true);
         PointLight.Visibility = Visibility.Visible;
       }
       else
       {
         radiusControl.SetEnabled(false);
+        intensityControl.SetEnabled(false);
         PointLight.Visibility = Visibility.Hidden;
       }
       #endregion
@@ -200,6 +205,11 @@ namespace SceneEditor
     private void radiusChangedEventHandler(object sender, TextChangedEventArgs args)
     {
       ((PointLight)selectedObject).Radius = radiusControl.ChangedEventHandler(sender, args).value;
+    }
+
+    private void intensityChangedEventHandler(object sender, TextChangedEventArgs args)
+    {
+      ((PointLight)selectedObject).Intensity = intensityControl.ChangedEventHandler(sender, args).value;
     }
 
     #endregion

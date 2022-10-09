@@ -87,7 +87,9 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBox TextChanged="radiusChangedEventHandler" x:Name="radius" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Top" Margin="10,-1,0,0" Grid.Column="1" Height="24"/>
-                <Label x:Name="radiusLabel" Content="Radius" VerticalAlignment="Top" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="22" RenderTransformOrigin="0.294,0.502" HorizontalAlignment="Left" Width="68"/>
+                <Label x:Name="radiusLabel" Content="Radius" VerticalAlignment="Top" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="22" RenderTransformOrigin="0.294,0.502" HorizontalAlignment="Left" Width="68" Margin="0,2,0,0"/>
+                <TextBox TextChanged="intensityChangedEventHandler" x:Name="intensity" TextWrapping="Wrap" Text="{Binding [0]}" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="1" Height="24"/>
+                <Label x:Name="intensityLabel" Content="Intensity" VerticalAlignment="Center" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="22" RenderTransformOrigin="0.294,0.502" HorizontalAlignment="Left" Width="68"/>
             </Grid>
         </Grid>
     </Grid>
