@@ -47,10 +47,10 @@ namespace SpriteExample
       game.scene.AddObject(houseMesh);
 
       light = new PointLight();
-      light.Transform.Position = new Vector3(0f, 0f, 8f);
+      light.Transform.Position = new Vector3(0f, 0f, 10f);
       light.Diffuse = Color4.Red;
       light.Radius = 1f;
-      light.Intensity = 0.1f;
+      light.Intensity = 1f;
 
       game.scene.AddObject(light);
     }
@@ -64,14 +64,14 @@ namespace SpriteExample
 
     protected override void OnRenderFrame(FrameEventArgs args)
     {
-      Time += 0.05f;
+      Time += 0.01f;
       float positionX = (float)Math.Sin(Time) * 10f;
       houseMesh.Transform.Position = new Vector3(positionX, 0f, 10f);
 
       if (Time > 5)
       {
-        game.renderer.DeleteModel(houseModel);
-        game.scene.RemoveObject(houseMesh);
+        //game.renderer.DeleteModel(houseModel);
+        //game.scene.RemoveObject(houseMesh);
       }
 
       base.OnRenderFrame(args);

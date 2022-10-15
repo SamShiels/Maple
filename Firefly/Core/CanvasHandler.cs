@@ -82,7 +82,7 @@ namespace Firefly.Core
           Rendering.Uniform uniform = material.Uniforms[i];
           if (uniform.name == "u_images" || uniform.name == "u_projectionMatrix" || uniform.name == "u_modelMatrix")
           {
-            // Naughty naughty! We are trying to use builtin uniforms
+            // Tisk tisk! We are trying to use builtin uniforms
             Console.WriteLine(uniform.name + " cannot be used because it conflicts with built in uniforms.");
             continue;
           }
@@ -146,7 +146,7 @@ namespace Firefly.Core
       {
         CreateVBOs();
 
-        // MSAA shit
+        // MSAA stuff
         MultiSampleFBOHandle = CreateFrameBuffer();
         CreateMultiSampleTexture();
         CreateRenderBuffer();

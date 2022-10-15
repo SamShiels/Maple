@@ -83,11 +83,19 @@ namespace Firefly.Core
       resolutionHeight = height;
     }
 
+    /// <summary>
+    /// Pre-upload a model to the GPU.
+    /// </summary>
+    /// <param name="model"></param>
     public void UploadModel(Model model)
     {
       modelBufferHandler.BufferModel(model);
     }
 
+    /// <summary>
+    /// Delete model from video memory.
+    /// </summary>
+    /// <param name="model"></param>
     public void DeleteModel(Model model)
     {
       modelBufferHandler.BufferModel(model);
@@ -110,7 +118,6 @@ namespace Firefly.Core
     {
       if (obj is MeshObject)
       {
-        // this is not a container. We only use meshes at the moment, so just cast it
         MeshObject mesh = (MeshObject)obj;
         if (mesh.Model != null && mesh.Material != null && mesh.Visible)
         {
