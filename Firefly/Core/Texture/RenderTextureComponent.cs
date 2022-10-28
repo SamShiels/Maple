@@ -6,63 +6,124 @@ namespace Firefly.Core.Texture
 {
   internal class RenderTextureComponent
   {
-    private Texturing.Texture texture;
-    private Image image;
-    public int GLTexture { get; private set; }
-    public int FrameBuffer { get; private set; }
-    public int RenderBuffer { get; private set; }
-    public bool Initialized { get; private set; }
-    public bool Uploaded { get; private set; }
-    public int DirtyId { private set; get; } = -1;
-    public TextureUnit CurrentTextureSlot { private set; get; }
+    private int FBOHandle;
+    private int RBOHandle;
+    private int TextureHandle;
+    private int DepthTextureHandle;
+    private TextureManager textureManager;
 
-    public RenderTextureComponent()
+    private bool initialised = false;
+
+    private RenderTexture BoundTexture;
+
+    public RenderTextureComponent(TextureManager textureManager)
     {
-      Initialized = false;
-      Uploaded = false;
+      this.textureManager = textureManager;
     }
 
-    public void CreateRenderTexture(Texturing.Texture Texture)
-    {
-      texture = Texture;
+    #region Public Methods
 
-      GLTexture = GL.GenTexture();
-      FrameBuffer = GL.GenFramebuffer();
-      RenderBuffer = GL.GenRenderbuffer();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FrameBuffer);
-      Initialized = true;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="RenderTexture"></param>
+    public void BindRenderTexture(RenderTexture RenderTexture)
+    {
+      int width = RenderTexture.Width;
+      int height = RenderTexture.Height;
+      BoundTexture = RenderTexture;
+
+      Initialize();
+      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
+      //AllocateRenderBufferMemory(width, height);
+      //AllocateTextureMemory(width, height);
     }
 
-    public void SetUnit(TextureUnit ActiveTextureSlot)
-    {
-      CurrentTextureSlot = ActiveTextureSlot;
-      GL.ActiveTexture(ActiveTextureSlot);
-      GL.BindTexture(TextureTarget.Texture2D, GLTexture);
+    #endregion
 
-      if (DirtyId != texture.DirtyId)
+    #region Private Methods
+
+    private void Initialize()
+    {
+      if (!initialised)
       {
-        Upload();
+        CreateFrameBuffer();
+        BindTexture();
+        //CreateRenderBuffer();
+
+        FramebufferErrorCode error = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
+        if (error != FramebufferErrorCode.FramebufferComplete)
+        {
+          Console.WriteLine("Frame buffer is not complete: " + error);
+        }
+        initialised = true;
       }
     }
 
-    private void Upload()
+    /// <summary>
+    /// Create a frame buffer handle.
+    /// </summary>
+    private void CreateFrameBuffer()
     {
-      image = texture.Image;
-      int width = image.Width;
-      int height = image.Height;
-      byte[] pixelArray = image.GetPixelArray();
-
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
-      if (texture.UseMipMaps)
-      {
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-      }
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)texture.WrapS);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)texture.WrapT);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)texture.MinificationFilter);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)texture.MagnificationFilter);
-      DirtyId = texture.DirtyId;
-      Uploaded = true;
+      FBOHandle = GL.GenFramebuffer();
+      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
     }
+
+    /// <summary>
+    /// Create the render buffer handle.
+    /// </summary>
+    private void CreateRenderBuffer()
+    {
+      RBOHandle = GL.GenRenderbuffer();
+      int width = BoundTexture.Width;
+      int height = BoundTexture.Height;
+      AllocateRenderBufferMemory(width, height);
+      GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandle);
+    }
+
+    /// <summary>
+    /// Create a texture used for rendering.
+    /// </summary>
+    private void BindTexture()
+    {
+      int width = BoundTexture.Width;
+      int height = BoundTexture.Height;
+      TextureHandle = GL.GenTexture();
+      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
+      GL.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+
+      DepthTextureHandle = GL.GenTexture();
+      GL.BindTexture(TextureTarget.Texture2D, DepthTextureHandle);
+      GL.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.DepthComponent32f, width, height, 0, PixelFormat.DepthComponent, PixelType.UnsignedByte, IntPtr.Zero);
+
+      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
+      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, DepthTextureHandle, 0);
+
+      GL.DrawBuffers(1, new DrawBuffersEnum[1] { DrawBuffersEnum.ColorAttachment0 });
+
+    }
+
+    private void AllocateRenderBufferMemory(int width, int height)
+    {
+      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
+      GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, width, height);
+      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+    }
+
+    /// <summary>
+    /// Allocate texture memory with the current texture settings and resolution.
+    /// </summary>
+    private void AllocateTextureMemory(int width, int height)
+    {
+      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+
+      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, width, height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
+    }
+
+    #endregion
   }
 }

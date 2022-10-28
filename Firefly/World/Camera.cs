@@ -86,14 +86,12 @@ namespace Firefly.World
 
     public Matrix4 projectionMatrix;
 
-    public Texture RenderTexture { get; private set; }
+    public RenderTexture RenderTexture { get; set; }
 
-    public Camera(Texture RenderTexture = null)
+    public Camera()
     {
       Id = nextId;
       nextId++;
-
-      this.RenderTexture = RenderTexture;
     }
 
     private void IncrementDirtyId()

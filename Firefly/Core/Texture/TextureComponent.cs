@@ -7,7 +7,6 @@ namespace Firefly.Core.Texture
   internal class TextureComponent
   {
     private Texturing.Texture texture;
-    private Image image;
     public int GLTexture { get; private set; }
     public bool Initialized { get; private set; }
     public bool Uploaded { get; private set; }
@@ -36,27 +35,53 @@ namespace Firefly.Core.Texture
 
       if (DirtyId != texture.DirtyId)
       {
-        Upload();
+        //UpdateSettings();
       }
+
+      if (!Uploaded)
+      {
+        if (texture.Image != null)
+        {
+          Upload();
+        } else if (texture.GetType().Name == "RenderTexture")
+        {
+          AllocateRenderTexture();
+        }
+      }
+    }
+
+    private void UpdateSettings()
+    {
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)texture.WrapS);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)texture.WrapT);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)texture.MinificationFilter);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)texture.MagnificationFilter);
+      DirtyId = texture.DirtyId;
     }
 
     private void Upload()
     {
-      image = texture.Image;
-      int width = image.Width;
-      int height = image.Height;
-      byte[] pixelArray = image.GetPixelArray();
+      int width = texture.Image.Width;
+      int height = texture.Image.Height;
+      byte[] pixelArray = texture.Image.GetPixelArray();
 
       GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
       if (texture.UseMipMaps)
       {
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
       }
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)texture.WrapS);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)texture.WrapT);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)texture.MinificationFilter);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)texture.MagnificationFilter);
-      DirtyId = texture.DirtyId;
+      UpdateSettings();
+      Uploaded = true;
+    }
+
+    private void AllocateRenderTexture()
+    {
+      RenderTexture renderTexture = (RenderTexture)texture;
+      int width = renderTexture.Width;
+      int height = renderTexture.Height;
+
+      UpdateSettings();
+      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
       Uploaded = true;
     }
   }

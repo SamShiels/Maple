@@ -22,6 +22,9 @@ namespace Firefly
     private TextureManager textureManager;
     private ShaderManager shaderManager;
 
+    private static DebugProc _debugProcCallback = DebugMessage;
+    private static GCHandle _debugProcCallbackHandle;
+
     private Color4 ambientLight;
 
     public Color4 AmbientLight
@@ -37,7 +40,20 @@ namespace Firefly
       }
     }
 
-    public Color4 ClearColor;
+    private Color4 clearColor;
+
+    public Color4 ClearColor
+    {
+      get
+      {
+        return clearColor;
+      }
+      set
+      {
+        clearColor = value;
+        pipeline.SetClearColor(value);
+      }
+    }
 
     /// <summary>
     /// Window width.
@@ -105,12 +121,13 @@ namespace Firefly
     {
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
-      pipeline = new Pipeline(textureManager, shaderManager);
 
       Material canvasMaterial = new Material(ShaderLibrary.Instance.GetShader("canvas"));
       resolutionWidth = windowWidth;
       resolutionHeight = windowHeight;
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
+
+      pipeline = new Pipeline(textureManager, shaderManager, canvasHandler);
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
       AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -118,6 +135,9 @@ namespace Firefly
       UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();
 
+      _debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
+
+      GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
       GL.Enable(EnableCap.DebugOutput);
       GL.Enable(EnableCap.DebugOutputSynchronous);
     }
@@ -128,10 +148,7 @@ namespace Firefly
     /// <param name="obj"></param>
     public void Render(Scene scene)
     {
-      canvasHandler.BindFrameBuffer();
-      Clear();
-      pipeline.RenderScene(scene);
-      canvasHandler.DrawCanvas();
+      pipeline.RenderScene(scene, false);
     }
 
     /// <summary>
@@ -140,8 +157,7 @@ namespace Firefly
     /// <param name="obj"></param>
     public void RenderRaw(Scene scene)
     {
-      Clear();
-      pipeline.RenderScene(scene);
+      pipeline.RenderScene(scene, true);
     }
 
     /// <summary>
@@ -154,16 +170,6 @@ namespace Firefly
       this.windowWidth = windowWidth;
       this.windowHeight = windowHeight;
       canvasHandler.UpdateWindowDimensions(windowWidth, windowHeight);
-    }
-
-    /// <summary>
-    /// Clear the screen and set OpenGL states to prepare for rendering.
-    /// </summary>
-    public void Clear()
-    {
-      Color4 c = ClearColor;
-      GL.ClearColor(c.R, c.G, c.B, 1.0f);
-      GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
     /// <summary>
@@ -190,14 +196,14 @@ namespace Firefly
       pipeline.UpdateResolution(resolutionWidth, resolutionHeight);
     }
 
-    private void DebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+    private static void DebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
     {
       string messageString = Marshal.PtrToStringAnsi(message, length);
       Console.WriteLine($"{severity} {type} | {messageString}");
 
       if (type == DebugType.DebugTypeError)
       {
-        throw new Exception(messageString);
+        //throw new Exception(messageString);
       }
     }
 

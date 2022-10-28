@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Firefly.Texturing
 {
-  internal class RenderTexture : Texture
+  public class RenderTexture : Texture
   {
+    public int Width { get; set; }
+    public int Height { get; set; }
 
     public RenderTexture() : base(null)
     {

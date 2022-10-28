@@ -18,6 +18,11 @@ namespace Firefly.World
       get; private set;
     }
 
+    public List<Camera> Cameras
+    {
+      get; private set;
+    }
+
     public List<PointLight> Lights
     {
       get; private set;
@@ -26,6 +31,7 @@ namespace Firefly.World
     public Scene()
     {
       RootObject = new WorldObject();
+      Cameras = new List<Camera>();
       Lights = new List<PointLight>();
     }
 
@@ -43,6 +49,11 @@ namespace Firefly.World
       {
         Lights.Add((PointLight)worldObject);
       }
+
+      if (worldObject.GetType().Name == "Camera")
+      {
+        Cameras.Add((Camera)worldObject);
+      }
     }
 
     public void AssignCamera(Camera camera)
@@ -59,6 +70,12 @@ namespace Firefly.World
     {
       RootObject.Transform.RemoveChild(pointLight.Transform);
       Lights.Remove(pointLight);
+    }
+
+    public void RemoveObject(Camera camera)
+    {
+      RootObject.Transform.RemoveChild(camera.Transform);
+      Cameras.Remove(camera);
     }
   }
 }

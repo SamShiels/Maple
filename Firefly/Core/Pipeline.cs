@@ -23,6 +23,8 @@ namespace Firefly.Core
 
     private TextureManager textureManager;
     private ShaderManager shaderManager;
+    private CanvasHandler canvasHandler;
+    private RenderTextureManager renderTextureManager;
     private DynamicBatchHandler dynamicBatchHandler;
     private MeshBufferHandler modelBufferHandler;
     private PointLightBufferHandler pointLightBufferHandler;
@@ -32,20 +34,24 @@ namespace Firefly.Core
     private int resolutionWidth;
     private int resolutionHeight;
 
+    private Color4 clearColor;
     private Color4 ambientLight;
     private List<PointLight> lighting;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public Pipeline(TextureManager textureManager, ShaderManager shaderManager)
+    public Pipeline(TextureManager textureManager, ShaderManager shaderManager, CanvasHandler canvasHandler)
     {
       this.textureManager = textureManager;
       this.shaderManager = shaderManager;
+      this.canvasHandler = canvasHandler;
       dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
+
+      renderTextureManager = new RenderTextureManager(textureManager);
 
       cameraHandler = new CameraHandler();
     }
@@ -61,15 +67,54 @@ namespace Firefly.Core
     }
 
     /// <summary>
+    /// Updates the clear color.
+    /// </summary>
+    /// <param name="clearColor"></param>
+    public void SetClearColor(Color4 clearColor)
+    {
+      this.clearColor = clearColor;
+    }
+
+    /// <summary>
     /// Push an object into the pipeline and render it, along with all of its children.
     /// </summary>
     /// <param name="obj"></param>
-    public void RenderScene(Scene scene)
+    public void RenderScene(Scene scene, bool raw)
     {
       lighting = scene.Lights;
+
+      for (int i = 0; i < scene.Cameras.Count; i++)
+      {
+        Camera camera = scene.Cameras[i];
+        RenderTexture renderTexture = camera.RenderTexture;
+        if (camera.RenderTexture == null)
+        {
+          continue;
+        }
+        renderTextureManager.BindRenderTexture(renderTexture);
+        GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
+        GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        AssignCamera(camera);
+        BufferObject(scene.RootObject);
+        FlushBatchBuffers();
+      }
+
+      if (!raw)
+      {
+        canvasHandler.BindFrameBuffer();
+      }
+      Color4 c = clearColor;
+      GL.ClearColor(c.R, c.G, c.B, 1.0f);
+      GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
       AssignCamera(scene.Camera);
       BufferObject(scene.RootObject);
       FlushBatchBuffers();
+      if (!raw)
+      {
+        canvasHandler.DrawCanvas();
+      }
     }
 
     /// <summary>
@@ -99,6 +144,14 @@ namespace Firefly.Core
     public void DeleteModel(Model model)
     {
       modelBufferHandler.BufferModel(model);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void Clear()
+    {
+
     }
 
     /// <summary>
