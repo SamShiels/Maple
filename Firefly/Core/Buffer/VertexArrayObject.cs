@@ -1,8 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Firefly.Core.Buffer
 {
   internal class VertexArrayObject
@@ -18,7 +14,7 @@ namespace Firefly.Core.Buffer
 
     public VertexArrayObject(DrawType Usage, bool FixedSize)
     {
-      vao = GL.GenVertexArray();
+      vao = Gl.GenVertexArray();
       Positions = new VertexBufferObject<float>(Usage, FixedSize);
       TextureCoordinates = new VertexBufferObject<float>(Usage, FixedSize);
       Normals = new VertexBufferObject<float>(Usage, FixedSize);
@@ -161,7 +157,7 @@ namespace Firefly.Core.Buffer
     /// </summary>
     public void Bind()
     {
-      GL.BindVertexArray(vao);
+      Gl.BindVertexArray(vao);
     }
 
     /// <summary>
@@ -169,7 +165,7 @@ namespace Firefly.Core.Buffer
     /// </summary>
     public void Unbind()
     {
-      GL.BindVertexArray(0);
+      Gl.BindVertexArray(0);
     }
 
     /// <summary>
@@ -206,8 +202,8 @@ namespace Firefly.Core.Buffer
       TextureUnits.DestroyBuffer();
       Indices.DestroyBuffer();
 
-      GL.BindVertexArray(0);
-      GL.DeleteVertexArray(vao);
+      Gl.BindVertexArray(0);
+      Gl.DeleteVertexArray(vao);
     }
 
     /// <summary>
@@ -218,8 +214,8 @@ namespace Firefly.Core.Buffer
     /// <param name="type">The data type contained within the bound buffer.</param>
     private void EnableAttribute(int location, int dimensions, VertexAttribPointerType type, int stride)
     {
-      GL.EnableVertexAttribArray(location);
-      GL.VertexAttribPointer(location, dimensions, type, false, stride, 0);
+      Gl.EnableVertexAttribArray(location);
+      Gl.VertexAttribPointer(location, dimensions, type, false, stride, 0);
     }
   }
 }

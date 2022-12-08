@@ -1,65 +1,47 @@
-﻿using OpenTK.Windowing.Desktop;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
+﻿using Silk.NET.Input;
+using Silk.NET.Maths;
+using Silk.NET.Windowing;
 using System;
 
 namespace ExampleBase
 {
-  public class Window : GameWindow
+  public class ExampleWindow
   {
     protected Controller game;
-    private Vector2i resolution;
 
-    public Window(int width, int height, string title) : base(
-      GameWindowSettings.Default,
-      new NativeWindowSettings()
-      {
-        APIVersion = new Version(4, 6),
-        Size = new Vector2i()
-        {
-          X = width,
-          Y = height
-        },
-        Title = title,
-        WindowState = WindowState.Normal,
-      })
+    private IWindow window;
+
+    public ExampleWindow(int width, int height, string title)
     {
-      VSync = VSyncMode.On;
-      resolution = new Vector2i()
-      {
-        X = width,
-        Y = height
-      };
+      var options = WindowOptions.Default;
+      options.Size = new Vector2D<int>(width, height);
+      options.Title = "LearnOpenGL with Silk.NET";
+
+      window = Window.Create(options);
+
+      //Assign events.
+      window.Load += OnLoad;
+      window.Update += OnUpdate;
+      window.Render += OnRender;
+
+      //Run the window.
+      window.Run();
     }
 
-    protected override void OnLoad()
+    protected void OnLoad()
     {
-      game = new Controller(Size.X, Size.Y);
+      game = new Controller(window.BorderSize.Size.X, window.BorderSize.Size.Y);
       game.OnLoad();
-      base.OnLoad();
     }
 
-    protected override void OnUpdateFrame(FrameEventArgs args)
+    protected void OnUpdate(double obj)
     {
       game.OnUpdate();
-      base.OnUpdateFrame(args);
     }
 
-    protected override void OnRenderFrame(FrameEventArgs args)
+    protected void OnRender(double obj)
     {
       game.OnRender();
-      Context.SwapBuffers();
-      base.OnRenderFrame(args);
-    }
-
-    protected override void OnResize(ResizeEventArgs e)
-    {
-      base.OnResize(e);
-    }
-
-    protected override void OnUnload()
-    {
-      base.OnUnload();
     }
   }
 }

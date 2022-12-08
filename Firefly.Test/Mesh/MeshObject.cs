@@ -46,7 +46,7 @@ namespace Firefly.Test.Mesh
 
       //renderer.Render();
       //IntPtr Pixels = IntPtr.Zero;
-      //GL.ReadPixels(0, 0, 100, 100, PixelFormat.Rgba, PixelType.UnsignedByte, ref Pixels);
+      //Gl.ReadPixels(0, 0, 100, 100, PixelFormat.Rgba, PixelType.UnsignedByte, ref Pixels);
 
       //Assert.IsTrue(true);
 

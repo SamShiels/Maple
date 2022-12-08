@@ -1,5 +1,5 @@
 ﻿using Firefly.World.Lighting;
-using OpenTK.Mathematics;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,9 +11,9 @@ namespace Firefly.Core.Lighting
     const int POINT_LIGHT_COUNT = 32;
     const int POINT_LIGHT_FLOAT_COUNT = 8;
 
-    internal PointLightBufferHandler(int blockIndex) : base(blockIndex)
+    internal PointLightBufferHandler(GL GLContext, uint blockIndex) : base(GLContext, blockIndex)
     {
-      int memoryAllocation = POINT_LIGHT_COUNT * POINT_LIGHT_FLOAT_COUNT * 4;
+      uint memoryAllocation = POINT_LIGHT_COUNT * POINT_LIGHT_FLOAT_COUNT * 4;
       AllocateMemory(memoryAllocation);
     }
 

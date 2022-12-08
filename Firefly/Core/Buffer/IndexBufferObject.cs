@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
 namespace Firefly.Core.Buffer
@@ -25,7 +25,7 @@ namespace Firefly.Core.Buffer
     /// Bind OpenGL to this buffer.
     /// </summary>
     public override void Bind() {
-      GL.BindBuffer(BufferTarget.ElementArrayBuffer, GLBuffer);
+      Gl.BindBuffer(GLEnum.ElementArrayBuffer, GLBuffer);
     }
 
     /// <summary>
@@ -55,11 +55,11 @@ namespace Firefly.Core.Buffer
       Bind();
       if (FixedSize)
       {
-        GL.BufferData(BufferTarget.ElementArrayBuffer, fixedData.Length, fixedData, DrawType);
+        Gl.BufferData(BufferTarget.ElementArrayBuffer, fixedData.Length, fixedData, DrawType);
       }
       else
       {
-        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * dynamicData.Count, dynamicData.ToArray(), DrawType);
+        Gl.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * dynamicData.Count, dynamicData.ToArray(), DrawType);
       }
     }
 

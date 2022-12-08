@@ -1,10 +1,10 @@
-﻿using OpenTK.Mathematics;
-using Firefly;
+﻿using Firefly;
 using Firefly.Core;
 using Firefly.Rendering;
 using System;
 using Firefly.Utilities;
 using Firefly.World;
+using System.Numerics;
 
 namespace ExampleBase
 {

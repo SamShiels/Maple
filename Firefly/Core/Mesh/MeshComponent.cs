@@ -1,5 +1,4 @@
-﻿using OpenTK.Mathematics;
-using Firefly.World.Mesh;
+﻿using Firefly.World.Mesh;
 
 namespace Firefly.Core.Mesh
 {

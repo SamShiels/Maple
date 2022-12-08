@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Core.Buffer;
+﻿using Firefly.Core.Buffer;
 using Firefly.Rendering;
 using System;
 using System.Collections.Generic;
@@ -55,7 +54,7 @@ namespace Firefly.Core
     public void BindFrameBuffer()
     {
       Initialize();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, MultiSampleFBOHandle);
+      Gl.BindFramebuffer(FramebufferTarget.Framebuffer, MultiSampleFBOHandle);
     }
 
     /// <summary>
@@ -64,14 +63,14 @@ namespace Firefly.Core
     public void DrawCanvas()
     {
       ShaderComponent shader = shaderManager.GetComponent(currentMaterial);
-      GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, MultiSampleFBOHandle);
-      GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, FBOHandle);
-      GL.BlitFramebuffer(0, 0, textureResolutionWidth, textureResolutionHeight, 0, 0, textureResolutionWidth, textureResolutionHeight, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
+      Gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, MultiSampleFBOHandle);
+      Gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, FBOHandle);
+      Gl.BlitFramebuffer(0, 0, textureResolutionWidth, textureResolutionHeight, 0, 0, textureResolutionWidth, textureResolutionHeight, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
 
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
-      GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-      GL.Clear(ClearBufferMask.ColorBufferBit);
-      GL.BindVertexArray(VAO);
+      Gl.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
+      Gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      Gl.Clear(ClearBufferMask.ColorBufferBit);
+      Gl.BindVertexArray(VAO);
       shader.Use();
       Material material = currentMaterial;
 
@@ -91,11 +90,11 @@ namespace Firefly.Core
         }
       }
 
-      GL.Viewport(0, 0, windowWidth, windowHeight);
+      Gl.Viewport(0, 0, windowWidth, windowHeight);
       //Console.WriteLine("Canvas - Viewport set to " + windowWidth + ", " + windowWidth);
 
-      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-      GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
+      Gl.BindTexture(TextureTarget.Texture2D, TextureHandle);
+      Gl.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
     }
 
     /// <summary>
@@ -150,7 +149,7 @@ namespace Firefly.Core
         MultiSampleFBOHandle = CreateFrameBuffer();
         CreateMultiSampleTexture();
         CreateRenderBuffer();
-        if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+        if (Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
         {
           Console.WriteLine("MSAA Frame buffer is not complete");
         }
@@ -158,9 +157,9 @@ namespace Firefly.Core
 
         FBOHandle = CreateFrameBuffer();
         CreateTexture();
-        GL.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
+        Gl.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
 
-        if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+        if (Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
         {
           Console.WriteLine("Frame buffer is not complete");
         }
@@ -171,9 +170,9 @@ namespace Firefly.Core
     private void UpdateResolution()
     {
       AllocateTextureMemory();
-      GL.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
-      GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, numberOfSamples, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
-      GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
+      Gl.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
+      Gl.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, numberOfSamples, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
+      Gl.BindTexture(TextureTarget.Texture2DMultisample, 0);
       AllocateRenderBufferMemory();
     }
 
@@ -182,8 +181,8 @@ namespace Firefly.Core
     /// </summary>
     private int CreateFrameBuffer()
     {
-      int handle = GL.GenFramebuffer();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
+      int handle = Gl.GenFramebuffer();
+      Gl.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
 
       return handle;
     }
@@ -193,11 +192,11 @@ namespace Firefly.Core
     /// </summary>
     private void CreateMultiSampleTexture()
     {
-      MultiSampleTextureHandle = GL.GenTexture();
-      GL.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
-      GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, numberOfSamples, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, MultiSampleTextureHandle, 0);
-      GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
+      MultiSampleTextureHandle = Gl.GenTexture();
+      Gl.BindTexture(TextureTarget.Texture2DMultisample, MultiSampleTextureHandle);
+      Gl.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, numberOfSamples, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, true);
+      Gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, MultiSampleTextureHandle, 0);
+      Gl.BindTexture(TextureTarget.Texture2DMultisample, 0);
     }
 
     /// <summary>
@@ -205,10 +204,10 @@ namespace Firefly.Core
     /// </summary>
     private void CreateTexture()
     {
-      TextureHandle = GL.GenTexture();
+      TextureHandle = Gl.GenTexture();
       AllocateTextureMemory();
 
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
+      Gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
     }
 
     /// <summary>
@@ -216,16 +215,16 @@ namespace Firefly.Core
     /// </summary>
     private void CreateRenderBuffer()
     {
-      RBOHandle = GL.GenRenderbuffer();
+      RBOHandle = Gl.GenRenderbuffer();
       AllocateRenderBufferMemory();
-      GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandle);
+      Gl.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandle);
     }
 
     private void AllocateRenderBufferMemory()
     {
-      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
-      GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, numberOfSamples, RenderbufferStorage.DepthComponent24, textureResolutionWidth, textureResolutionHeight);
-      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+      Gl.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
+      Gl.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, numberOfSamples, RenderbufferStorage.DepthComponent24, textureResolutionWidth, textureResolutionHeight);
+      Gl.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
     }
 
     /// <summary>
@@ -233,19 +232,19 @@ namespace Firefly.Core
     /// </summary>
     private void AllocateTextureMemory()
     {
-      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+      Gl.BindTexture(TextureTarget.Texture2D, TextureHandle);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
+      Gl.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, textureResolutionWidth, textureResolutionHeight, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
     }
 
     private void CreateVBOs()
     {
-      VAO = GL.GenVertexArray();
-      GL.BindVertexArray(VAO);
+      VAO = Gl.GenVertexArray();
+      Gl.BindVertexArray(VAO);
       Positions = new VertexBufferObject<float>(DrawType.Static, false);
       TextureCoordinates = new VertexBufferObject<float>(DrawType.Static, false);
 
@@ -265,11 +264,11 @@ namespace Firefly.Core
 
       // bind the positions buffer and enable the positions attribute pointer
       Positions.Bind();
-      GL.EnableVertexAttribArray(0);
-      GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
+      Gl.EnableVertexAttribArray(0);
+      Gl.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
       TextureCoordinates.Bind();
-      GL.EnableVertexAttribArray(1);
-      GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
+      Gl.EnableVertexAttribArray(1);
+      Gl.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
 
       Positions.BufferData();
       TextureCoordinates.BufferData();

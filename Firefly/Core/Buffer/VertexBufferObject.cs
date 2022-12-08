@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -17,7 +16,7 @@ namespace Firefly.Core.Buffer
     protected int CurrentBufferSize;
     protected int BufferPositionBytes;
 
-    protected int GLBuffer = -1;
+    protected uint GLBuffer = 0;
 
     public VertexBufferObject(DrawType DrawType, bool FixedSize)
     {
@@ -49,14 +48,14 @@ namespace Firefly.Core.Buffer
     /// </summary>
     protected virtual void InitBuffer()
     {
-      GLBuffer = GL.GenBuffer();
+      GLBuffer = Gl.GenBuffer();
     }
 
     /// <summary>
     /// Bind OpenGL to this buffer.
     /// </summary>
     public virtual void Bind() {
-      GL.BindBuffer(BufferTarget.ArrayBuffer, GLBuffer);
+      Gl.BindBuffer(BufferTarget.ArrayBuffer, GLBuffer);
 		}
 
     /// <summary>
@@ -92,11 +91,11 @@ namespace Firefly.Core.Buffer
 
       if (FixedSize)
       {
-        GL.BufferData(BufferTarget.ArrayBuffer, fixedData.Length, fixedData, DrawType);
+        Gl.BufferData(BufferTarget.ArrayBuffer, fixedData.Length, fixedData, DrawType);
       }
       else
       {
-        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * dynamicData.Count, dynamicData.ToArray(), DrawType);
+        Gl.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * dynamicData.Count, dynamicData.ToArray(), DrawType);
       }
     }
 
@@ -136,8 +135,8 @@ namespace Firefly.Core.Buffer
     /// </summary>
     public virtual void DestroyBuffer()
     {
-      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-      GL.DeleteBuffer(GLBuffer);
+      Gl.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      Gl.DeleteBuffer(GLBuffer);
     }
   }
 }

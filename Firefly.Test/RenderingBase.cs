@@ -21,7 +21,7 @@ namespace Firefly.Test
     public RenderingBase()
     {
       //WglBindingsContext context = new WglBindingsContext();
-      //GL.LoadBindings(context);
+      //Gl.LoadBindings(context);
       window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings()
       {
         APIVersion = new Version(4, 6),

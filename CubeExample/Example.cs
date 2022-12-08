@@ -13,7 +13,7 @@ using Firefly.World.Lighting;
 
 namespace CubeExample
 {
-  public class Example : Window
+  public class Example : ExampleWindow
   {
     private MeshObject cubeMesh;
     private MeshObject houseMesh;

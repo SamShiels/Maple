@@ -2,8 +2,6 @@
 using Firefly.Texturing;
 using Firefly.Rendering;
 using Firefly.Core.Shader;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System;
 using Firefly.Utilities;
@@ -12,6 +10,9 @@ using Firefly.Core.Texture;
 using Firefly.World.Mesh;
 using Firefly.World.Lighting;
 using Firefly.Core.Lighting;
+using Silk.NET.OpenGL;
+using Silk.NET.SDL;
+using System.Numerics;
 
 namespace Firefly.Core
 {
@@ -20,6 +21,8 @@ namespace Firefly.Core
   {
     private const int BATCH_BUFFER_MAX_INDICES = 4096;
     private const int BATCH_BUFFER_MAX_INDICES_PER_OBJECT = 36;
+
+    private GL GLContext;
 
     private TextureManager textureManager;
     private ShaderManager shaderManager;
@@ -34,22 +37,23 @@ namespace Firefly.Core
     private int resolutionWidth;
     private int resolutionHeight;
 
-    private Color4 clearColor;
-    private Color4 ambientLight;
+    private Color clearColor;
+    private Color ambientLight;
     private List<PointLight> lighting;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public Pipeline(TextureManager textureManager, ShaderManager shaderManager, CanvasHandler canvasHandler)
+    public Pipeline(GL GLContext, TextureManager textureManager, ShaderManager shaderManager, CanvasHandler canvasHandler)
     {
+      this.GLContext = GLContext;
       this.textureManager = textureManager;
       this.shaderManager = shaderManager;
       this.canvasHandler = canvasHandler;
-      dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
-      modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
-      pointLightBufferHandler = new PointLightBufferHandler(0);
-      ambientLightBufferHandler = new AmbientLightBufferHandler(1);
+      dynamicBatchHandler = new DynamicBatchHandler(GLContext, BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
+      modelBufferHandler = new MeshBufferHandler(GLContext, textureManager, shaderManager);
+      pointLightBufferHandler = new PointLightBufferHandler(GLContext, 0);
+      ambientLightBufferHandler = new AmbientLightBufferHandler(GLContext, 1);
 
       renderTextureManager = new RenderTextureManager(textureManager);
 
@@ -60,7 +64,7 @@ namespace Firefly.Core
     /// Updates the ambient light.
     /// </summary>
     /// <param name="ambientLight"></param>
-    public void SetAmbientLight(Color4 ambientLight)
+    public void SetAmbientLight(Color ambientLight)
     {
       this.ambientLight = ambientLight;
       ambientLightBufferHandler.BufferLightData(ambientLight);
@@ -70,7 +74,7 @@ namespace Firefly.Core
     /// Updates the clear color.
     /// </summary>
     /// <param name="clearColor"></param>
-    public void SetClearColor(Color4 clearColor)
+    public void SetClearColor(Color clearColor)
     {
       this.clearColor = clearColor;
     }
@@ -92,9 +96,9 @@ namespace Firefly.Core
           continue;
         }
         renderTextureManager.BindRenderTexture(renderTexture);
-        GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
-        GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        GLContext.Viewport(new System.Drawing.Size(renderTexture.Width, renderTexture.Height));
+        GLContext.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        GLContext.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         AssignCamera(camera);
         BufferObject(scene.RootObject);
         FlushBatchBuffers();
@@ -104,9 +108,9 @@ namespace Firefly.Core
       {
         canvasHandler.BindFrameBuffer();
       }
-      Color4 c = clearColor;
-      GL.ClearColor(c.R, c.G, c.B, 1.0f);
-      GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+      Color c = clearColor;
+      GLContext.ClearColor(c.R, c.G, c.B, 1.0f);
+      GLContext.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
       AssignCamera(scene.Camera);
       BufferObject(scene.RootObject);
@@ -193,7 +197,7 @@ namespace Firefly.Core
             modelBufferHandler.BufferModel(mesh.Model);
             modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
 
-            Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
+            Matrix4x4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
             Render(mesh.Material, mesh.Model.Indices.Length, modelMatrix);
             textureManager.ClearAllTextureSlots();
@@ -220,43 +224,43 @@ namespace Firefly.Core
       if (batchSize > 0) {
         dynamicBatchHandler.BindAndEnablePointers();
         dynamicBatchHandler.UploadSamplerPositions();
-        Render(dynamicBatchHandler.GetBatchMaterial(), batchSize, Matrix4.Identity);
+        Render(dynamicBatchHandler.GetBatchMaterial(), batchSize, Matrix4x4.Identity);
         dynamicBatchHandler.Reset();
         textureManager.ClearAllTextureSlots();
       }
     }
 
-    private void Render(Material material, int count, Matrix4 modelMatrix)
+    private void Render(Material material, int count, Matrix4x4 modelMatrix)
     {
       pointLightBufferHandler.BufferLightData(lighting);
       // Reset viewport
-      GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
+      GLContext.Viewport(new System.Drawing.Size(resolutionWidth, resolutionHeight));
       // cull back faces
-      GL.Enable(EnableCap.CullFace);
+      GLContext.Enable(EnableCap.CullFace);
 
       // test vertex depth
       if (material.DepthFunction != Rendering.DepthFunction.None)
       {
-        GL.Enable(EnableCap.DepthTest);
-        GL.DepthFunc((OpenTK.Graphics.OpenGL4.DepthFunction)material.DepthFunction);
+        GLContext.Enable(EnableCap.DepthTest);
+        GLContext.DepthFunc((Silk.NET.OpenGL.DepthFunction)material.DepthFunction);
       }
 
-      GL.Enable(EnableCap.Blend);
-      GL.BlendEquation(BlendEquationMode.FuncAdd);
-      GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+      GLContext.Enable(EnableCap.Blend);
+      GLContext.BlendEquation(BlendEquationMode.FuncAdd);
+      GLContext.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
 
       ShaderComponent shaderComponent = shaderManager.GetComponent(material);
       shaderComponent.Use();
 
-      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
+      Matrix4x4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+      Matrix4x4 viewMatrix = cameraHandler.GetViewMatrix();
 
       int screenToClipLocation = shaderComponent.GetUniformLocation("u_projectionMatrix");
-      GL.UniformMatrix4(screenToClipLocation, true, ref projectionMatrix);
+      GLContext.UniformMatrix4(screenToClipLocation, true, ref projectionMatrix);
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
-      GL.UniformMatrix4(modelMatrixLocation, true, ref modelMatrix);
+      GLContext.UniformMatrix4(modelMatrixLocation, true, ref modelMatrix);
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
-      GL.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
+      GLContext.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
 
       shaderComponent.BindUniformBlock("PointLightBlock", pointLightBufferHandler.GetBlockIndex());
       shaderComponent.BindUniformBlock("AmbientLightBlock", ambientLightBufferHandler.GetBlockIndex());
@@ -279,14 +283,14 @@ namespace Firefly.Core
 
       if (material.PrimitiveType == Rendering.PrimitiveType.Triangles)
       {
-        GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+        GLContext.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
       } else if (material.PrimitiveType == Rendering.PrimitiveType.Lines)
       {
-        GL.DrawElements(BeginMode.Lines, count, DrawElementsType.UnsignedInt, 0);
+        GLContext.DrawElements(BeginMode.Lines, count, DrawElementsType.UnsignedInt, 0);
       }
     }
 
-    private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 pm)
+    private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4x4 pm)
     {
       float[] bounds = mesh.Component.WorldBounds;
 

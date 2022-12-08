@@ -12,7 +12,7 @@ using Firefly.World.Mesh;
 
 namespace Firefly.Test
 {
-  public class Example : Window
+  public class Example : ExampleWindow
   {
     private MeshObject cubeMesh;
     private MeshObject houseMesh;

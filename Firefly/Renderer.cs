@@ -1,6 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using Firefly.Core;
+﻿using Firefly.Core;
 using Firefly.Rendering;
 using Firefly.Texturing;
 using Firefly.Utilities;
@@ -12,6 +10,7 @@ using System.Runtime.InteropServices;
 using Firefly.Core.Texture;
 using Firefly.World;
 using Firefly.World.Mesh;
+using Silk.NET.OpenGL;
 
 namespace Firefly
 {
@@ -21,6 +20,7 @@ namespace Firefly
     private CanvasHandler canvasHandler;
     private TextureManager textureManager;
     private ShaderManager shaderManager;
+    private GL GLContext;
 
     private static DebugProc _debugProcCallback = DebugMessage;
     private static GCHandle _debugProcCallbackHandle;
@@ -117,9 +117,10 @@ namespace Firefly
     /// </summary>
     private int windowHeight;
 
-    public Renderer(int windowWidth, int windowHeight)
+    public Renderer(int windowWidth, int windowHeight, GL GLContext)
     {
-      textureManager = new TextureManager();
+      this.GLContext = GLContext;
+      textureManager = new TextureManager(GLContext);
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
 
       Material canvasMaterial = new Material(ShaderLibrary.Instance.GetShader("canvas"));
@@ -127,7 +128,7 @@ namespace Firefly
       resolutionHeight = windowHeight;
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
 
-      pipeline = new Pipeline(textureManager, shaderManager, canvasHandler);
+      pipeline = new Pipeline(GLContext, textureManager, shaderManager, canvasHandler);
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
       AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -135,11 +136,11 @@ namespace Firefly
       UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();
 
-      _debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
+      //_debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
 
-      GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
-      GL.Enable(EnableCap.DebugOutput);
-      GL.Enable(EnableCap.DebugOutputSynchronous);
+      //Gl.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
+      //Gl.Enable(EnableCap.DebugOutput);
+      //Gl.Enable(EnableCap.DebugOutputSynchronous);
     }
 
     /// <summary>

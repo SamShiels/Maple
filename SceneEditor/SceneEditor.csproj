@@ -30,8 +30,8 @@
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
-    <PackageReference Include="OpenTK" Version="4.3.0" />
     <PackageReference Include="OpenTK.GLWpfControl" Version="4.1.0" />
+    <PackageReference Include="Silk.NET" Version="2.16.0" />
   </ItemGroup>
 
   <ItemGroup>

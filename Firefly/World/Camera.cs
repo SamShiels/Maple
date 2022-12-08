@@ -1,7 +1,6 @@
 ﻿using Firefly.Core;
 using Firefly.Texturing;
 using Firefly.Utilities;
-using OpenTK.Mathematics;
 
 namespace Firefly.World
 {

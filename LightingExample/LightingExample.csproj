@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Silk.NET" Version="2.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ExampleBase\ExampleBase.csproj" />
     <ProjectReference Include="..\Firefly\Firefly.csproj" />
   </ItemGroup>

@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -36,7 +35,7 @@ namespace Firefly.Core.Shader
 		/// </summary>
 		public void Use()
     {
-			GL.UseProgram(program);
+			Gl.UseProgram(program);
     }
 
 		/// <summary>
@@ -59,13 +58,13 @@ namespace Firefly.Core.Shader
 		private void ObtainUniforms()
     {
 			uniformLocations = new Dictionary<string, int>();
-			int screenToClipLocation = GL.GetUniformLocation(program, "u_projectionMatrix");
+			int screenToClipLocation = Gl.GetUniformLocation(program, "u_projectionMatrix");
 			uniformLocations.Add("u_projectionMatrix", screenToClipLocation);
-			int modelMatrixLocation = GL.GetUniformLocation(program, "u_modelMatrix");
+			int modelMatrixLocation = Gl.GetUniformLocation(program, "u_modelMatrix");
 			uniformLocations.Add("u_modelMatrix", modelMatrixLocation);
-			int viewMatrixLocation = GL.GetUniformLocation(program, "u_viewMatrix");
+			int viewMatrixLocation = Gl.GetUniformLocation(program, "u_viewMatrix");
 			uniformLocations.Add("u_viewMatrix", viewMatrixLocation);
-			int imagesLocation = GL.GetUniformLocation(program, "u_images");
+			int imagesLocation = Gl.GetUniformLocation(program, "u_images");
 			if (imagesLocation != -1)
 			{
 				uniformLocations.Add("u_images", imagesLocation);
@@ -75,20 +74,20 @@ namespace Firefly.Core.Shader
 				for (int i = 0; i < uniforms.Length; i++)
 				{
 					Rendering.Uniform uniform = uniforms[i];
-					int location = GL.GetUniformLocation(program, uniform.name);
+					int location = Gl.GetUniformLocation(program, uniform.name);
 					uniformLocations.Add(uniform.name, location);
 				}
 			}
 
-			uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
-			uniformLocations.Add("AmbientLightBlock", GL.GetUniformBlockIndex(program, "AmbientLightBlock"));
+			uniformLocations.Add("PointLightBlock", Gl.GetUniformBlockIndex(program, "PointLightBlock"));
+			uniformLocations.Add("AmbientLightBlock", Gl.GetUniformBlockIndex(program, "AmbientLightBlock"));
 		}
 
 		public void BindUniformBlock(string blockName, int blockBindingPoint)
     {
 			int location = -1;
 			uniformLocations.TryGetValue(blockName, out location);
-			GL.UniformBlockBinding(program, location, blockBindingPoint);
+			Gl.UniformBlockBinding(program, location, blockBindingPoint);
     }
 
 		/// <summary>
@@ -111,17 +110,17 @@ namespace Firefly.Core.Shader
 			int vs = CreateShader(ShaderType.VertexShader, vertexShaderSource);
 			int fs = CreateShader(ShaderType.FragmentShader, fragmentShaderSource);
 
-			int Program = GL.CreateProgram();
-			GL.AttachShader(Program, vs);
-			GL.AttachShader(Program, fs);
-			GL.LinkProgram(Program);
+			int Program = Gl.CreateProgram();
+			Gl.AttachShader(Program, vs);
+			Gl.AttachShader(Program, fs);
+			Gl.LinkProgram(Program);
 
 			program = Program;
 
-			GL.DetachShader(Program, vs);
-			GL.DetachShader(Program, fs);
-			GL.DeleteShader(vs);
-			GL.DeleteShader(fs);
+			Gl.DetachShader(Program, vs);
+			Gl.DetachShader(Program, fs);
+			Gl.DeleteShader(vs);
+			Gl.DeleteShader(fs);
 		}
 
 		/// <summary>
@@ -132,11 +131,11 @@ namespace Firefly.Core.Shader
 		/// <returns></returns>
 		private int CreateShader(ShaderType type, string source)
 		{
-			int shader = GL.CreateShader(type);
-			GL.ShaderSource(shader, source);
-			GL.CompileShader(shader);
+			int shader = Gl.CreateShader(type);
+			Gl.ShaderSource(shader, source);
+			Gl.CompileShader(shader);
 
-			string infoLogVert = GL.GetShaderInfoLog(shader);
+			string infoLogVert = Gl.GetShaderInfoLog(shader);
 			if (infoLogVert != string.Empty)
 			{
 				Console.WriteLine(infoLogVert);
@@ -169,14 +168,14 @@ namespace Firefly.Core.Shader
 		{
 			if (!disposedValue)
 			{
-				GL.DeleteProgram(program);
+				Gl.DeleteProgram(program);
 
 				disposedValue = true;
 			}
 		}
 		~ShaderComponent()
 		{
-			GL.DeleteProgram(program);
+			Gl.DeleteProgram(program);
 		}
 
 		public void Dispose()

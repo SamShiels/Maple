@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Silk.NET.OpenGL;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenTK.Graphics.OpenGL4;
 
 namespace Firefly.Core.Texture
 {
@@ -25,10 +25,10 @@ namespace Firefly.Core.Texture
     /// </summary>
     private int maximumTextureUnits;
 
-    public TextureManager()
+    public TextureManager(GL GLContext)
     {
       textureComponents = new Dictionary<int, TextureComponent>();
-      maximumTextureUnits = GL.GetInteger(GetPName.MaxTextureImageUnits);
+      maximumTextureUnits = GLContext.GetInteger(GLEnum.MaxTextureImageUnits);
       activeTextures = new List<int>();
       nextAvailableTextureUnit = 0;
     }

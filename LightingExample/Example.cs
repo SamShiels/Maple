@@ -13,7 +13,7 @@ using Firefly.World.Lighting;
 
 namespace SpriteExample
 {
-  public class Example : Window
+  public class Example : ExampleWindow
   {
     private MeshObject houseMesh;
     private Model houseModel;

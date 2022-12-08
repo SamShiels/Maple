@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Texturing;
+﻿using Firefly.Texturing;
 using System;
 
 namespace Firefly.Core.Texture
@@ -23,15 +22,15 @@ namespace Firefly.Core.Texture
     {
       texture = Texture;
 
-      GLTexture = GL.GenTexture();
+      GLTexture = Gl.GenTexture();
       Initialized = true;
     }
 
     public void SetUnit(TextureUnit ActiveTextureSlot)
     {
       CurrentTextureSlot = ActiveTextureSlot;
-      GL.ActiveTexture(ActiveTextureSlot);
-      GL.BindTexture(TextureTarget.Texture2D, GLTexture);
+      Gl.ActiveTexture(ActiveTextureSlot);
+      Gl.BindTexture(TextureTarget.Texture2D, GLTexture);
 
       if (DirtyId != texture.DirtyId)
       {
@@ -52,10 +51,10 @@ namespace Firefly.Core.Texture
 
     private void UpdateSettings()
     {
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)texture.WrapS);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)texture.WrapT);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)texture.MinificationFilter);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)texture.MagnificationFilter);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)texture.WrapS);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)texture.WrapT);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)texture.MinificationFilter);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)texture.MagnificationFilter);
       DirtyId = texture.DirtyId;
     }
 
@@ -65,10 +64,10 @@ namespace Firefly.Core.Texture
       int height = texture.Image.Height;
       byte[] pixelArray = texture.Image.GetPixelArray();
 
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
+      Gl.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
       if (texture.UseMipMaps)
       {
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+        Gl.GenerateMipmap(GenerateMipmapTarget.Texture2D);
       }
       UpdateSettings();
       Uploaded = true;
@@ -81,7 +80,7 @@ namespace Firefly.Core.Texture
       int height = renderTexture.Height;
 
       UpdateSettings();
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+      Gl.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
       Uploaded = true;
     }
   }

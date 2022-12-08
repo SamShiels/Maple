@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Texturing;
+﻿using Firefly.Texturing;
 using System;
 
 namespace Firefly.Core.Texture
@@ -34,7 +33,7 @@ namespace Firefly.Core.Texture
       BoundTexture = RenderTexture;
 
       Initialize();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
+      Gl.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
       //AllocateRenderBufferMemory(width, height);
       //AllocateTextureMemory(width, height);
     }
@@ -51,7 +50,7 @@ namespace Firefly.Core.Texture
         BindTexture();
         //CreateRenderBuffer();
 
-        FramebufferErrorCode error = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
+        FramebufferErrorCode error = Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
         if (error != FramebufferErrorCode.FramebufferComplete)
         {
           Console.WriteLine("Frame buffer is not complete: " + error);
@@ -65,8 +64,8 @@ namespace Firefly.Core.Texture
     /// </summary>
     private void CreateFrameBuffer()
     {
-      FBOHandle = GL.GenFramebuffer();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
+      FBOHandle = Gl.GenFramebuffer();
+      Gl.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
     }
 
     /// <summary>
@@ -74,11 +73,11 @@ namespace Firefly.Core.Texture
     /// </summary>
     private void CreateRenderBuffer()
     {
-      RBOHandle = GL.GenRenderbuffer();
+      RBOHandle = Gl.GenRenderbuffer();
       int width = BoundTexture.Width;
       int height = BoundTexture.Height;
       AllocateRenderBufferMemory(width, height);
-      GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandle);
+      Gl.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, RBOHandle);
     }
 
     /// <summary>
@@ -88,26 +87,26 @@ namespace Firefly.Core.Texture
     {
       int width = BoundTexture.Width;
       int height = BoundTexture.Height;
-      TextureHandle = GL.GenTexture();
-      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-      GL.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+      TextureHandle = Gl.GenTexture();
+      Gl.BindTexture(TextureTarget.Texture2D, TextureHandle);
+      Gl.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
 
-      DepthTextureHandle = GL.GenTexture();
-      GL.BindTexture(TextureTarget.Texture2D, DepthTextureHandle);
-      GL.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.DepthComponent32f, width, height, 0, PixelFormat.DepthComponent, PixelType.UnsignedByte, IntPtr.Zero);
+      DepthTextureHandle = Gl.GenTexture();
+      Gl.BindTexture(TextureTarget.Texture2D, DepthTextureHandle);
+      Gl.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.DepthComponent32f, width, height, 0, PixelFormat.DepthComponent, PixelType.UnsignedByte, IntPtr.Zero);
 
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, DepthTextureHandle, 0);
+      Gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
+      Gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, DepthTextureHandle, 0);
 
-      GL.DrawBuffers(1, new DrawBuffersEnum[1] { DrawBuffersEnum.ColorAttachment0 });
+      Gl.DrawBuffers(1, new DrawBuffersEnum[1] { DrawBuffersEnum.ColorAttachment0 });
 
     }
 
     private void AllocateRenderBufferMemory(int width, int height)
     {
-      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
-      GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, width, height);
-      GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+      Gl.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBOHandle);
+      Gl.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, width, height);
+      Gl.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
     }
 
     /// <summary>
@@ -115,13 +114,13 @@ namespace Firefly.Core.Texture
     /// </summary>
     private void AllocateTextureMemory(int width, int height)
     {
-      GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+      Gl.BindTexture(TextureTarget.Texture2D, TextureHandle);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+      Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, width, height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
+      Gl.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, width, height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
     }
 
     #endregion

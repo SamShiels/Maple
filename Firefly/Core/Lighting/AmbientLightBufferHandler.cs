@@ -1,5 +1,6 @@
 ﻿using Firefly.World.Lighting;
-using OpenTK.Mathematics;
+using Silk.NET.OpenGL;
+using Silk.NET.SDL;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,13 +12,13 @@ namespace Firefly.Core.Lighting
     const int AMBIENT_LIGHT_FLOAT_COUNT = 4;
     const int DIRECTIONAL_LIGHT_FLOAT_COUNT = 4;
 
-    internal AmbientLightBufferHandler(int blockIndex) : base(blockIndex)
+    internal AmbientLightBufferHandler(GL GLContext, uint blockIndex) : base(GLContext, blockIndex)
     {
-      int memoryAllocation = (AMBIENT_LIGHT_FLOAT_COUNT) * 4;
+      uint memoryAllocation = AMBIENT_LIGHT_FLOAT_COUNT * 4;
       AllocateMemory(memoryAllocation);
     }
 
-    public void BufferLightData(Color4 ambientLight)
+    public void BufferLightData(Color ambientLight)
     {
       float[] lightsArray = new float[AMBIENT_LIGHT_FLOAT_COUNT];
       lightsArray[0] = ambientLight.R;

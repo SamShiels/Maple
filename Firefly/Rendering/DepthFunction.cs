@@ -9,7 +9,7 @@ namespace Firefly.Rendering
     //
     // Summary:
     //     Original was GL_NEVER = 0x0200
-    Never = 0x200,
+    Never = 512,
     //
     // Summary:
     //     Original was GL_LESS = 0x0201

@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Core.Buffer;
+﻿using Firefly.Core.Buffer;
 using Firefly.Rendering;
 using Firefly.Texturing;
 using Firefly.Core.Shader;
@@ -9,11 +8,14 @@ using System.Text;
 using Firefly.World;
 using Firefly.Core.Texture;
 using Firefly.World.Mesh;
+using Silk.NET.OpenGL;
 
 namespace Firefly.Core
 {
   internal class DynamicBatchHandler
   {
+    private GL GLContext;
+
     private int maxBatchIndices;
     private int maxObjectIndices;
 
@@ -27,8 +29,9 @@ namespace Firefly.Core
 
     private VertexArrayObject buffers;
 
-    public DynamicBatchHandler(int maxBatchIndices, int maxObjectIndices, TextureManager textureManager, ShaderManager shaderManager)
+    public DynamicBatchHandler(GL GLContext, int maxBatchIndices, int maxObjectIndices, TextureManager textureManager, ShaderManager shaderManager)
     {
+      this.GLContext = GLContext;
       this.maxBatchIndices = maxBatchIndices;
       this.maxObjectIndices = maxObjectIndices;
 
@@ -138,7 +141,8 @@ namespace Firefly.Core
           samplers[i] = i;
         }
 
-        GL.Uniform1(batchSamplerLocation, samplers.Length, samplers);
+        var span = new ReadOnlySpan<int>(samplers);
+        GLContext.Uniform1(batchSamplerLocation, span);
       }
     }
 
