@@ -48,6 +48,7 @@ namespace Firefly.Core
       this.canvasHandler = canvasHandler;
       dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
+      // Should cache these args
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
 
@@ -189,13 +190,16 @@ namespace Firefly.Core
           {
             uint modelId = mesh.Model.Id;
 
+            ShaderComponent shaderComponent = shaderManager.GetComponent(mesh.Material);
+            shaderComponent.Use();
+
             // buffer method for larger objects
             modelBufferHandler.BufferModel(mesh.Model);
             modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
 
             Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
-            Render(mesh.Material, mesh.Model.Indices.Length, modelMatrix);
+            Render(mesh.Material, shaderComponent, mesh.Model.Indices.Length, modelMatrix);
             textureManager.ClearAllTextureSlots();
           }
         }
@@ -219,22 +223,27 @@ namespace Firefly.Core
       int batchSize = dynamicBatchHandler.GetBatchSize();
       if (batchSize > 0) {
         dynamicBatchHandler.BindAndEnablePointers();
+
+        Material material = dynamicBatchHandler.GetBatchMaterial();
+        ShaderComponent shaderComponent = shaderManager.GetComponent(material);
+        shaderComponent.Use();
+
         dynamicBatchHandler.UploadSamplerPositions();
-        Render(dynamicBatchHandler.GetBatchMaterial(), batchSize, Matrix4.Identity);
+        Render(material, shaderComponent, batchSize, Matrix4.Identity);
         dynamicBatchHandler.Reset();
         textureManager.ClearAllTextureSlots();
       }
     }
 
-    private void Render(Material material, int count, Matrix4 modelMatrix)
+    private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix)
     {
       pointLightBufferHandler.BufferLightData(lighting);
       // Reset viewport
       GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
-      // cull back faces
+      // Cull back faces
       GL.Enable(EnableCap.CullFace);
 
-      // test vertex depth
+      // Test vertex depth
       if (material.DepthFunction != Rendering.DepthFunction.None)
       {
         GL.Enable(EnableCap.DepthTest);
@@ -244,9 +253,6 @@ namespace Firefly.Core
       GL.Enable(EnableCap.Blend);
       GL.BlendEquation(BlendEquationMode.FuncAdd);
       GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
-
-      ShaderComponent shaderComponent = shaderManager.GetComponent(material);
-      shaderComponent.Use();
 
       Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
       Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
@@ -258,8 +264,8 @@ namespace Firefly.Core
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
       GL.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
 
-      shaderComponent.BindUniformBlock("PointLightBlock", pointLightBufferHandler.GetBlockIndex());
-      shaderComponent.BindUniformBlock("AmbientLightBlock", ambientLightBufferHandler.GetBlockIndex());
+      shaderComponent.TryBindPointLightUniform(0);
+      shaderComponent.TryBindAmbientLightUniform(1);
 
       if (material.Uniforms != null)
       {

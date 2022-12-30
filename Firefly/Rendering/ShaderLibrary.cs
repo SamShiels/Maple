@@ -104,7 +104,7 @@ namespace Firefly.Rendering
     {
       string vertex = @"
         #version 450 core
-        layout (location = 0) in vec4 a_position;
+        layout (location = 0) in vec3 a_position;
         <texcoord_attribute>
 
         <texture_unit_vert_dec>
@@ -115,7 +115,7 @@ namespace Firefly.Rendering
           <texcoord_vert_main>
           <texture_unit_vert>
           <3d_projection>
-          gl_Position = viewPosition;
+          gl_Position = screenPosition;
         }
       ";
 

@@ -203,7 +203,7 @@ namespace Firefly
 
       if (type == DebugType.DebugTypeError)
       {
-        //throw new Exception(messageString);
+        Console.WriteLine(messageString);
       }
     }
 

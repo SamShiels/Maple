@@ -25,63 +25,23 @@ namespace CubeExample
       base.OnLoad();
       OBJLoader loader = new OBJLoader();
 
-      Image house = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.house.png"));
-      Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.grid.jpg"));
-      Image castle = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.castle.png"));
+      Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
+      Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.kronk.jpg"));
       Texture textureKronk = new Texture(kronk);
-      Texture textureCastle = new Texture(castle);
-      Texture textureHouse = new Texture(house);
+      MeshObject starDust = new MeshObject();
+      starDust.Model = model;
+      starDust.Transform.Position = new Vector3(0f, 0f, 5f);
+      starDust.Textures = new Texture[] { textureKronk };
 
-      Uniform ambientLight = new Uniform("u_ambientLight", new Vector3(0.0f, 0.0f, 0.0f));
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-      Uniform[] uniforms = new Uniform[2] { ambientLight, directionalLight };
+      Uniform shininess = new Uniform("u_shininess", 0.5f);
+      Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
 
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
-      Material material2 = new Material(ShaderLibrary.Instance.GetShader("spriteBasic"), uniforms);
 
-      //mesh = new Sprite();
-      //mesh.Transform.Position = new Vector3(2f, 0f, -10f);
-      //mesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
-      //mesh.OriginX = 0.5f;
-      //mesh.OriginY = 0.5f;
-      //mesh.Width = 1;
-      //mesh.Textures = new Texture[] { textureKronk };
-      //mesh.Material = material;
-      Model castleModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.house.obj"));
-      Model cube = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
+      starDust.Material = material;
 
-      cubeMesh = new MeshObject();
-      cubeMesh.Model = castleModel;
-      cubeMesh.Transform.Position = new Vector3(0f, 0f, -5f);
-      cubeMesh.Transform.LocalScale = new Vector3(4f, 4f, 2f);
-      cubeMesh.Textures = new Texture[] { textureHouse };
-      cubeMesh.Material = material;
-
-      houseMesh = new MeshObject();
-      houseMesh.Model = cube;
-      houseMesh.Transform.Position = new Vector3(0f, 0f, 5f);
-      houseMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
-      houseMesh.Textures = new Texture[] { textureHouse };
-      houseMesh.Material = material2;
-
-      Sprite sprite = new Sprite();
-      sprite.Material = material2;
-      sprite.Transform.Position = new Vector3(0f, 0f, -5f);
-
-      PointLight light = new PointLight();
-      light.Transform.Position = new Vector3(0f, 3f, 2f);
-      light.Diffuse = Color4.White;
-      light.Radius = 10f;
-
-      PointLight light2 = new PointLight();
-      light.Transform.Position = new Vector3(3f, 3f, 2f);
-      light.Diffuse = Color4.White;
-      light.Radius = 10f;
-
-      //game.stage.Transform.AddChild(sprite.Transform);
-      game.scene.AddObject(cubeMesh);
-      game.scene.AddObject(light);
-      game.scene.AddObject(light2);
+      game.scene.AddObject(starDust);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -96,16 +56,6 @@ namespace CubeExample
 
     protected override void OnRenderFrame(FrameEventArgs args)
     {
-      Time += 0.01f;
-      cubeMesh.Transform.Rotation = new Vector3(Time, Time, 0);
-      float scale = (float)Math.Sin(Time) * 7;
-      float scale2 = (float)Math.Cos(Time / 1) * 150;
-      cubeMesh.Transform.Position = new Vector3(scale, 0f, -5f);
-
-      if (Time > 2f)
-      {
-        //cubeMesh.Destroy();
-      }
       base.OnRenderFrame(args);
     }
   }

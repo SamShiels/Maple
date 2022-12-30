@@ -18,7 +18,9 @@ namespace Firefly.Core.Shader
 		private bool disposedValue = false;
 
 		private Dictionary<string, int> uniformLocations;
-		private Dictionary<string, int> pointLightUniformLocations;
+
+		private int pointLightUniformLocation;
+		private int ambientLightUniformLocation;
 
 		public ShaderComponent(string vertexShaderSource, string fragmentShaderSource, Rendering.Uniform[] uniforms, Dictionary<string, string> shaderChunks)
     {
@@ -80,16 +82,28 @@ namespace Firefly.Core.Shader
 				}
 			}
 
+			pointLightUniformLocation = GL.GetUniformBlockIndex(program, "PointLightBlock");
+			ambientLightUniformLocation = GL.GetUniformBlockIndex(program, "AmbientLightBlock");
+
 			uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
 			uniformLocations.Add("AmbientLightBlock", GL.GetUniformBlockIndex(program, "AmbientLightBlock"));
 		}
 
-		public void BindUniformBlock(string blockName, int blockBindingPoint)
+		public void TryBindPointLightUniform(int blockBindingPoint)
     {
-			int location = -1;
-			uniformLocations.TryGetValue(blockName, out location);
-			GL.UniformBlockBinding(program, location, blockBindingPoint);
-    }
+			if (pointLightUniformLocation != -1)
+			{
+				GL.UniformBlockBinding(program, pointLightUniformLocation, blockBindingPoint);
+			}
+		}
+
+		public void TryBindAmbientLightUniform(int blockBindingPoint)
+		{
+			if (ambientLightUniformLocation != -1)
+			{
+				GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
+			}
+		}
 
 		/// <summary>
 		/// Checks if this shader uses the texture unit attribute.

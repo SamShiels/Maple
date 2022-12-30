@@ -11,6 +11,7 @@
     <None Remove="Resources\grid.jpg" />
     <None Remove="Resources\house.obj" />
     <None Remove="Resources\house.png" />
+    <None Remove="Resources\kronk.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +29,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\house.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\kronk.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 

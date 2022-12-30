@@ -19,7 +19,7 @@ namespace Firefly.Core.Lighting
     /// </summary>
     /// <param name="blockIndex">The block index to bind to.</param>
     /// <param name="totalByteAllocation">The total amount of bytes allocated for this light buffer.</param>
-    public LightBufferHandler(int blockIndex)
+    internal LightBufferHandler(int blockIndex)
     {
       this.blockIndex = blockIndex;
     }
@@ -41,7 +41,7 @@ namespace Firefly.Core.Lighting
       GL.BindBuffer(BufferTarget.UniformBuffer, 0);
     }
 
-    public int GetBlockIndex()
+    internal int GetBlockIndex()
     {
       return blockIndex;
     }
