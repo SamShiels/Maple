@@ -30,8 +30,11 @@ namespace Firefly.World.Mesh
     public Model GetModel(string ModelName)
     {
       Model Model;
-      library.TryGetValue(ModelName, out Model);
-      return Model;
+      if (library.TryGetValue(ModelName, out Model))
+      {
+        return Model;
+      }
+      return null;
     }
 
     private void SetModel(string ModelName, Model Model)

@@ -84,22 +84,22 @@ namespace Firefly.Core
     {
       lighting = scene.Lights;
 
-      for (int i = 0; i < scene.Cameras.Count; i++)
-      {
-        Camera camera = scene.Cameras[i];
-        RenderTexture renderTexture = camera.RenderTexture;
-        if (camera.RenderTexture == null)
-        {
-          continue;
-        }
-        renderTextureManager.BindRenderTexture(renderTexture);
-        GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
-        GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        AssignCamera(camera);
-        BufferObject(scene.RootObject);
-        FlushBatchBuffers();
-      }
+      //for (int i = 0; i < scene.Cameras.Count; i++)
+      //{
+      //  Camera camera = scene.Cameras[i];
+      //  RenderTexture renderTexture = camera.RenderTexture;
+      //  if (camera.RenderTexture == null)
+      //  {
+      //    continue;
+      //  }
+      //  renderTextureManager.BindRenderTexture(renderTexture);
+      //  GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
+      //  GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+      //  GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+      //  AssignCamera(camera);
+      //  BufferObject(scene.RootObject);
+      //  FlushBatchBuffers();
+      //}
 
       if (!raw)
       {

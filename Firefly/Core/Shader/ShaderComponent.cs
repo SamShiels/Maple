@@ -48,9 +48,12 @@ namespace Firefly.Core.Shader
 		/// <returns></returns>
 		public int GetUniformLocation(string uniformName)
     {
-			int location = -1;
-			uniformLocations.TryGetValue(uniformName, out location);
-			return location;
+			int location;
+			if (uniformLocations.TryGetValue(uniformName, out location))
+      {
+				return location;
+			}
+			return -1;
 		}
 
 		public bool UsesTextureUnits()
@@ -93,7 +96,7 @@ namespace Firefly.Core.Shader
     {
 			if (pointLightUniformLocation != -1)
 			{
-				GL.UniformBlockBinding(program, pointLightUniformLocation, blockBindingPoint);
+				//GL.UniformBlockBinding(program, pointLightUniformLocation, blockBindingPoint);
 			}
 		}
 
@@ -101,7 +104,7 @@ namespace Firefly.Core.Shader
 		{
 			if (ambientLightUniformLocation != -1)
 			{
-				GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
+				//GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
 			}
 		}
 
