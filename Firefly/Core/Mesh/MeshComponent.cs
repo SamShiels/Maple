@@ -28,7 +28,8 @@ namespace Firefly.Core.Mesh
 
 				if ((Owner.Transform.DirtyId != LastVertexDirtyId) || (Owner.Model.DirtyId != LastModelVertexDirtyId))
 				{
-					CalculateWorldVertices(Owner.Transform.GetLocalMatrix());
+					Matrix4 localToWorld = Owner.Transform.GetLocalMatrix();
+					CalculateWorldVertices(localToWorld);
 				}
 				return worldVertices;
 			}
@@ -75,12 +76,12 @@ namespace Firefly.Core.Mesh
 				float x = verts[vert];
 				float y = verts[vert + 1];
 				float z = verts[vert + 2];
+				Vector3 localPoint = new Vector3(x, y, z);
+				Vector3 point = Vector3.TransformPosition(localPoint, m);
 
-				(float, float, float) point = Utilities.Math.TransformPoint(m, x, y, z);
-
-				worldVertices[vert] = point.Item1;
-				worldVertices[vert + 1] = point.Item2;
-				worldVertices[vert + 2] = point.Item3;
+				worldVertices[vert] = point.X;
+				worldVertices[vert + 1] = point.Y;
+				worldVertices[vert + 2] = point.Z;
 			}
 
 			LastModelVertexDirtyId = Owner.Model.DirtyId;
