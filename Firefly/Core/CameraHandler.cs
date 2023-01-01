@@ -19,6 +19,7 @@ namespace Firefly.Core
 
     private float lastRotationX;
     private float lastRotationY;
+    private float lastRotationZ;
 
     private Matrix4 projectionMatrix;
     private Matrix4 viewMatrix;
@@ -79,8 +80,9 @@ namespace Firefly.Core
 
       float xRotation = camera.Transform.Rotation.X;
       float yRotation = camera.Transform.Rotation.Y;
+      float zRotation = camera.Transform.Rotation.Z;
 
-      if (!initialized || (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY))
+      if (!initialized || (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY || zRotation != lastRotationZ))
       {
         Vector3 front = new Vector3(
           (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation),
@@ -93,12 +95,20 @@ namespace Firefly.Core
         Vector3 upAxis = Vector3.Normalize(Vector3.Cross(rightAxis, front));
 
         viewMatrix = Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
+        viewMatrix = Matrix4.CreateRotationZ(-zRotation) * viewMatrix;
+        Transform parent = camera.Transform.Parent;
+        if (parent != null)
+        {
+          viewMatrix = Matrix4.Mult(viewMatrix, parent.GetLocalMatrix());
+        }
+
         lastPositionX = xPosition;
         lastPositionY = yPosition;
         lastPositionZ = zPosition;
 
         lastRotationX = xRotation;
         lastRotationY = yRotation;
+        lastRotationZ = zRotation;
       }
 
       //Matrix4 viewMatrix = new Matrix4(

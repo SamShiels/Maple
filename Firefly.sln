@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SceneEditor", "SceneEditor\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Firefly.Test", "Firefly.Test\Firefly.Test.csproj", "{3A2891CC-1E51-4FB6-B027-E44051E28E2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderTextureExample", "RenderTextureExample\RenderTextureExample.csproj", "{6CA95A04-AD3C-4D3A-8DC6-085840E71922}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderTextureExample", "RenderTextureExample\RenderTextureExample.csproj", "{6CA95A04-AD3C-4D3A-8DC6-085840E71922}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraExample", "CameraExample\CameraExample.csproj", "{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{6CA95A04-AD3C-4D3A-8DC6-085840E71922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CA95A04-AD3C-4D3A-8DC6-085840E71922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CA95A04-AD3C-4D3A-8DC6-085840E71922}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

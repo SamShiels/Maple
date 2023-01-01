@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Firefly.Core
+namespace Firefly.World
 {
   public class WorldObject
   {

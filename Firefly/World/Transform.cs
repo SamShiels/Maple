@@ -180,20 +180,6 @@ namespace Firefly.World
     }
 
     /// <summary>
-    /// Get the local to world matrix (transposed and inverted).
-    /// </summary>
-    /// <returns></returns>
-    public Matrix4 GetLocalNormalMatrix()
-    {
-      if (LastDirtyId != DirtyId)
-      {
-        //CalculateLocalMatrix();
-      }
-
-      return LocalToWorldNormalMatrix;
-    }
-
-    /// <summary>
     /// Calculate the local to world matrix.
     /// </summary>
     private void CalculateLocalMatrix()

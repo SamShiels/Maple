@@ -31,13 +31,13 @@ namespace CubeExample
       MeshObject starDust = new MeshObject();
       starDust.Model = model;
       starDust.Transform.Position = new Vector3(0f, 0f, 5f);
-      starDust.Textures = new Texture[] { textureKronk };
+      //starDust.Textures = new Texture[] { textureKronk };
 
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
       Uniform shininess = new Uniform("u_shininess", 0.5f);
       Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
 
-      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
+      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
 
       starDust.Material = material;
 

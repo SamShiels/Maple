@@ -8,5 +8,6 @@ namespace Firefly.Rendering
   {
     Triangles = 0,
     Lines = 1,
+    Points = 2
   }
 }

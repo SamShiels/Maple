@@ -290,6 +290,11 @@ namespace Firefly.Core
       {
         GL.DrawElements(BeginMode.Lines, count, DrawElementsType.UnsignedInt, 0);
       }
+      else if (material.PrimitiveType == Rendering.PrimitiveType.Points)
+      {
+        GL.Enable(EnableCap.ProgramPointSize);
+        GL.DrawElements(BeginMode.Points, count, DrawElementsType.UnsignedInt, 0);
+      }
     }
 
     private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 pm)
