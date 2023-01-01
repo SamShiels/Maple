@@ -27,7 +27,7 @@ namespace Firefly.World
       }
       set
       {
-        NearClipPlane = value;
+        nearClipPlane = value;
         IncrementDirtyId();
       }
     }
@@ -44,7 +44,7 @@ namespace Firefly.World
       }
       set
       {
-        FarClipPlane = value;
+        farClipPlane = value;
         IncrementDirtyId();
       }
     }
