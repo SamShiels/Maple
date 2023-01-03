@@ -84,6 +84,7 @@ namespace Firefly.Core
 
       if (!initialized || (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY || zRotation != lastRotationZ))
       {
+
         Vector3 front = new Vector3(
           (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation),
           (float)System.Math.Sin(xRotation),
@@ -94,13 +95,10 @@ namespace Firefly.Core
         Vector3 rightAxis = Vector3.Normalize(Vector3.Cross(front, Vector3.UnitY));
         Vector3 upAxis = Vector3.Normalize(Vector3.Cross(rightAxis, front));
 
-        viewMatrix = Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
-        viewMatrix = Matrix4.CreateRotationZ(-zRotation) * viewMatrix;
-        Transform parent = camera.Transform.Parent;
-        if (parent != null)
-        {
-          viewMatrix = Matrix4.Mult(viewMatrix, parent.GetLocalMatrix());
-        }
+        //viewMatrix = Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
+        //viewMatrix = Matrix4.CreateRotationZ(-zRotation) * viewMatrix;
+        viewMatrix = camera.Transform.GetLocalMatrix();
+        //viewMatrix = Matrix4.Mult(viewMatrix, camera.Transform.GetLocalMatrix());
 
         lastPositionX = xPosition;
         lastPositionY = yPosition;

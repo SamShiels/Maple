@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/SamShiels/Firefly.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/SamShiels/Firefly</PackageProjectUrl>
-    <Version>0.0.8</Version>
+    <Version>0.0.9</Version>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

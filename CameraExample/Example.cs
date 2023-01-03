@@ -33,7 +33,7 @@ namespace CameraExample
       {
         MeshObject cube = new MeshObject();
         cube.Model = model;
-        cube.Transform.Position = new Vector3(i * 4 - 10, 0f, 5f);
+        cube.Transform.Position = new Vector3(0f, 0f, -i * 4 - 5);
         cube.Textures = new Texture[] { texture };
         Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
         cube.Material = material;
@@ -48,8 +48,9 @@ namespace CameraExample
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-      cameraContainer.Transform.Position = new Vector3(0.0f, 0.0f, displacement);
-      game.camera.Transform.Rotation = new Vector3(0.0f, 0.0f, displacement);
+      //cameraContainer.Transform.Position = new Vector3(0.0f, displacement, 0.0f);
+      game.scene.Camera.Transform.Position = new Vector3(0.0f, 0f, displacement);
+      game.scene.Camera.Transform.Rotation = new Vector3(displacement, 0.0f, 0.0f);
       displacement += 0.01f;
       base.OnUpdateFrame(args);
     }

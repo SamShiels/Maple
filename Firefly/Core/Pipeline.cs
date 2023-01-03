@@ -258,11 +258,11 @@ namespace Firefly.Core
       Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
 
       int screenToClipLocation = shaderComponent.GetUniformLocation("u_projectionMatrix");
-      GL.UniformMatrix4(screenToClipLocation, true, ref projectionMatrix);
+      GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
-      GL.UniformMatrix4(modelMatrixLocation, true, ref modelMatrix);
+      GL.UniformMatrix4(modelMatrixLocation, false, ref modelMatrix);
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
-      GL.UniformMatrix4(viewMatrixLocation, true, ref viewMatrix);
+      GL.UniformMatrix4(viewMatrixLocation, false, ref viewMatrix);
 
       shaderComponent.TryBindPointLightUniform(0);
       shaderComponent.TryBindAmbientLightUniform(1);

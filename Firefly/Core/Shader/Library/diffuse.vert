@@ -18,9 +18,9 @@ void main()
     normal = normalize(vec3(worldNormal.xyz));
     texcoord = a_texcoord;
     
-    vec4 worldPosition = vec4(a_position, 1.0) * u_modelMatrix;
-	vec4 screenPosition = worldPosition * u_viewMatrix * u_projectionMatrix;
-
+    vec4 worldPosition =  u_modelMatrix * vec4(a_position, 1.0);
+	vec4 screenPosition = u_projectionMatrix * u_viewMatrix * worldPosition;
+    
     FragPos = worldPosition.xyz;
     gl_Position = screenPosition;
 }

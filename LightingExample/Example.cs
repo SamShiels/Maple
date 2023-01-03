@@ -66,7 +66,7 @@ namespace SpriteExample
     {
       Time += 0.01f;
       float positionX = (float)Math.Sin(Time) * 10f;
-      houseMesh.Transform.Position = new Vector3(positionX, 0f, 10f);
+      houseMesh.Transform.Position = new Vector3(0, 0f, 10f);
 
       if (Time > 5)
       {
