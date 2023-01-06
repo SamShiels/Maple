@@ -46,8 +46,8 @@ namespace Firefly.World
       }
     }
 
-    private Vector3 rotation;
-    public Vector3 Rotation {
+    private Quaternion rotation;
+    public Quaternion Rotation {
       get
       {
         return rotation;
@@ -55,9 +55,26 @@ namespace Firefly.World
       set
       {
         rotation = value;
+        Quaternion.ToEulerAngles(rotation, out eulerAngles);
         SetDirty();
       }
     }
+
+    private Vector3 eulerAngles;
+    public Vector3 EulerAngles
+    {
+      get
+      {
+        return eulerAngles;
+      }
+      set
+      {
+        eulerAngles = value;
+        rotation = Quaternion.FromEulerAngles(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+        SetDirty();
+      }
+    }
+
     private Vector3 localScale;
     public Vector3 LocalScale
     {
@@ -71,8 +88,36 @@ namespace Firefly.World
         SetDirty();
       }
     }
+
+    private Vector3 forward;
+    public Vector3 Forward
+    {
+      get
+      {
+        return forward;
+      }
+    }
+
+    private Vector3 up;
+    public Vector3 Up
+    {
+      get
+      {
+        return up;
+      }
+    }
+
+    private Vector3 right;
+    public Vector3 Right
+    {
+      get
+      {
+        return right;
+      }
+    }
+
     private Matrix4 LocalToWorldMatrix { get; set; }
-    private Matrix4 LocalToWorldNormalMatrix { get; set; }
+    private Matrix4 LocalToWorldRotationMatrix { get; set; }
     public uint DirtyId { get; private set; }
 
     private uint LastDirtyId;
@@ -84,7 +129,8 @@ namespace Firefly.World
       parent = null;
       children = new List<Transform>();
       position = new Vector3(0, 0, 0);
-      rotation = new Vector3(0, 0, 0);
+      rotation = new Quaternion(0, 0, 0, 1);
+      eulerAngles = new Vector3(0, 0, 0);
       localScale = new Vector3(1, 1, 1);
       DirtyId = 0;
       LastDirtyId = 0;
@@ -180,6 +226,20 @@ namespace Firefly.World
     }
 
     /// <summary>
+    /// Get the local to world matrix.
+    /// </summary>
+    /// <returns></returns>
+    public Matrix4 GetLocalRotationMatrix()
+    {
+      if (LastDirtyId != DirtyId)
+      {
+        CalculateLocalMatrix();
+      }
+
+      return LocalToWorldRotationMatrix;
+    }
+
+    /// <summary>
     /// Calculate the local to world matrix.
     /// </summary>
     private void CalculateLocalMatrix()
@@ -227,17 +287,15 @@ namespace Firefly.World
 
       //Matrix4 Rotation = Matrix4.Mult(Rz, Matrix4.Mult(Ry, Rx));
 
-      float rotationX = rotation.X;
-      float rotationY = rotation.Y;
-      float rotationZ = rotation.Z;
+      float rotationX = eulerAngles.X;
+      float rotationY = eulerAngles.Y;
+      float rotationZ = eulerAngles.Z;
 
-      Matrix4 modelMatrix = Matrix4.Identity;
-      modelMatrix = Matrix4.CreateScale(localScale) * modelMatrix;
-      modelMatrix = Matrix4.CreateRotationX(rotationX) * modelMatrix;
-      modelMatrix = Matrix4.CreateRotationY(rotationY) * modelMatrix;
-      modelMatrix = Matrix4.CreateRotationZ(rotationZ) * modelMatrix;
-      modelMatrix = Matrix4.CreateTranslation(position) * modelMatrix;
-      LocalToWorldMatrix = modelMatrix;
+      Matrix4 scaleMatrix = Matrix4.CreateScale(localScale);
+      Matrix4 rotationMatrix = Matrix4.CreateFromQuaternion(rotation);
+      Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
+      LocalToWorldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+      LocalToWorldRotationMatrix = rotationMatrix;
       //LocalToWorldMatrix = Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));
       //LocalToWorldNormalMatrix = new Matrix4(LocalToWorldMatrix.Row0, LocalToWorldMatrix.Row1, LocalToWorldMatrix.Row2, LocalToWorldMatrix.Row3);
       //LocalToWorldNormalMatrix.Transpose();
@@ -245,8 +303,12 @@ namespace Firefly.World
       if (parent != null)
       {
         LocalToWorldMatrix = Matrix4.Mult(parent.GetLocalMatrix(), LocalToWorldMatrix);
-        //LocalToWorldNormalMatrix = Matrix4.Mult(parent.GetLocalNormalMatrix(), LocalToWorldNormalMatrix);
+        LocalToWorldRotationMatrix = Matrix4.Mult(parent.GetLocalRotationMatrix(), LocalToWorldRotationMatrix);
       }
+
+      right = Vector3.TransformVector(Vector3.UnitX, LocalToWorldRotationMatrix);
+      up = Vector3.TransformVector(Vector3.UnitY, LocalToWorldRotationMatrix);
+      forward = Vector3.TransformVector(Vector3.UnitZ, LocalToWorldRotationMatrix);
       LastDirtyId = DirtyId;
     }
 
