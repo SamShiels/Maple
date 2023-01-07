@@ -97,7 +97,7 @@ namespace Firefly.Core
 
         //viewMatrix = Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
         //viewMatrix = Matrix4.CreateRotationZ(-zRotation) * viewMatrix;
-        viewMatrix = camera.Transform.GetLocalMatrix();
+        viewMatrix = camera.Transform.GetLocalMatrix().Inverted();
         //viewMatrix = Matrix4.Mult(viewMatrix, camera.Transform.GetLocalMatrix());
 
         lastPositionX = xPosition;

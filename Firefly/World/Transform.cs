@@ -302,8 +302,8 @@ namespace Firefly.World
       //LocalToWorldNormalMatrix.Invert();
       if (parent != null)
       {
-        LocalToWorldMatrix = Matrix4.Mult(parent.GetLocalMatrix(), LocalToWorldMatrix);
-        LocalToWorldRotationMatrix = Matrix4.Mult(parent.GetLocalRotationMatrix(), LocalToWorldRotationMatrix);
+        LocalToWorldMatrix = Matrix4.Mult(LocalToWorldMatrix, parent.GetLocalMatrix());
+        LocalToWorldRotationMatrix = Matrix4.Mult(LocalToWorldRotationMatrix, parent.GetLocalRotationMatrix());
       }
 
       right = Vector3.TransformVector(Vector3.UnitX, LocalToWorldRotationMatrix);
