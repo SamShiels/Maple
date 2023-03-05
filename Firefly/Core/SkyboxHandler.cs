@@ -30,14 +30,14 @@ namespace Firefly.Core
 
       string vs = @"
         #version 450 core
-        layout (location = 0) in vec3 a_Position;
+        layout (location = 0) in vec2 a_Position;
 
-        out vec3 v_Position;
+        out vec2 TexCoords;
 
         void main()
         {
-				  v_Position = a_Position;
-          gl_Position = vec4(a_Position.xy, 1.0, 1.0); 
+				  TexCoords = -a_Position.xy;
+          gl_Position = vec4(a_Position, 1.0, 1.0);
         }
       ";
 
@@ -45,16 +45,17 @@ namespace Firefly.Core
         #version 450 core
         out vec4 FragColor;
 
-        in vec3 v_Position;
+        in vec2 TexCoords;
 
 			  uniform mat4 u_projectionMatrix;
 			  uniform mat4 u_viewMatrix;
+
 			  uniform samplerCube u_skybox;
 
         void main()
-        {   
-          vec4 t = u_projectionMatrix * u_viewMatrix * vec4(v_Position, 1.0);
-				  FragColor = texture(u_skybox, normalize(t.xyz / t.w));
+        {
+          vec4 direction = u_projectionMatrix * u_viewMatrix * vec4(TexCoords, 1.0, 1.0);
+				  FragColor = texture(u_skybox, direction.xyz);
         }
       ";
 
@@ -71,6 +72,7 @@ namespace Firefly.Core
         CreateVBOs();
       }
 
+      //GL.DepthMask(false);
       ShaderComponent shader = shaderManager.GetComponent(material);
       GL.BindVertexArray(VAO);
       shader.Use();
@@ -78,10 +80,12 @@ namespace Firefly.Core
       int projLocation = shader.GetUniformLocation("u_projectionMatrix");
       GL.UniformMatrix4(projLocation, false, ref projectionMatrix);
       int viewLocation = shader.GetUniformLocation("u_viewMatrix");
-      GL.UniformMatrix4(viewLocation, false, ref viewMatrix);
+      Matrix4 viewMatrixWithoutTranslation = viewMatrix.ClearTranslation();
+      GL.UniformMatrix4(viewLocation, false, ref viewMatrixWithoutTranslation);
 
       textureComponent.SetUnit(TextureUnit.Texture0);
       GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
+      //GL.DepthMask(true);
     }
 
     private void CreateVBOs()
@@ -91,30 +95,19 @@ namespace Firefly.Core
       Positions = new VertexBufferObject<float>(DrawType.Static, false);
       TextureCoordinates = new VertexBufferObject<float>(DrawType.Static, false);
 
-      Positions.PushData(new float[] { -1.0f, -1.0f, -1.0f,
-                                        1.0f, -1.0f, -1.0f,
-                                        1.0f,  1.0f, -1.0f,
-                                       -1.0f, -1.0f, -1.0f,
-                                        1.0f,  1.0f, -1.0f,
-                                       -1.0f,  1.0f, -1.0f });
-
-      TextureCoordinates.PushData(new float[] { 0.0f, 0.0f,
-                                                1.0f, 0.0f,
-                                                1.0f, 1.0f,
-                                                0.0f, 0.0f,
-                                                1.0f, 1.0f,
-                                                0.0f, 1.0f });
+      Positions.PushData(new float[] { -1.0f,  1.0f,
+                                        1.0f, -1.0f,
+                                        1.0f,  1.0f,
+                                       -1.0f,  1.0f,
+                                       -1.0f, -1.0f,
+                                        1.0f, -1.0f, });
 
       // bind the positions buffer and enable the positions attribute pointer
       Positions.Bind();
       GL.EnableVertexAttribArray(0);
-      GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
-      TextureCoordinates.Bind();
-      GL.EnableVertexAttribArray(1);
-      GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
+      GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 0, 0);
 
       Positions.BufferData();
-      TextureCoordinates.BufferData();
 
       initialized = true;
     }

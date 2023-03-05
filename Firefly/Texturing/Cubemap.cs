@@ -22,8 +22,8 @@ namespace Firefly.Texturing
 
       DirtyId = 0;
 
-      WrapS = TextureWrapMode.Repeat;
-      WrapT = TextureWrapMode.Repeat;
+      WrapS = TextureWrapMode.ClampToEdge;
+      WrapT = TextureWrapMode.ClampToEdge;
       MinificationFilter = TextureMinFilter.LinearMipmapLinear;
       MagnificationFilter = TextureMagFilter.Linear;
       UseMipMaps = true;

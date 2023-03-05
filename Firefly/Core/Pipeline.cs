@@ -75,8 +75,6 @@ namespace Firefly.Core
       this.clearColor = clearColor;
     }
 
-    private int count = 0;
-
     /// <summary>
     /// Push an object into the pipeline and render it, along with all of its children.
     /// </summary>
@@ -116,12 +114,10 @@ namespace Firefly.Core
       Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
 
       Cubemap skybox = scene.Camera.Skybox;
-      if (skybox != null && count > 10)
+      if (skybox != null)
       {
         skyboxHandler.DrawSkybox(skybox, projectionMatrix, viewMatrix);
       }
-
-      count++;
 
       BufferObject(scene.RootObject);
       FlushBatchBuffers();

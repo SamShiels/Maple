@@ -109,8 +109,8 @@ namespace Firefly.Core.Texture
     {
       ConvertImageToPixelArrayAndUploadCube(cubemap.RightImage, TextureTarget.TextureCubeMapPositiveX);
       ConvertImageToPixelArrayAndUploadCube(cubemap.LeftImage, TextureTarget.TextureCubeMapNegativeX);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.TopImage, TextureTarget.TextureCubeMapPositiveY);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.BottomImage, TextureTarget.TextureCubeMapNegativeY);
+      ConvertImageToPixelArrayAndUploadCube(cubemap.TopImage, TextureTarget.TextureCubeMapNegativeY);
+      ConvertImageToPixelArrayAndUploadCube(cubemap.BottomImage, TextureTarget.TextureCubeMapPositiveY);
       ConvertImageToPixelArrayAndUploadCube(cubemap.FrontImage, TextureTarget.TextureCubeMapPositiveZ);
       ConvertImageToPixelArrayAndUploadCube(cubemap.BackImage, TextureTarget.TextureCubeMapNegativeZ);
       if (texture.UseMipMaps)
