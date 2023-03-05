@@ -12,6 +12,7 @@
     <None Remove="Resources\house.obj" />
     <None Remove="Resources\house.png" />
     <None Remove="Resources\kronk.jpg" />
+    <None Remove="Resources\ship9.obj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,10 +34,34 @@
     <EmbeddedResource Include="Resources\kronk.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ship9.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ExampleBase\ExampleBase.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\Langholmen\negx.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Langholmen\negy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Langholmen\negz.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Langholmen\posx.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Langholmen\posy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Langholmen\posz.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -65,7 +65,7 @@ namespace Firefly.Core.Buffer
     /// <param name="data"></param>
     public void PushData(float[] data)
     {
-      if (data == null)
+      if (data == null)// || data.Length == 0)
       {
         return;
       }

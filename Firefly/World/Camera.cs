@@ -15,6 +15,9 @@ namespace Firefly.World
 
     public ProjectionType ProjectionType = ProjectionType.Perspective;
 
+    public Color4 BackgroundColor = Color4.Black;
+    public Cubemap Skybox;
+
     private float nearClipPlane = 0.01f;
     /// <summary>
     /// The distance of the near clip plane from the camera.

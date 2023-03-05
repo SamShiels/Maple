@@ -27,20 +27,35 @@ namespace CameraExample
 
       Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.cube.obj"));
       Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.kronk.jpg"));
+      Image negx = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.negx.jpg"));
+      Image negy = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.negy.jpg"));
+      Image negz = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.negz.jpg"));
+      Image posx = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.posx.jpg"));
+      Image posy = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.posy.jpg"));
+      Image posz = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.posz.jpg"));
+
+      Cubemap cubemap = new Cubemap(posx, negx, posy, negy, posz, negz);
+      game.camera.Skybox = cubemap;
+
       Texture texture = new Texture(kronk);
+      cameraContainer = new WorldObject();
+      game.scene.AddObject(cameraContainer);
+
+      PointLight light = new PointLight();
+      light.Radius = 10f;
+      game.scene.AddObject(light);
 
       for (int i = 0; i < 5; i++)
       {
         MeshObject cube = new MeshObject();
         cube.Model = model;
-        cube.Transform.Position = new Vector3(0f, 0f, -i * 4 - 5);
+        cube.Transform.Position = new Vector3(0f, 3f, -i * 4 - 5);
         cube.Textures = new Texture[] { texture };
         Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
         cube.Material = material;
-        game.scene.AddObject(cube);
+        cameraContainer.Transform.AddChild(cube.Transform);
       }
 
-      cameraContainer = new WorldObject();
       cameraContainer.Transform.AddChild(game.camera.Transform);
     }
 
@@ -48,9 +63,9 @@ namespace CameraExample
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-      //cameraContainer.Transform.Position = new Vector3(0.0f, displacement, 0.0f);
-      game.scene.Camera.Transform.Position = new Vector3(0.0f, 0f, displacement);
-      game.scene.Camera.Transform.Rotation = new Vector3(displacement, 0.0f, 0.0f);
+      //cameraContainer.Transform.Position = new Vector3(0.0f, 0, 0.0f);
+      cameraContainer.Transform.Position = new Vector3(0.0f, 0f, -displacement * 5);
+      game.camera.Transform.EulerAngles = new Vector3(0f, -displacement / 3, 0.0f);
       displacement += 0.01f;
       base.OnUpdateFrame(args);
     }

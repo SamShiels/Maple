@@ -1,12 +1,10 @@
-﻿using Firefly.Core;
-using Firefly.Texturing;
+﻿using Firefly.Texturing;
 using Firefly.Rendering;
 using Firefly.Core.Shader;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System;
-using Firefly.Utilities;
 using Firefly.World;
 using Firefly.Core.Texture;
 using Firefly.World.Mesh;
@@ -30,6 +28,7 @@ namespace Firefly.Core
     private PointLightBufferHandler pointLightBufferHandler;
     private AmbientLightBufferHandler ambientLightBufferHandler;
     private CameraHandler cameraHandler;
+    private SkyboxHandler skyboxHandler;
 
     private int resolutionWidth;
     private int resolutionHeight;
@@ -48,13 +47,13 @@ namespace Firefly.Core
       this.canvasHandler = canvasHandler;
       dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
-      // Should cache these args
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
 
       renderTextureManager = new RenderTextureManager(textureManager);
 
       cameraHandler = new CameraHandler();
+      skyboxHandler = new SkyboxHandler(shaderManager, textureManager);
     }
 
     /// <summary>
@@ -75,6 +74,8 @@ namespace Firefly.Core
     {
       this.clearColor = clearColor;
     }
+
+    private int count = 0;
 
     /// <summary>
     /// Push an object into the pipeline and render it, along with all of its children.
@@ -105,11 +106,23 @@ namespace Firefly.Core
       {
         canvasHandler.BindFrameBuffer();
       }
+      AssignCamera(scene.Camera);
+
       Color4 c = clearColor;
       GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-      AssignCamera(scene.Camera);
+      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
+
+      Cubemap skybox = scene.Camera.Skybox;
+      if (skybox != null && count > 10)
+      {
+        skyboxHandler.DrawSkybox(skybox, projectionMatrix, viewMatrix);
+      }
+
+      count++;
+
       BufferObject(scene.RootObject);
       FlushBatchBuffers();
       if (!raw)
@@ -193,7 +206,7 @@ namespace Firefly.Core
             ShaderComponent shaderComponent = shaderManager.GetComponent(mesh.Material);
             shaderComponent.Use();
 
-            // buffer method for larger objects
+            // Buffer method for larger objects
             modelBufferHandler.BufferModel(mesh.Model);
             modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
 
@@ -207,7 +220,7 @@ namespace Firefly.Core
 
       List<Transform> children = obj.Transform.GetChildren();
 
-      // if this object has children, iterate through each of them and try to render them as well
+      // If this object has children, iterate through each of them and try to render them as well
       for (int i = 0; i < children.Count; i++)
       {
         WorldObject owner = children[i].Owner;

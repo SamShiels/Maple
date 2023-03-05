@@ -28,28 +28,26 @@ namespace CubeExample
       Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
       Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.kronk.jpg"));
       Texture textureKronk = new Texture(kronk);
-      MeshObject starDust = new MeshObject();
-      starDust.Model = model;
-      starDust.Transform.Position = new Vector3(0f, 0f, 5f);
-      //starDust.Textures = new Texture[] { textureKronk };
-
-      Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
-      Uniform shininess = new Uniform("u_shininess", 0.5f);
-      Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
+      cubeMesh = new MeshObject();
+      cubeMesh.Model = model;
+      cubeMesh.Transform.Position = new Vector3(0f, 0f, -5f);
+      cubeMesh.Textures = new Texture[] { textureKronk };
 
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
 
-      starDust.Material = material;
+      cubeMesh.Material = material;
 
-      game.scene.AddObject(starDust);
+      game.scene.AddObject(cubeMesh);
     }
+
+    private float scale = 0.0f;
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
       base.OnUpdateFrame(args);
-      //cubeMesh.Transform.Position = new Vector3(scale, 0, scale2);
-      //mesh.Transform.LocalScale = new Vector3(3f + scale * 2, 3f, 1f);
-      //mesh2.Transform.Rotation = (float)Math.PI / 4f;
+      scale += 0.01f;
+      cubeMesh.Transform.LocalScale = new Vector3(3f + scale * 2, 3f, 1f);
+      //cubeMesh.Transform.EulerAngles = new Vector3(scale, 0f, 0f);
     }
 
     private float Time = 0.0f;

@@ -64,7 +64,7 @@ namespace Firefly.Core.Texture
     /// Bind to a texture. Upload it to the GPU if it doesn't exist.
     /// </summary>
     /// <param name="texture"></param>
-    public int UseTexture(Texturing.Texture texture)
+    public int UseTexture(Texturing.TextureBase texture)
     {
       int id = texture.Id;
       TextureComponent component;

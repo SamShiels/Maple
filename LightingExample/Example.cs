@@ -39,7 +39,7 @@ namespace SpriteExample
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
-      houseMesh.Transform.Rotation = new Vector3(0f, (float)Math.PI / 2f, 0f);
+      houseMesh.Transform.EulerAngles = new Vector3(0f, (float)Math.PI / 2f, 0f);
       houseMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
       houseMesh.Textures = new Texture[] { textureHouse };
       houseMesh.Material = material;
@@ -47,7 +47,7 @@ namespace SpriteExample
       game.scene.AddObject(houseMesh);
 
       light = new PointLight();
-      light.Transform.Position = new Vector3(0f, 0f, 10f);
+      light.Transform.Position = new Vector3(0f, 0f, 0f);
       light.Diffuse = Color4.Red;
       light.Radius = 1f;
       light.Intensity = 1f;
@@ -66,7 +66,11 @@ namespace SpriteExample
     {
       Time += 0.01f;
       float positionX = (float)Math.Sin(Time) * 10f;
-      houseMesh.Transform.Position = new Vector3(0, 0f, 10f);
+      //houseMesh.Transform.LocalScale = new Vector3(positionX / 2, 2f, 2f);
+
+      Quaternion pitchRotation = Quaternion.FromAxisAngle(Vector3.UnitZ, Time / 10f);
+      houseMesh.Transform.Position = new Vector3(Time, 0f, 0f);
+      houseMesh.Transform.Rotation = pitchRotation * houseMesh.Transform.Rotation;
 
       if (Time > 5)
       {
