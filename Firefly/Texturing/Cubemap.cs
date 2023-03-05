@@ -11,6 +11,17 @@ namespace Firefly.Texturing
     public Image FrontImage { private set; get; }
     public Image BackImage { private set; get; }
 
+    private TextureWrapMode wrapR;
+    public TextureWrapMode WrapR
+    {
+      get { return wrapR; }
+      set
+      {
+        wrapR = value;
+        DirtyId++;
+      }
+    }
+
     public Cubemap(Image RightImage, Image LeftImage, Image TopImage, Image BottomImage, Image FrontImage, Image BackImage)
     {
       this.RightImage = RightImage;
@@ -24,6 +35,7 @@ namespace Firefly.Texturing
 
       WrapS = TextureWrapMode.ClampToEdge;
       WrapT = TextureWrapMode.ClampToEdge;
+      WrapR = TextureWrapMode.ClampToEdge;
       MinificationFilter = TextureMinFilter.LinearMipmapLinear;
       MagnificationFilter = TextureMagFilter.Linear;
       UseMipMaps = true;

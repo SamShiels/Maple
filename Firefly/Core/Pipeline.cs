@@ -116,7 +116,7 @@ namespace Firefly.Core
       Cubemap skybox = scene.Camera.Skybox;
       if (skybox != null)
       {
-        skyboxHandler.DrawSkybox(skybox, projectionMatrix, viewMatrix);
+        skyboxHandler.DrawSkybox(skybox, scene.Camera.Transform.Rotation, projectionMatrix.Inverted());
       }
 
       BufferObject(scene.RootObject);

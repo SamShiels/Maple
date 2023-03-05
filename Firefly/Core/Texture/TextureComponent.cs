@@ -58,7 +58,15 @@ namespace Firefly.Core.Texture
       }
     }
 
-    private void UpdateSettings()
+    private void ConvertImageToPixelArrayAndUpload(Image image, TextureTarget target)
+    {
+      int width = image.Width;
+      int height = image.Height;
+      byte[] pixelArray = image.GetPixelArray();
+      GL.TexImage2D(target, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
+    }
+
+    private void UpdateSettings(Texturing.Texture texture)
     {
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)texture.WrapS);
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)texture.WrapT);
@@ -67,14 +75,14 @@ namespace Firefly.Core.Texture
       DirtyId = texture.DirtyId;
     }
 
-    private void UpdateSettingsCubemap()
+    private void UpdateSettings(Cubemap cubemap)
     {
-      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)texture.WrapS);
-      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)texture.WrapT);
-      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)texture.WrapT);
-      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)texture.MinificationFilter);
-      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)texture.MagnificationFilter);
-      DirtyId = texture.DirtyId;
+      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)cubemap.WrapS);
+      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)cubemap.WrapT);
+      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)cubemap.WrapR);
+      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)cubemap.MinificationFilter);
+      GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)cubemap.MagnificationFilter);
+      DirtyId = cubemap.DirtyId;
     }
 
     private void UploadTexture(Texturing.Texture texture)
@@ -85,40 +93,24 @@ namespace Firefly.Core.Texture
       {
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
       }
-      UpdateSettings();
+      UpdateSettings(texture);
       Uploaded = true;
-    }
-
-    private void ConvertImageToPixelArrayAndUpload(Image image, TextureTarget target)
-    {
-      int width = image.Width;
-      int height = image.Height;
-      byte[] pixelArray = image.GetPixelArray();
-      GL.TexImage2D(target, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
-    }
-
-    private void ConvertImageToPixelArrayAndUploadCube(Image image, TextureTarget target)
-    {
-      int width = image.Width;
-      int height = image.Height;
-      byte[] pixelArray = image.GetPixelArray();
-      GL.TexImage2D(target, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
     }
 
     private void UploadCubemap(Cubemap cubemap)
     {
-      ConvertImageToPixelArrayAndUploadCube(cubemap.RightImage, TextureTarget.TextureCubeMapPositiveX);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.LeftImage, TextureTarget.TextureCubeMapNegativeX);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.TopImage, TextureTarget.TextureCubeMapNegativeY);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.BottomImage, TextureTarget.TextureCubeMapPositiveY);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.FrontImage, TextureTarget.TextureCubeMapPositiveZ);
-      ConvertImageToPixelArrayAndUploadCube(cubemap.BackImage, TextureTarget.TextureCubeMapNegativeZ);
+      ConvertImageToPixelArrayAndUpload(cubemap.RightImage, TextureTarget.TextureCubeMapPositiveX);
+      ConvertImageToPixelArrayAndUpload(cubemap.LeftImage, TextureTarget.TextureCubeMapNegativeX);
+      ConvertImageToPixelArrayAndUpload(cubemap.TopImage, TextureTarget.TextureCubeMapNegativeY);
+      ConvertImageToPixelArrayAndUpload(cubemap.BottomImage, TextureTarget.TextureCubeMapPositiveY);
+      ConvertImageToPixelArrayAndUpload(cubemap.FrontImage, TextureTarget.TextureCubeMapPositiveZ);
+      ConvertImageToPixelArrayAndUpload(cubemap.BackImage, TextureTarget.TextureCubeMapNegativeZ);
       if (texture.UseMipMaps)
       {
         GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
       }
 
-      UpdateSettingsCubemap();
+      UpdateSettings(cubemap);
       Uploaded = true;
     }
 
@@ -128,7 +120,7 @@ namespace Firefly.Core.Texture
       int width = renderTexture.Width;
       int height = renderTexture.Height;
 
-      UpdateSettings();
+      UpdateSettings(renderTexture);
       GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
       Uploaded = true;
     }

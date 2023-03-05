@@ -32,11 +32,12 @@ namespace Firefly.Core
         #version 450 core
         layout (location = 0) in vec2 a_Position;
 
-        out vec2 TexCoords;
+        out vec4 TexCoords;
+			  uniform mat4 u_projectionMatrix;
 
         void main()
         {
-				  TexCoords = -a_Position.xy;
+				  TexCoords = (u_projectionMatrix * vec4(-a_Position.xy, 1.0, 1.0));
           gl_Position = vec4(a_Position, 1.0, 1.0);
         }
       ";
@@ -45,17 +46,13 @@ namespace Firefly.Core
         #version 450 core
         out vec4 FragColor;
 
-        in vec2 TexCoords;
-
-			  uniform mat4 u_projectionMatrix;
-			  uniform mat4 u_viewMatrix;
+        in vec4 TexCoords;
 
 			  uniform samplerCube u_skybox;
 
         void main()
         {
-          vec4 direction = u_projectionMatrix * u_viewMatrix * vec4(TexCoords, 1.0, 1.0);
-				  FragColor = texture(u_skybox, direction.xyz);
+				  FragColor = texture(u_skybox, TexCoords.xyz);
         }
       ";
 
@@ -64,7 +61,7 @@ namespace Firefly.Core
       textureComponent = new TextureComponent();
     }
 
-    public void DrawSkybox(Cubemap cubemap, Matrix4 projectionMatrix, Matrix4 viewMatrix)
+    public void DrawSkybox(Cubemap cubemap, Quaternion cameraRotation, Matrix4 projection)
     {
       if (!initialized)
       {
@@ -78,10 +75,10 @@ namespace Firefly.Core
       shader.Use();
 
       int projLocation = shader.GetUniformLocation("u_projectionMatrix");
-      GL.UniformMatrix4(projLocation, false, ref projectionMatrix);
-      int viewLocation = shader.GetUniformLocation("u_viewMatrix");
-      Matrix4 viewMatrixWithoutTranslation = viewMatrix.ClearTranslation();
-      GL.UniformMatrix4(viewLocation, false, ref viewMatrixWithoutTranslation);
+      Matrix4 rotationMatrix = Matrix4.CreateFromQuaternion(cameraRotation).Inverted();
+      Matrix4 projRotated = projection * rotationMatrix;
+
+      GL.UniformMatrix4(projLocation, false, ref projRotated);
 
       textureComponent.SetUnit(TextureUnit.Texture0);
       GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
