@@ -110,13 +110,11 @@ namespace Firefly.Core
       GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
-
       Cubemap skybox = scene.Camera.Skybox;
       if (skybox != null)
       {
-        skyboxHandler.DrawSkybox(skybox, scene.Camera.Transform.Rotation, projectionMatrix.Inverted());
+        Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+        skyboxHandler.DrawSkybox(skybox, scene.Camera.Transform.GetLocalRotationMatrix(), projectionMatrix.Inverted());
       }
 
       BufferObject(scene.RootObject);

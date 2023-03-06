@@ -21,7 +21,6 @@ namespace Firefly.Core
     private bool initialized;
 
     private VertexBufferObject<float> Positions { get; set; }
-    private VertexBufferObject<float> TextureCoordinates { get; set; }
 
     internal SkyboxHandler(ShaderManager shaderManager, TextureManager textureManager)
     {
@@ -37,7 +36,7 @@ namespace Firefly.Core
 
         void main()
         {
-				  TexCoords = (u_projectionMatrix * vec4(-a_Position.xy, 1.0, 1.0));
+				  TexCoords = (u_projectionMatrix * vec4(a_Position.xy, 1.0, 1.0));
           gl_Position = vec4(a_Position, 1.0, 1.0);
         }
       ";
@@ -61,7 +60,7 @@ namespace Firefly.Core
       textureComponent = new TextureComponent();
     }
 
-    public void DrawSkybox(Cubemap cubemap, Quaternion cameraRotation, Matrix4 projection)
+    public void DrawSkybox(Cubemap cubemap, Matrix4 cameraLocalToWorldMatrix, Matrix4 projection)
     {
       if (!initialized)
       {
@@ -69,20 +68,20 @@ namespace Firefly.Core
         CreateVBOs();
       }
 
-      //GL.DepthMask(false);
       ShaderComponent shader = shaderManager.GetComponent(material);
       GL.BindVertexArray(VAO);
       shader.Use();
 
       int projLocation = shader.GetUniformLocation("u_projectionMatrix");
-      Matrix4 rotationMatrix = Matrix4.CreateFromQuaternion(cameraRotation).Inverted();
-      Matrix4 projRotated = projection * rotationMatrix;
+      // Take the current camera's projection matrix and rotate it
+      Matrix4 rotationMatrix = cameraLocalToWorldMatrix;
+      Matrix4 projectionRotated = projection * rotationMatrix;
 
-      GL.UniformMatrix4(projLocation, false, ref projRotated);
+      GL.UniformMatrix4(projLocation, false, ref projectionRotated);
 
+      // Apply the skybox texture to unit 0 and draw using our dedicated VAO
       textureComponent.SetUnit(TextureUnit.Texture0);
       GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
-      //GL.DepthMask(true);
     }
 
     private void CreateVBOs()
@@ -90,7 +89,6 @@ namespace Firefly.Core
       VAO = GL.GenVertexArray();
       GL.BindVertexArray(VAO);
       Positions = new VertexBufferObject<float>(DrawType.Static, false);
-      TextureCoordinates = new VertexBufferObject<float>(DrawType.Static, false);
 
       Positions.PushData(new float[] { -1.0f,  1.0f,
                                         1.0f, -1.0f,

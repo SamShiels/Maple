@@ -56,7 +56,7 @@ namespace CameraExample
         cameraContainer.Transform.AddChild(cube.Transform);
       }
 
-      //cameraContainer.Transform.AddChild(game.camera.Transform);
+     // cameraContainer.Transform.AddChild(game.camera.Transform);
     }
 
     private float displacement = 0.0f;
@@ -65,9 +65,9 @@ namespace CameraExample
     {
       //cameraContainer.Transform.Position = new Vector3(0.0f, 0, 0.0f);
       //cameraContainer.Transform.Position = new Vector3(0.0f, 0f, -displacement * 5);
-      game.camera.Transform.EulerAngles = new Vector3(0f, -displacement / 3, 0.0f);
+      game.camera.Transform.EulerAngles = new Vector3(-displacement / 3, 0.0f, -displacement / 2);
       displacement += 0.01f;
-      game.camera.FieldOfView = (float)(Math.Sin(displacement) + 2.0f);
+      //game.camera.FieldOfView = (float)(Math.Sin(displacement) + 2.0f);
       base.OnUpdateFrame(args);
     }
 
