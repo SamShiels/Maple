@@ -90,12 +90,12 @@ namespace Firefly.Core
       GL.BindVertexArray(VAO);
       Positions = new VertexBufferObject<float>(DrawType.Static, false);
 
-      Positions.PushData(new float[] { -1.0f,  1.0f,
+      Positions.PushData(new float[] { -1.0f, -1.0f,
                                         1.0f, -1.0f,
                                         1.0f,  1.0f,
-                                       -1.0f,  1.0f,
                                        -1.0f, -1.0f,
-                                        1.0f, -1.0f, });
+                                        1.0f,  1.0f,
+                                       -1.0f,  1.0f, });
 
       // bind the positions buffer and enable the positions attribute pointer
       Positions.Bind();
