@@ -30,7 +30,7 @@ namespace CubeExample
       Texture textureKronk = new Texture(kronk);
       cubeMesh = new MeshObject();
       cubeMesh.Model = model;
-      cubeMesh.Transform.Position = new Vector3(0f, 0f, -5f);
+      cubeMesh.Transform.Position = new Vector3(0f, 0f, 5f);
       cubeMesh.Textures = new Texture[] { textureKronk };
 
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);

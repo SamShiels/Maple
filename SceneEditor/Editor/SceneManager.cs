@@ -9,6 +9,7 @@ using Firefly.Texturing;
 using Firefly.Utilities;
 using Firefly.World;
 using Firefly.World.Mesh;
+using Firefly.World.Scene;
 using OpenTK.Mathematics;
 
 

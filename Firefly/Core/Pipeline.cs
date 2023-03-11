@@ -10,6 +10,7 @@ using Firefly.Core.Texture;
 using Firefly.World.Mesh;
 using Firefly.World.Lighting;
 using Firefly.Core.Lighting;
+using Firefly.World.Scene;
 
 namespace Firefly.Core
 {
@@ -79,7 +80,7 @@ namespace Firefly.Core
     /// Push an object into the pipeline and render it, along with all of its children.
     /// </summary>
     /// <param name="obj"></param>
-    public void RenderScene(Scene scene, bool raw)
+    public void RenderScene(SceneObject scene, bool raw)
     {
       lighting = scene.Lights;
 

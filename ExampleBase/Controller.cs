@@ -5,13 +5,14 @@ using Firefly.Rendering;
 using System;
 using Firefly.Utilities;
 using Firefly.World;
+using Firefly.World.Scene;
 
 namespace ExampleBase
 {
   public class Controller
   {
     public Renderer renderer { private set; get; }
-    public Scene scene { private set; get; }
+    public SceneObject scene { private set; get; }
 
     public Camera camera;
 
@@ -80,7 +81,7 @@ namespace ExampleBase
       renderer = new Renderer(windowWidth, windowHeight);
       renderer.AmbientLight = new Color4(0.2f, 0.2f, 0.2f, 1.0f);
       renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
-      scene = new Scene();
+      scene = new SceneObject();
       camera = new Camera();
       camera.Transform.Position = new Vector3(0.0f, 0.0f, -10.0f);
       scene.AssignCamera(camera);

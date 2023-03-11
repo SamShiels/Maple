@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Firefly.Core.Texture;
-using Firefly.World;
 using Firefly.World.Mesh;
+using Firefly.World.Scene;
 
 namespace Firefly
 {
@@ -146,7 +146,7 @@ namespace Firefly
     /// Render an object and all of its children.
     /// </summary>
     /// <param name="obj"></param>
-    public void Render(Scene scene)
+    public void Render(SceneObject scene)
     {
       pipeline.RenderScene(scene, false);
     }
@@ -155,7 +155,7 @@ namespace Firefly
     /// Render an object and all of its children directly to the window.
     /// </summary>
     /// <param name="obj"></param>
-    public void RenderRaw(Scene scene)
+    public void RenderRaw(SceneObject scene)
     {
       pipeline.RenderScene(scene, true);
     }

@@ -1,5 +1,6 @@
 ﻿using Firefly.Rendering;
 using Firefly.World;
+using Firefly.World.Scene;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;

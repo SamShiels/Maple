@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Firefly.World
+namespace Firefly.World.Scene
 {
-  public class Scene
+  public class SceneObject
   {
     public WorldObject RootObject
     {
@@ -28,7 +28,7 @@ namespace Firefly.World
       get; private set;
     }
 
-    public Scene()
+    public SceneObject()
     {
       RootObject = new WorldObject();
       Cameras = new List<Camera>();
@@ -40,7 +40,8 @@ namespace Firefly.World
       if (parent == null)
       {
         RootObject.Transform.AddChild(worldObject.Transform);
-      } else
+      }
+      else
       {
         parent.Transform.AddChild(worldObject.Transform);
       }
