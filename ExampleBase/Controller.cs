@@ -12,7 +12,7 @@ namespace ExampleBase
   public class Controller
   {
     public Renderer renderer { private set; get; }
-    public SceneObject scene { private set; get; }
+    public SceneObject scene { set; get; }
 
     public Camera camera;
 

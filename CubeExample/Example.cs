@@ -10,47 +10,32 @@ using Firefly.World;
 using Firefly.Rendering;
 using Firefly.World.Mesh;
 using Firefly.World.Lighting;
+using Firefly.World.Scene;
+using System.Text.Json;
+using System.IO;
 
 namespace CubeExample
 {
   public class Example : Window
   {
-    private MeshObject cubeMesh;
-    private MeshObject houseMesh;
 
     public Example(int width, int height, string title) : base(width, height, title) { }
 
     protected override void OnLoad()
     {
       base.OnLoad();
-      OBJLoader loader = new OBJLoader();
 
-      Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
-      Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.kronk.jpg"));
-      Texture textureKronk = new Texture(kronk);
-      cubeMesh = new MeshObject();
-      cubeMesh.Model = model;
-      cubeMesh.Transform.Position = new Vector3(0f, 0f, 5f);
-      cubeMesh.Textures = new Texture[] { textureKronk };
+      SceneLoader sceneLoader = new SceneLoader(Assembly.GetExecutingAssembly());
+      Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene2.json");
 
-      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
-
-      cubeMesh.Material = material;
-
-      game.scene.AddObject(cubeMesh);
+      SceneObject scene = sceneLoader.CreateScene(sceneJson);
+      game.scene = scene;
     }
-
-    private float scale = 0.0f;
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
       base.OnUpdateFrame(args);
-      scale += 0.01f;
-      cubeMesh.Transform.LocalScale = new Vector3(3f + scale * 2, 3f, 1f);
-      //cubeMesh.Transform.EulerAngles = new Vector3(scale, 0f, 0f);
     }
-
-    private float Time = 0.0f;
 
     protected override void OnRenderFrame(FrameEventArgs args)
     {

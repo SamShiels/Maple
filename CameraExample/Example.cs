@@ -24,7 +24,7 @@ namespace CameraExample
     {
       base.OnLoad();
       OBJLoader loader = new OBJLoader();
-
+      AssemblyName assembly = Assembly.GetExecutingAssembly().GetName();
       Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.cube.obj"));
       Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.kronk.jpg"));
       Image negx = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.negx.jpg"));
@@ -35,6 +35,7 @@ namespace CameraExample
       Image posz = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraExample.Resources.Langholmen.posz.jpg"));
 
       Cubemap cubemap = new Cubemap(posx, negx, posy, negy, posz, negz);
+      var type = cubemap.GetType().GetRuntimeProperties();
       game.camera.Skybox = cubemap;
 
       Texture texture = new Texture(kronk);

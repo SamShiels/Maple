@@ -14,7 +14,6 @@
     <None Remove="Resources\Langholmen\posx.jpg" />
     <None Remove="Resources\Langholmen\posy.jpg" />
     <None Remove="Resources\Langholmen\posz.jpg" />
-    <None Remove="Resources\Langholmen\top.png" />
     <None Remove="Resources\ship9.obj" />
   </ItemGroup>
 
@@ -41,9 +40,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Langholmen\posz.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Langholmen\top.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ship9.obj">
