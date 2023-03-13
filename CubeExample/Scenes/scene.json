@@ -11,7 +11,7 @@
   "worldObjects": [
     {
       "name": "cube",
-      "position": [ 0, 5, 10 ],
+      "position": [ 0, 0, -10 ],
       "rotation": [ 0, 0, 0 ],
       "localScale": [ 1, 1, 1 ],
       "children": [],

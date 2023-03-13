@@ -8,6 +8,8 @@
   <ItemGroup>
     <None Remove="Resources\castle.png" />
     <None Remove="Resources\cube.obj" />
+    <None Remove="Resources\diffuse.frag" />
+    <None Remove="Resources\diffuse.vert" />
     <None Remove="Resources\grid.jpg" />
     <None Remove="Resources\house.obj" />
     <None Remove="Resources\house.png" />
@@ -29,6 +31,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\cube.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\diffuse.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\diffuse.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\grid.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

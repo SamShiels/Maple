@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Firefly.World.Scene.SceneDataModels
 {
-  internal class Material
+  internal class MaterialUniform
   {
     public string name { get; set; }
-    public string shaderName { get; set; }
-    public List<MaterialUniform> uniforms { get; set; }
+    public object value { get; set; }
   }
 }

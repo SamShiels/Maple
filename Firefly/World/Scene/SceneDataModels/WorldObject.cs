@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Firefly.World.Scene.SceneDataModels
 {
-  internal class WorldObject<T>
+  internal class WorldObject
   {
     public string name { get; set; }
     public string type { get; set; }
@@ -12,6 +13,6 @@ namespace Firefly.World.Scene.SceneDataModels
     public List<int> rotation { get; set; }
     public List<int> localScale { get; set; }
     public List<WorldObject> children { get; set; }
-    public T properties { get; set; }
+    public JsonElement properties { get; set; }
   }
 }

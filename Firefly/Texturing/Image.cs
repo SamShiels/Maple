@@ -17,7 +17,7 @@ namespace Firefly.Texturing
     public Image(Stream stream)
     {
       Image<Rgba32> image = SixLabors.ImageSharp.Image.Load<Rgba32>(stream);
-      image.Mutate(x => x.Flip(FlipMode.Vertical));
+      //image.Mutate(x => x.Flip(FlipMode.Vertical));
 
       pixels = new List<byte>(4 * image.Width * image.Height);
 

@@ -26,7 +26,7 @@ namespace CubeExample
       base.OnLoad();
 
       SceneLoader sceneLoader = new SceneLoader(Assembly.GetExecutingAssembly());
-      Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene2.json");
+      Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene.json");
 
       SceneObject scene = sceneLoader.CreateScene(sceneJson);
       game.scene = scene;
