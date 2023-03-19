@@ -1,5 +1,6 @@
 ﻿using Firefly.Rendering;
 using Firefly.Texturing;
+using Firefly.World.Lighting;
 using Firefly.World.Mesh;
 using Firefly.World.Scene.SceneDataModels;
 using OpenTK.Mathematics;
@@ -31,16 +32,30 @@ namespace Firefly.World.Scene
 			assemblyName = executingAssembly.GetName().Name;
 		}
 
-		public SceneObject CreateScene(Stream sceneStream)
+		/// <summary>
+		/// Create a new scene from a scene file.
+		/// </summary>
+		/// <param name="sceneStream"></param>
+		/// <param name="existingScene"></param>
+		/// <returns></returns>
+		public SceneObject CreateScene(Stream sceneStream, SceneObject existingScene = null)
 		{
 			using (StreamReader reader = new StreamReader(sceneStream))
 			{
 				string jsonContent = reader.ReadToEnd();
 
+				SceneFile sceneFile = null;
 				// Parse the json scene object
-				SceneFile sceneFile = JsonSerializer.Deserialize<SceneFile>(jsonContent);
+				try
+				{
+					sceneFile = JsonSerializer.Deserialize<SceneFile>(jsonContent);
+				}
+				 catch
+        {
+					throw new Exception("NOOO");
+        }
 				// Declare a new scene
-				SceneObject newScene = new SceneObject();
+				SceneObject newScene = existingScene ?? new SceneObject();
 
 				// Set up the camera
 				Camera camera = new Camera();
@@ -67,10 +82,10 @@ namespace Firefly.World.Scene
 				// Create the skybox cubemap. If it exists
 				if (sceneFileCamera.skybox != null && sceneFileCamera.skybox.Length > 0)
 				{
-					camera.Skybox = GetCubemap(cubemaps, sceneFile.cubemaps, sceneFileCamera.skybox);
+					camera.Skybox = GetOrCreateCubemap(cubemaps, sceneFile.cubemaps, sceneFileCamera.skybox);
 				}
 
-				newScene.AssignCamera(camera);
+				//newScene.AssignCamera(camera);
 
 				// Insntantiate scene object using the hierarchy given in the scene file
 				if (sceneFile.worldObjects != null)
@@ -93,6 +108,9 @@ namespace Firefly.World.Scene
 			if (worldObject.type == "MeshObject")
 			{
 				newObject = InstantiateMeshObject(sceneMaterials, worldObject);
+			} else if (worldObject.type == "PointLight")
+      {
+				newObject = InstantiatePointLight(worldObject);
 			} else
       {
 				newObject = InstantiateMeshObject(sceneMaterials, worldObject);
@@ -132,7 +150,7 @@ namespace Firefly.World.Scene
 			for (int i = 0; i < textureNames.Count; i++)
 			{
 				// Get the textures by name
-				Texture texture = GetTexture(textures, textureNames[i]);
+				Texture texture = GetOrCreateTexture(textures, textureNames[i]);
 				meshTextures.Add(texture);
 			}
 
@@ -142,17 +160,46 @@ namespace Firefly.World.Scene
 			string materialName = meshObjectProperties.GetProperty("material").ToString();
 
 			// Assign the model to the new world object
-			Model model = GetModel(models, modelName);
+			Model model = GetOrCreateModel(models, modelName);
 			meshObject.Model = model;
 
 			// Get the material and assign it
-			Rendering.Material material = GetMaterial(materials, sceneMaterials, materialName);
+			Rendering.Material material = GetOrCreateMaterial(materials, sceneMaterials, materialName);
 			meshObject.Material = material;
 
 			return meshObject;
 		}
 
-		internal Model GetModel(Dictionary<string, Model> models, string modelName)
+		private PointLight InstantiatePointLight(SceneDataModels.WorldObject worldObject)
+		{
+			PointLight pointLight = new PointLight();
+
+			JsonElement pointLightProperties = worldObject.properties;
+			float radius = pointLightProperties.GetProperty("radius").GetSingle();
+			float intensity = pointLightProperties.GetProperty("intensity").GetSingle();
+			JsonElement diffuseElement = pointLightProperties.GetProperty("diffuse");
+
+			float r = diffuseElement[0].GetSingle();
+			float g = diffuseElement[1].GetSingle();
+			float b = diffuseElement[2].GetSingle();
+			float a = diffuseElement[3].GetSingle();
+
+			Color4 diffuseColor = new Color4(r, g, b, a);
+
+			pointLight.Radius = radius;
+			pointLight.Intensity = intensity;
+			pointLight.Diffuse = diffuseColor;
+
+			return pointLight;
+		}
+
+		public Model GetModel(string modelName)
+    {
+			models.TryGetValue(modelName, out Model model);
+			return model;
+    }
+
+		private Model GetOrCreateModel(Dictionary<string, Model> models, string modelName)
 		{
 			if (models.TryGetValue(modelName, out Model model))
 			{
@@ -166,7 +213,13 @@ namespace Firefly.World.Scene
 			return newModel;
 		}
 
-		internal Texture GetTexture(Dictionary<string, Texture> textures, string imageName)
+		public Texture GetTexture(string imageName)
+		{
+			textures.TryGetValue(imageName, out Texture texture);
+			return texture;
+		}
+
+		private Texture GetOrCreateTexture(Dictionary<string, Texture> textures, string imageName)
 		{
 			if (textures.TryGetValue(imageName, out Texture texture))
 			{
@@ -180,7 +233,13 @@ namespace Firefly.World.Scene
 			return newTexture;
 		}
 
-		internal Texturing.Cubemap GetCubemap(Dictionary<string, Texturing.Cubemap> cubemaps, List<SceneDataModels.Cubemap> sceneCubemaps, string name)
+		public Texturing.Cubemap GetCubemap(string cubemapName)
+		{
+			cubemaps.TryGetValue(cubemapName, out Texturing.Cubemap cubemap);
+			return cubemap;
+		}
+
+		private Texturing.Cubemap GetOrCreateCubemap(Dictionary<string, Texturing.Cubemap> cubemaps, List<SceneDataModels.Cubemap> sceneCubemaps, string name)
 		{
 			if (cubemaps.TryGetValue(name, out Texturing.Cubemap cubemap))
 			{
@@ -209,7 +268,7 @@ namespace Firefly.World.Scene
 			return newCubemap;
 		}
 
-		internal Rendering.Material GetMaterial(Dictionary<string, Rendering.Material> materials, List<SceneDataModels.Material> sceneMaterials, string name)
+		private Rendering.Material GetOrCreateMaterial(Dictionary<string, Rendering.Material> materials, List<SceneDataModels.Material> sceneMaterials, string name)
 		{
 			if (materials.TryGetValue(name, out Rendering.Material material))
 			{

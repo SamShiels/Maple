@@ -83,7 +83,7 @@ namespace ExampleBase
       renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
       scene = new SceneObject();
       camera = new Camera();
-      camera.Transform.Position = new Vector3(0.0f, 0.0f, -10.0f);
+      camera.Transform.Position = new Vector3(0.0f, 0.0f, 0.0f);
       scene.AssignCamera(camera);
     }
 

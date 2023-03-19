@@ -12,7 +12,7 @@
     {
       "name": "cube",
       "position": [ 0, 0, -10 ],
-      "rotation": [ 0, 0, 0 ],
+      "rotation": [ 0, 1, 0 ],
       "localScale": [ 1, 1, 1 ],
       "children": [],
       "type": "MeshObject",

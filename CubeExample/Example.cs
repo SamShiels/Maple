@@ -28,8 +28,8 @@ namespace CubeExample
       SceneLoader sceneLoader = new SceneLoader(Assembly.GetExecutingAssembly());
       Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene.json");
 
-      SceneObject scene = sceneLoader.CreateScene(sceneJson);
-      game.scene = scene;
+      SceneObject scene = sceneLoader.CreateScene(sceneJson, game.scene);
+      Console.WriteLine(scene);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
