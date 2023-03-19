@@ -44,48 +44,43 @@ namespace Firefly.World.Scene
 			{
 				string jsonContent = reader.ReadToEnd();
 
-				SceneFile sceneFile = null;
 				// Parse the json scene object
-				try
-				{
-					sceneFile = JsonSerializer.Deserialize<SceneFile>(jsonContent);
-				}
-				 catch
-        {
-					throw new Exception("NOOO");
-        }
-				// Declare a new scene
+				SceneFile sceneFile = JsonSerializer.Deserialize<SceneFile>(jsonContent);
+				// Declare a new scene, if we aren't loading additively
 				SceneObject newScene = existingScene ?? new SceneObject();
 
 				// Set up the camera
 				Camera camera = new Camera();
 				SceneDataModels.Camera sceneFileCamera = sceneFile.camera;
-				// 0 = perspective. 1 = orthographic.
-				if (sceneFileCamera.projectionType == 0)
+				if (sceneFileCamera != null)
 				{
-					camera.ProjectionType = Utilities.ProjectionType.Perspective;
+					// 0 = perspective. 1 = orthographic.
+					if (sceneFileCamera.projectionType == 0)
+					{
+						camera.ProjectionType = Utilities.ProjectionType.Perspective;
+					}
+					else
+					{
+						camera.ProjectionType = Utilities.ProjectionType.Orthographic;
+					}
+
+					// Assign FOV and clip plane distances
+					camera.FieldOfView = sceneFileCamera.fov;
+					camera.FarClipPlane = sceneFileCamera.farClip;
+					camera.NearClipPlane = sceneFileCamera.nearClip;
+
+					// Position and rotation
+					camera.Transform.Position = new Vector3(sceneFileCamera.position[0], sceneFileCamera.position[1], sceneFileCamera.position[2]);
+					camera.Transform.EulerAngles = new Vector3(sceneFileCamera.rotation[0], sceneFileCamera.rotation[1], sceneFileCamera.rotation[2]);
+
+					// Create the skybox cubemap. If it exists
+					if (sceneFileCamera.skybox != null && sceneFileCamera.skybox.Length > 0)
+					{
+						camera.Skybox = GetOrCreateCubemap(cubemaps, sceneFile.cubemaps, sceneFileCamera.skybox);
+					}
+
+					newScene.AssignCamera(camera);
 				}
-				else
-				{
-					camera.ProjectionType = Utilities.ProjectionType.Orthographic;
-				}
-
-				// Assign FOV and clip plane distances
-				camera.FieldOfView = sceneFileCamera.fov;
-				camera.FarClipPlane = sceneFileCamera.farClip;
-				camera.NearClipPlane = sceneFileCamera.nearClip;
-
-				// Position and rotation
-				camera.Transform.Position = new Vector3(sceneFileCamera.position[0], sceneFileCamera.position[1], sceneFileCamera.position[2]);
-				camera.Transform.EulerAngles = new Vector3(sceneFileCamera.rotation[0], sceneFileCamera.rotation[1], sceneFileCamera.rotation[2]);
-
-				// Create the skybox cubemap. If it exists
-				if (sceneFileCamera.skybox != null && sceneFileCamera.skybox.Length > 0)
-				{
-					camera.Skybox = GetOrCreateCubemap(cubemaps, sceneFile.cubemaps, sceneFileCamera.skybox);
-				}
-
-				//newScene.AssignCamera(camera);
 
 				// Insntantiate scene object using the hierarchy given in the scene file
 				if (sceneFile.worldObjects != null)
@@ -182,9 +177,8 @@ namespace Firefly.World.Scene
 			float r = diffuseElement[0].GetSingle();
 			float g = diffuseElement[1].GetSingle();
 			float b = diffuseElement[2].GetSingle();
-			float a = diffuseElement[3].GetSingle();
 
-			Color4 diffuseColor = new Color4(r, g, b, a);
+			Color4 diffuseColor = new Color4(r, g, b, 1f);
 
 			pointLight.Radius = radius;
 			pointLight.Intensity = intensity;
