@@ -9,9 +9,9 @@ namespace Firefly.World.Scene.SceneDataModels
   {
     public string name { get; set; }
     public string type { get; set; }
-    public List<int> position { get; set; }
-    public List<int> rotation { get; set; }
-    public List<int> localScale { get; set; }
+    public List<float> position { get; set; }
+    public List<float> rotation { get; set; }
+    public List<float> localScale { get; set; }
     public List<WorldObject> children { get; set; }
     public JsonElement properties { get; set; }
   }

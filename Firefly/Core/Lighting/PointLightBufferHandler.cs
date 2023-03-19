@@ -43,9 +43,11 @@ namespace Firefly.Core.Lighting
 
         int floatArrayPosition = i * pointLightFloatAmount;
 
-        float x = light.Transform.Position.X;
-        float y = light.Transform.Position.Y;
-        float z = light.Transform.Position.Z;
+        Matrix4 localToWorldMatrix = light.Transform.GetLocalMatrix();
+
+        float x = localToWorldMatrix.Row3[0];
+        float y = localToWorldMatrix.Row3[1];
+        float z = localToWorldMatrix.Row3[2];
         float radius = light.Radius;
 
         float r = light.Diffuse.R;
@@ -53,7 +55,7 @@ namespace Firefly.Core.Lighting
         float b = light.Diffuse.B;
         float intensity = light.Intensity;
 
-        lightsArray[floatArrayPosition] = x;
+        lightsArray[floatArrayPosition    ] = x;
         lightsArray[floatArrayPosition + 1] = y;
         lightsArray[floatArrayPosition + 2] = z;
         lightsArray[floatArrayPosition + 3] = radius;

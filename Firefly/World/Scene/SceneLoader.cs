@@ -117,11 +117,14 @@ namespace Firefly.World.Scene
 
 			// Add the new object to our scene
 			scene.AddObject(newObject, parent);
-			for (int i = 0; i < worldObject.children.Count; i++)
-      {
-				// Recursively add each child to the scene
-				SceneDataModels.WorldObject child = worldObject.children[i];
-				AddObject(scene, sceneMaterials, child, newObject);
+			if (worldObject.children != null)
+			{
+				for (int i = 0; i < worldObject.children.Count; i++)
+				{
+					// Recursively add each child to the scene
+					SceneDataModels.WorldObject child = worldObject.children[i];
+					AddObject(scene, sceneMaterials, child, newObject);
+				}
 			}
 		}
 

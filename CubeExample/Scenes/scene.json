@@ -11,29 +11,43 @@
   "worldObjects": [
     {
       "name": "cube",
-      "position": [ 0, 0, -10 ],
-      "rotation": [ 0, 2, 0 ],
+      "position": [ 0, 0, -20 ],
+      "rotation": [ 0, 0, 0 ],
       "localScale": [ 1, 1, 1 ],
-      "children": [],
       "type": "MeshObject",
       "properties": {
         "modelName": "cube.obj",
         "textures": [ "kronk.jpg" ],
         "material": "diffuse"
-      }
-    },
-    {
-      "name": "light",
-      "position": [ 2, 0, -9 ],
-      "rotation": [ 0, 0, 0 ],
-      "localScale": [ 1, 1, 1 ],
-      "children": [],
-      "type": "PointLight",
-      "properties": {
-        "radius": 5,
-        "intensity": 1,
-        "diffuse": [ 1, 1, 1 ]
-      }
+      },
+      "children": [
+        {
+          "name": "light",
+          "position": [ 0, 0, 5 ],
+          "rotation": [ 0, 0, 0 ],
+          "localScale": [ 1, 1, 1 ],
+          "type": "PointLight",
+          "properties": {
+            "radius": 5,
+            "intensity": 1,
+            "diffuse": [ 1, 1, 1 ]
+          },
+          "children": []
+        },
+        {
+          "name": "cube",
+          "position": [ -2, 0, 3 ],
+          "rotation": [ 0, 0.1, 0 ],
+          "localScale": [ 1, 1, 1 ],
+          "type": "MeshObject",
+          "properties": {
+            "modelName": "cube.obj",
+            "textures": [ "kronk.jpg" ],
+            "material": "diffuse"
+          },
+          "children": []
+        }
+      ]
     }
   ],
   "materials": [
