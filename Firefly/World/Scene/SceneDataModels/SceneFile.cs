@@ -8,7 +8,6 @@ namespace Firefly.World.Scene.SceneDataModels
   {
     public Camera camera { get; set; }
     public List<WorldObject> worldObjects { get; set; }
-    public List<Material> materials { get; set; }
-    public List<Cubemap> cubemaps { get; set; }
+    public Assets assets { get; set; }
   }
 }

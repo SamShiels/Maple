@@ -50,22 +50,24 @@
       ]
     }
   ],
-  "materials": [
-    {
-      "name": "diffuse",
-      "shaderName": "diffuse",
-      "uniforms": []
-    }
-  ],
-  "cubemaps": [
-    {
-      "name": "Langholmen",
-      "right": "posx.jpg",
-      "left": "negx.jpg",
-      "top": "posy.jpg",
-      "bottom": "negy.jpg",
-      "front": "posz.jpg",
-      "back": "negz.jpg"
-    }
-  ]
+  "assets": {
+    "materials": [
+      {
+        "name": "diffuse",
+        "shaderName": "diffuse",
+        "uniforms": []
+      }
+    ],
+    "cubemaps": [
+      {
+        "name": "Langholmen",
+        "right": "posx.jpg",
+        "left": "negx.jpg",
+        "top": "posy.jpg",
+        "bottom": "negy.jpg",
+        "front": "posz.jpg",
+        "back": "negz.jpg"
+      }
+    ]
+  }
 }

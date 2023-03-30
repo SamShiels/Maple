@@ -76,7 +76,7 @@ namespace Firefly.World.Scene
 					// Create the skybox cubemap. If it exists
 					if (sceneFileCamera.skybox != null && sceneFileCamera.skybox.Length > 0)
 					{
-						camera.Skybox = GetOrCreateCubemap(cubemaps, sceneFile.cubemaps, sceneFileCamera.skybox);
+						camera.Skybox = GetOrCreateCubemap(cubemaps, sceneFile.assets.cubemaps, sceneFileCamera.skybox);
 					}
 
 					newScene.AssignCamera(camera);
@@ -88,7 +88,7 @@ namespace Firefly.World.Scene
 					for (int i = 0; i < sceneFile.worldObjects.Count; i++)
 					{
 						SceneDataModels.WorldObject worldObject = sceneFile.worldObjects[i];
-						AddObject(newScene, sceneFile.materials, worldObject, null);
+						AddObject(newScene, sceneFile.assets, worldObject, null);
 					}
 				}
 
@@ -96,19 +96,19 @@ namespace Firefly.World.Scene
 			}
 		}
 
-		private void AddObject(SceneObject scene, List<SceneDataModels.Material> sceneMaterials, SceneDataModels.WorldObject worldObject, WorldObject parent = null)
+		private void AddObject(SceneObject scene, Assets sceneAssets, SceneDataModels.WorldObject worldObject, WorldObject parent = null)
 		{
 			WorldObject newObject;
-			// Each type of world object has different properties
+			// Each type of world object has its own set of properties
 			if (worldObject.type == "MeshObject")
 			{
-				newObject = InstantiateMeshObject(sceneMaterials, worldObject);
+				newObject = InstantiateMeshObject(sceneAssets.materials, worldObject);
 			} else if (worldObject.type == "PointLight")
       {
 				newObject = InstantiatePointLight(worldObject);
 			} else
       {
-				newObject = InstantiateMeshObject(sceneMaterials, worldObject);
+				return;
 			}
 
 			newObject.Transform.Position = new Vector3(worldObject.position[0], worldObject.position[1], worldObject.position[2]);
@@ -123,7 +123,7 @@ namespace Firefly.World.Scene
 				{
 					// Recursively add each child to the scene
 					SceneDataModels.WorldObject child = worldObject.children[i];
-					AddObject(scene, sceneMaterials, child, newObject);
+					AddObject(scene, sceneAssets, child, newObject);
 				}
 			}
 		}
