@@ -1,25 +1,25 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Texturing;
+﻿using Firefly.Texturing;
 using System;
+using Silk.NET.OpenGL;
 
 namespace Firefly.Core.Texture
 {
-  internal class TextureComponent
+  internal class TextureComponent : RendererComponent
   {
     private TextureBase texture;
-    public int GLTexture { get; private set; }
+    public uint GLTexture { get; private set; }
     public bool Initialized { get; private set; }
     public bool Uploaded { get; private set; }
-    public int DirtyId { private set; get; } = -1;
+    public uint DirtyId { private set; get; } = 0;
     public TextureUnit CurrentTextureSlot { private set; get; }
 
-    public TextureComponent()
+    public TextureComponent(GL GLContext) : base(GLContext)
     {
       Initialized = false;
       Uploaded = false;
     }
 
-    public int CreateTexture(TextureBase Texture)
+    public uint CreateTexture(TextureBase Texture)
     {
       texture = Texture;
 
@@ -58,12 +58,13 @@ namespace Firefly.Core.Texture
       }
     }
 
-    private void ConvertImageToPixelArrayAndUpload(Image image, TextureTarget target)
+    private unsafe void ConvertImageToPixelArrayAndUpload(Image image, GLEnum target)
     {
-      int width = image.Width;
-      int height = image.Height;
+      uint width = image.Width;
+      uint height = image.Height;
       byte[] pixelArray = image.GetPixelArray();
-      GL.TexImage2D(target, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelArray);
+      GL.TexImage2D(target, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
+
     }
 
     private void UpdateSettings(Texturing.Texture texture)
@@ -87,11 +88,11 @@ namespace Firefly.Core.Texture
 
     private void UploadTexture(Texturing.Texture texture)
     {
-      ConvertImageToPixelArrayAndUpload(texture.Image, TextureTarget.Texture2D);
+      ConvertImageToPixelArrayAndUpload(texture.Image, GLEnum.Texture2D);
 
       if (texture.UseMipMaps)
       {
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+        GL.GenerateMipmap(GLEnum.Texture2D);
       }
       UpdateSettings(texture);
       Uploaded = true;
@@ -99,15 +100,15 @@ namespace Firefly.Core.Texture
 
     private void UploadCubemap(Cubemap cubemap)
     {
-      ConvertImageToPixelArrayAndUpload(cubemap.RightImage, TextureTarget.TextureCubeMapPositiveX);
-      ConvertImageToPixelArrayAndUpload(cubemap.LeftImage, TextureTarget.TextureCubeMapNegativeX);
-      ConvertImageToPixelArrayAndUpload(cubemap.TopImage, TextureTarget.TextureCubeMapNegativeY);
-      ConvertImageToPixelArrayAndUpload(cubemap.BottomImage, TextureTarget.TextureCubeMapPositiveY);
-      ConvertImageToPixelArrayAndUpload(cubemap.FrontImage, TextureTarget.TextureCubeMapPositiveZ);
-      ConvertImageToPixelArrayAndUpload(cubemap.BackImage, TextureTarget.TextureCubeMapNegativeZ);
+      ConvertImageToPixelArrayAndUpload(cubemap.RightImage, GLEnum.TextureCubeMapPositiveX);
+      ConvertImageToPixelArrayAndUpload(cubemap.LeftImage, GLEnum.TextureCubeMapNegativeX);
+      ConvertImageToPixelArrayAndUpload(cubemap.TopImage, GLEnum.TextureCubeMapNegativeY);
+      ConvertImageToPixelArrayAndUpload(cubemap.BottomImage, GLEnum.TextureCubeMapPositiveY);
+      ConvertImageToPixelArrayAndUpload(cubemap.FrontImage, GLEnum.TextureCubeMapPositiveZ);
+      ConvertImageToPixelArrayAndUpload(cubemap.BackImage, GLEnum.TextureCubeMapNegativeZ);
       if (texture.UseMipMaps)
       {
-        GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
+        GL.GenerateMipmap(GLEnum.TextureCubeMap);
       }
 
       UpdateSettings(cubemap);
@@ -117,11 +118,11 @@ namespace Firefly.Core.Texture
     private void UploadRenderTexture()
     {
       RenderTexture renderTexture = (RenderTexture)texture;
-      int width = renderTexture.Width;
-      int height = renderTexture.Height;
+      uint width = renderTexture.Width;
+      uint height = renderTexture.Height;
 
       UpdateSettings(renderTexture);
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+      GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
       Uploaded = true;
     }
   }

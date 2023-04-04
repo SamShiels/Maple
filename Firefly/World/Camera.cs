@@ -1,7 +1,8 @@
 ﻿using Firefly.Core;
 using Firefly.Texturing;
 using Firefly.Utilities;
-using OpenTK.Mathematics;
+using System.Drawing;
+using System.Numerics;
 
 namespace Firefly.World
 {
@@ -15,7 +16,7 @@ namespace Firefly.World
 
     public ProjectionType ProjectionType = ProjectionType.Perspective;
 
-    public Color4 BackgroundColor = Color4.Black;
+    public Color BackgroundColor = Color.Black;
     public Cubemap Skybox;
 
     private float nearClipPlane = 0.01f;
@@ -87,7 +88,7 @@ namespace Firefly.World
       }
     }
 
-    public Matrix4 projectionMatrix;
+    public Matrix4x4 projectionMatrix;
 
     public RenderTexture RenderTexture { get; set; }
 

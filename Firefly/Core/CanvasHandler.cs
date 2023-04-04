@@ -1,39 +1,41 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Core.Buffer;
+﻿using Firefly.Core.Buffer;
 using Firefly.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Firefly.Core.Shader;
+using Silk.NET.OpenGL;
+using Silk.NET.Maths;
 
 namespace Firefly.Core
 {
-  internal class CanvasHandler
+  internal class CanvasHandler : RendererComponent
   {
     private int textureResolutionWidth;
     private int textureResolutionHeight;
     private int numberOfSamples;
-    private int defaultFrameBufferHandle;
 
     private int windowWidth;
     private int windowHeight;
 
-    private int FBOHandle;
-    private int MultiSampleFBOHandle;
-    private int RBOHandle;
-    private int TextureHandle;
-    private int MultiSampleTextureHandle;
+    private uint defaultFrameBufferHandle;
+
+    private uint FBOHandle;
+    private uint MultiSampleFBOHandle;
+    private uint RBOHandle;
+    private uint TextureHandle;
+    private uint MultiSampleTextureHandle;
 
     private bool initialised = false;
 
     private ShaderManager shaderManager;
     private Material currentMaterial;
 
-    private int VAO;
+    private uint VAO;
     private VertexBufferObject<float> Positions { get; set; }
     private VertexBufferObject<float> TextureCoordinates { get; set; }
 
-    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, int defaultFrameBufferHandle)
+    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, uint defaultFrameBufferHandle, GL GLContext) : base(GLContext)
     {
       this.textureResolutionWidth = textureResolutionWidth;
       this.textureResolutionHeight = textureResolutionHeight;
@@ -55,7 +57,7 @@ namespace Firefly.Core
     public void BindFrameBuffer()
     {
       Initialize();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, MultiSampleFBOHandle);
+      GL.BindFramebuffer(GLEnum.Framebuffer, MultiSampleFBOHandle);
     }
 
     /// <summary>
@@ -64,13 +66,13 @@ namespace Firefly.Core
     public void DrawCanvas()
     {
       ShaderComponent shader = shaderManager.GetComponent(currentMaterial);
-      GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, MultiSampleFBOHandle);
-      GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, FBOHandle);
+      GL.BindFramebuffer(GLEnum.ReadFramebuffer, MultiSampleFBOHandle);
+      GL.BindFramebuffer(GLEnum.DrawFramebuffer, FBOHandle);
       GL.BlitFramebuffer(0, 0, textureResolutionWidth, textureResolutionHeight, 0, 0, textureResolutionWidth, textureResolutionHeight, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
 
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, defaultFrameBufferHandle);
+      GL.BindFramebuffer(GLEnum.Framebuffer, defaultFrameBufferHandle);
       GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-      GL.Clear(ClearBufferMask.ColorBufferBit);
+      GL.Clear((uint)GLEnum.ColorBufferBit);
       GL.BindVertexArray(VAO);
       shader.Use();
       Material material = currentMaterial;
@@ -91,11 +93,11 @@ namespace Firefly.Core
         }
       }
 
-      GL.Viewport(0, 0, windowWidth, windowHeight);
+      GL.Viewport(new Vector2D<int>(windowWidth, windowHeight));
       //Console.WriteLine("Canvas - Viewport set to " + windowWidth + ", " + windowWidth);
 
       GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-      GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
+      GL.DrawArrays(GLEnum.Triangles, 0, 6);
     }
 
     /// <summary>

@@ -3,26 +3,22 @@ using Firefly.Core.Shader;
 using Firefly.Core.Texture;
 using Firefly.Rendering;
 using Firefly.Texturing;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Silk.NET.OpenGL;
 
 namespace Firefly.Core
 {
-  internal class SkyboxHandler
+  internal class SkyboxHandler : RendererComponent
   {
     private ShaderManager shaderManager;
     private TextureManager textureManager;
     private TextureComponent textureComponent;
     private Material material;
-    private int VAO;
+    private uint VAO;
     private bool initialized;
 
     private VertexBufferObject<float> Positions { get; set; }
 
-    internal SkyboxHandler(ShaderManager shaderManager, TextureManager textureManager)
+    internal SkyboxHandler(ShaderManager shaderManager, TextureManager textureManager, GL GLContext) : base(GLContext)
     {
       this.shaderManager = shaderManager;
       this.textureManager = textureManager;

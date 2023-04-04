@@ -7,6 +7,7 @@
     <PackageProjectUrl>https://github.com/SamShiels/Firefly</PackageProjectUrl>
     <Version>0.0.10</Version>
     <RepositoryType>git</RepositoryType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTK" Version="4.7.1" />
+    <PackageReference Include="Silk.NET" Version="2.16.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.2" />
   </ItemGroup>
 

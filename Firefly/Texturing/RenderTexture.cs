@@ -6,8 +6,8 @@ namespace Firefly.Texturing
 {
   public class RenderTexture : Texture
   {
-    public int Width { get; set; }
-    public int Height { get; set; }
+    public uint Width { get; set; }
+    public uint Height { get; set; }
 
     public RenderTexture() : base(null)
     {

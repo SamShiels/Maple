@@ -11,8 +11,8 @@ namespace Firefly.Texturing
   public class Image
   {
     private List<byte> pixels;
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    public uint Width { get; private set; }
+    public uint Height { get; private set; }
 
     public Image(Stream stream)
     {
@@ -36,8 +36,8 @@ namespace Firefly.Texturing
         }
       });
 
-      Width = image.Width;
-      Height = image.Height;
+      Width = (uint)image.Width;
+      Height = (uint)image.Height;
     }
 
     public byte[] GetPixelArray()

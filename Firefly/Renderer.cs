@@ -1,6 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using Firefly.Core;
+﻿using Firefly.Core;
 using Firefly.Rendering;
 using Firefly.Texturing;
 using Firefly.Utilities;
@@ -12,6 +10,7 @@ using System.Runtime.InteropServices;
 using Firefly.Core.Texture;
 using Firefly.World.Mesh;
 using Firefly.World.Scene;
+using Silk.NET.OpenGL;
 
 namespace Firefly
 {
@@ -25,7 +24,7 @@ namespace Firefly
     private static DebugProc _debugProcCallback = DebugMessage;
     private static GCHandle _debugProcCallbackHandle;
 
-    private Color4 ambientLight;
+    private Color ambientLight;
 
     public Color4 AmbientLight
     {
@@ -117,7 +116,7 @@ namespace Firefly
     /// </summary>
     private int windowHeight;
 
-    public Renderer(int windowWidth, int windowHeight)
+    public Renderer(int windowWidth, int windowHeight, GL GLContext)
     {
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
@@ -127,7 +126,7 @@ namespace Firefly
       resolutionHeight = windowHeight;
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);
 
-      pipeline = new Pipeline(textureManager, shaderManager, canvasHandler);
+      pipeline = new Pipeline(textureManager, shaderManager, canvasHandler, GLContext);
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
       AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -137,9 +136,9 @@ namespace Firefly
 
       _debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
 
-      GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
-      GL.Enable(EnableCap.DebugOutput);
-      GL.Enable(EnableCap.DebugOutputSynchronous);
+      GLContext.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
+      GLContext.Enable(EnableCap.DebugOutput);
+      GLContext.Enable(EnableCap.DebugOutputSynchronous);
     }
 
     /// <summary>
@@ -196,12 +195,12 @@ namespace Firefly
       pipeline.UpdateResolution(resolutionWidth, resolutionHeight);
     }
 
-    private static void DebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+    private static void DebugMessage(GLEnum source, GLEnum type, int id, GLEnum severity, int length, IntPtr message, IntPtr userParam)
     {
       string messageString = Marshal.PtrToStringAnsi(message, length);
       Console.WriteLine($"{severity} {type} | {messageString}");
 
-      if (type == DebugType.DebugTypeError)
+      if (type == GLEnum.DebugTypeError)
       {
         Console.WriteLine(messageString);
       }

@@ -1,15 +1,15 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using Firefly.Core.Buffer;
+﻿using Firefly.Core.Buffer;
 using Firefly.Rendering;
 using Firefly.Core.Shader;
 using System.Collections.Generic;
 using Firefly.World;
 using Firefly.Core.Texture;
 using Firefly.World.Mesh;
+using Silk.NET.OpenGL;
 
 namespace Firefly.Core
 {
-  internal class MeshBufferHandler
+  internal class MeshBufferHandler : RendererComponent
   {
     private Dictionary<uint, VertexArrayObject> VAOList;
     private Dictionary<uint, uint> DirtyIDs;
@@ -18,7 +18,7 @@ namespace Firefly.Core
 
     private VertexArrayObject lastVao;
 
-    public MeshBufferHandler(TextureManager textureManager, ShaderManager shaderManager)
+    public MeshBufferHandler(TextureManager textureManager, ShaderManager shaderManager, GL GLContext) : base(GLContext)
     {
       VAOList = new Dictionary<uint, VertexArrayObject>();
       DirtyIDs = new Dictionary<uint, uint>();
@@ -138,7 +138,7 @@ namespace Firefly.Core
         {
           samplers[i] = texturePositions[i];
         }
-        GL.Uniform1(samplerLocation, samplers.Length, samplers);
+        GL.Uniform1(samplerLocation, samplers);
       }
     }
   }

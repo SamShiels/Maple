@@ -10,7 +10,7 @@ namespace Firefly.Texturing
     public static int NextId = 0;
 
     public int Id { protected set; get; }
-    public int DirtyId { protected set; get; } = -1;
+    public uint DirtyId { protected set; get; } = 0;
 
     private TextureWrapMode wrapS;
     public TextureWrapMode WrapS

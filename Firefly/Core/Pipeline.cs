@@ -1,8 +1,6 @@
 ﻿using Firefly.Texturing;
 using Firefly.Rendering;
 using Firefly.Core.Shader;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System;
 using Firefly.World;
@@ -11,11 +9,13 @@ using Firefly.World.Mesh;
 using Firefly.World.Lighting;
 using Firefly.Core.Lighting;
 using Firefly.World.Scene;
+using Silk.NET.OpenGL;
+using Silk.NET.Maths;
 
 namespace Firefly.Core
 {
 
-  internal class Pipeline
+  internal class Pipeline : RendererComponent
   {
     private const int BATCH_BUFFER_MAX_INDICES = 4096;
     private const int BATCH_BUFFER_MAX_INDICES_PER_OBJECT = 36;
@@ -41,20 +41,20 @@ namespace Firefly.Core
     /// <summary>
     /// Constructor
     /// </summary>
-    public Pipeline(TextureManager textureManager, ShaderManager shaderManager, CanvasHandler canvasHandler)
+    public Pipeline(TextureManager textureManager, ShaderManager shaderManager, CanvasHandler canvasHandler, GL GLContext) : base(GLContext)
     {
       this.textureManager = textureManager;
       this.shaderManager = shaderManager;
       this.canvasHandler = canvasHandler;
-      dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager);
-      modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
+      dynamicBatchHandler = new DynamicBatchHandler(BATCH_BUFFER_MAX_INDICES, BATCH_BUFFER_MAX_INDICES_PER_OBJECT, textureManager, shaderManager, GLContext);
+      modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager, GLContext);
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
 
       renderTextureManager = new RenderTextureManager(textureManager);
 
       cameraHandler = new CameraHandler();
-      skyboxHandler = new SkyboxHandler(shaderManager, textureManager);
+      skyboxHandler = new SkyboxHandler(shaderManager, textureManager, GLContext);
     }
 
     /// <summary>
@@ -243,11 +243,11 @@ namespace Firefly.Core
       }
     }
 
-    private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix)
+    private void Render(Material material, ShaderComponent shaderComponent, uint count, Matrix4 modelMatrix)
     {
       pointLightBufferHandler.BufferLightData(lighting);
       // Reset viewport
-      GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
+      GL.Viewport(new Vector2D<int>(resolutionWidth, resolutionHeight));
       // Cull back faces
       GL.Enable(EnableCap.CullFace);
 
@@ -255,12 +255,12 @@ namespace Firefly.Core
       if (material.DepthFunction != Rendering.DepthFunction.None)
       {
         GL.Enable(EnableCap.DepthTest);
-        GL.DepthFunc((OpenTK.Graphics.OpenGL4.DepthFunction)material.DepthFunction);
+        GL.DepthFunc(material.DepthFunction);
       }
 
       GL.Enable(EnableCap.Blend);
-      GL.BlendEquation(BlendEquationMode.FuncAdd);
-      GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+      GL.BlendEquation(GLEnum.FuncAdd);
+      GL.BlendFuncSeparate(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha, GLEnum.One, GLEnum.OneMinusSrcAlpha);
 
       Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
       Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
@@ -293,15 +293,15 @@ namespace Firefly.Core
 
       if (material.PrimitiveType == Rendering.PrimitiveType.Triangles)
       {
-        GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(GLEnum.Triangles, count, GLEnum.UnsignedInt, 0);
       } else if (material.PrimitiveType == Rendering.PrimitiveType.Lines)
       {
-        GL.DrawElements(BeginMode.Lines, count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(GLEnum.Lines, count, GLEnum.UnsignedInt, 0);
       }
       else if (material.PrimitiveType == Rendering.PrimitiveType.Points)
       {
         GL.Enable(EnableCap.ProgramPointSize);
-        GL.DrawElements(BeginMode.Points, count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(GLEnum.Points, count, GLEnum.UnsignedInt, 0);
       }
     }
 
