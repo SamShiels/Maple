@@ -43,7 +43,7 @@ namespace Firefly.Core.Lighting
 
         int floatArrayPosition = i * pointLightFloatAmount;
 
-        Matrix4 localToWorldMatrix = light.Transform.GetLocalMatrix();
+        Matrix4X4<float> localToWorldMatrix = light.Transform.GetLocalMatrix();
 
         float x = localToWorldMatrix.Row3[0];
         float y = localToWorldMatrix.Row3[1];

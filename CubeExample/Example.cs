@@ -16,7 +16,7 @@ using System.IO;
 
 namespace CubeExample
 {
-  public class Example : Window
+  public class Example : GameWindow
   {
 
     public Example(int width, int height, string title) : base(width, height, title) { }
@@ -29,16 +29,6 @@ namespace CubeExample
       Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene.json");
 
       SceneObject scene = sceneLoader.CreateScene(sceneJson, game.scene);
-    }
-
-    protected override void OnUpdateFrame(FrameEventArgs args)
-    {
-      base.OnUpdateFrame(args);
-    }
-
-    protected override void OnRenderFrame(FrameEventArgs args)
-    {
-      base.OnRenderFrame(args);
     }
   }
 }

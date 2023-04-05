@@ -3,7 +3,7 @@ using Firefly.Texturing;
 using Firefly.World.Lighting;
 using Firefly.World.Mesh;
 using Firefly.World.Scene.SceneDataModels;
-using OpenTK.Mathematics;
+using Silk.NET.Maths;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,8 +70,8 @@ namespace Firefly.World.Scene
 					camera.NearClipPlane = sceneFileCamera.nearClip;
 
 					// Position and rotation
-					camera.Transform.Position = new Vector3(sceneFileCamera.position[0], sceneFileCamera.position[1], sceneFileCamera.position[2]);
-					camera.Transform.EulerAngles = new Vector3(sceneFileCamera.rotation[0], sceneFileCamera.rotation[1], sceneFileCamera.rotation[2]);
+					camera.Transform.Position = new Vector3D<float>(sceneFileCamera.position[0], sceneFileCamera.position[1], sceneFileCamera.position[2]);
+					camera.Transform.EulerAngles = new Vector3D<float>(sceneFileCamera.rotation[0], sceneFileCamera.rotation[1], sceneFileCamera.rotation[2]);
 
 					// Create the skybox cubemap. If it exists
 					if (sceneFileCamera.skybox != null && sceneFileCamera.skybox.Length > 0)
@@ -111,9 +111,9 @@ namespace Firefly.World.Scene
 				return;
 			}
 
-			newObject.Transform.Position = new Vector3(worldObject.position[0], worldObject.position[1], worldObject.position[2]);
-			newObject.Transform.EulerAngles = new Vector3(worldObject.rotation[0], worldObject.rotation[1], worldObject.rotation[2]);
-			newObject.Transform.LocalScale = new Vector3(worldObject.localScale[0], worldObject.localScale[1], worldObject.localScale[2]);
+			newObject.Transform.Position = new Vector3D<float>(worldObject.position[0], worldObject.position[1], worldObject.position[2]);
+			newObject.Transform.EulerAngles = new Vector3D<float>(worldObject.rotation[0], worldObject.rotation[1], worldObject.rotation[2]);
+			newObject.Transform.LocalScale = new Vector3D<float>(worldObject.localScale[0], worldObject.localScale[1], worldObject.localScale[2]);
 
 			// Add the new object to our scene
 			scene.AddObject(newObject, parent);
@@ -181,7 +181,7 @@ namespace Firefly.World.Scene
 			float g = diffuseElement[1].GetSingle();
 			float b = diffuseElement[2].GetSingle();
 
-			Color4 diffuseColor = new Color4(r, g, b, 1f);
+      Vector4D<float> diffuseColor = new Vector4D<float>(r, g, b, 1f);
 
 			pointLight.Radius = radius;
 			pointLight.Intensity = intensity;

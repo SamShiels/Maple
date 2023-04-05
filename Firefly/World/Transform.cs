@@ -116,8 +116,8 @@ namespace Firefly.World
       }
     }
 
-    private Matrix4 LocalToWorldMatrix { get; set; }
-    private Matrix4 LocalToWorldRotationMatrix { get; set; }
+    private Matrix4X4<float> LocalToWorldMatrix { get; set; }
+    private Matrix4X4<float> LocalToWorldRotationMatrix { get; set; }
     public uint DirtyId { get; private set; }
 
     private uint LastDirtyId;
@@ -215,7 +215,7 @@ namespace Firefly.World
     /// Get the local to world matrix.
     /// </summary>
     /// <returns></returns>
-    public Matrix4 GetLocalMatrix()
+    public Matrix4X4<float> GetLocalMatrix()
     {
       if (LastDirtyId != DirtyId)
       {
@@ -229,7 +229,7 @@ namespace Firefly.World
     /// Get the local to world matrix.
     /// </summary>
     /// <returns></returns>
-    public Matrix4 GetLocalRotationMatrix()
+    public Matrix4X4<float> GetLocalRotationMatrix()
     {
       if (LastDirtyId != DirtyId)
       {
@@ -291,9 +291,9 @@ namespace Firefly.World
       float rotationY = eulerAngles.Y;
       float rotationZ = eulerAngles.Z;
 
-      Matrix4 scaleMatrix = Matrix4.CreateScale(localScale);
-      Matrix4 rotationMatrix = Matrix4.CreateFromQuaternion(rotation);
-      Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
+      Matrix4X4<float> scaleMatrix = Matrix4X4<float>.CreateScale(localScale);
+      Matrix4X4<float> rotationMatrix = Matrix4X4<float>.CreateFromQuaternion(rotation);
+      Matrix4X4<float> translationMatrix = Matrix4X4<float>.CreateTranslation(position);
       LocalToWorldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
       LocalToWorldRotationMatrix = rotationMatrix;
       //LocalToWorldMatrix = Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));
@@ -302,8 +302,8 @@ namespace Firefly.World
       //LocalToWorldNormalMatrix.Invert();
       if (parent != null)
       {
-        LocalToWorldMatrix = Matrix4.Mult(LocalToWorldMatrix, parent.GetLocalMatrix());
-        LocalToWorldRotationMatrix = Matrix4.Mult(LocalToWorldRotationMatrix, parent.GetLocalRotationMatrix());
+        LocalToWorldMatrix = Matrix4X4<float>.Mult(LocalToWorldMatrix, parent.GetLocalMatrix());
+        LocalToWorldRotationMatrix = Matrix4X4<float>.Mult(LocalToWorldRotationMatrix, parent.GetLocalRotationMatrix());
       }
 
       right = Vector3.TransformVector(Vector3.UnitX, LocalToWorldRotationMatrix);

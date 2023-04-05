@@ -1,5 +1,5 @@
-﻿using OpenTK.Mathematics;
-using Firefly.World.Mesh;
+﻿using Firefly.World.Mesh;
+using Silk.NET.Maths;
 
 namespace Firefly.Core.Mesh
 {
@@ -70,14 +70,14 @@ namespace Firefly.Core.Mesh
 			WorldBounds = null;
 		}
 
-		private void CalculateWorldVertices(Matrix4 m) {
+		private void CalculateWorldVertices(Matrix4X4<float> m) {
 			float[] verts = Owner.Model.Vertices;
 			for (int vert = 0; vert < worldVertices.Length; vert += 3) {
 				float x = verts[vert];
 				float y = verts[vert + 1];
 				float z = verts[vert + 2];
-				Vector3 localPoint = new Vector3(x, y, z);
-				Vector3 point = Vector3.TransformPosition(localPoint, m);
+				Vector3D<float> localPoint = new Vector3D<float>(x, y, z);
+        Vector3D<float> point = Vector3D.Transform(localPoint, m);
 
 				worldVertices[vert] = point.X;
 				worldVertices[vert + 1] = point.Y;
@@ -88,7 +88,7 @@ namespace Firefly.Core.Mesh
 			LastVertexDirtyId = Owner.Transform.DirtyId;
 		}
 
-		private void CalculateWorldBounds(Matrix4 m) {
+		private void CalculateWorldBounds(Matrix4X4<float> m) {
 			float[] bounds = Owner.Model.Bounds;
 			for (int bound = 0; bound < bounds.Length; bound += 3)
 			{

@@ -51,10 +51,10 @@ namespace SceneEditor.Editor
 
       Vector3 direction = new Vector3(0.0f, 0.0f, scrollAmount);
 
-      Matrix4 matrix = Matrix4.Identity;
-      matrix = matrix * Matrix4.CreateRotationX(-xRot);
-      matrix = matrix * Matrix4.CreateRotationY(yRot);
-      matrix = matrix * Matrix4.CreateRotationZ(zRot);
+      Matrix4X4<float> matrix = Matrix4X4<float>.Identity;
+      matrix = matrix * Matrix4X4<float>.CreateRotationX(-xRot);
+      matrix = matrix * Matrix4X4<float>.CreateRotationY(yRot);
+      matrix = matrix * Matrix4X4<float>.CreateRotationZ(zRot);
       direction = Vector3.TransformVector(direction, matrix);
 
       cameraTransform.Position = new Vector3(xPos + direction.X, yPos + direction.Y, zPos + direction.Z);

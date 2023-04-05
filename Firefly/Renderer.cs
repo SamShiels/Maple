@@ -24,9 +24,9 @@ namespace Firefly
     private static DebugProc _debugProcCallback = DebugMessage;
     private static GCHandle _debugProcCallbackHandle;
 
-    private Color ambientLight;
+    private Vector4D<float> ambientLight;
 
-    public Color4 AmbientLight
+    public Vector4D<float> AmbientLight
     {
       get
       {
@@ -39,9 +39,9 @@ namespace Firefly
       }
     }
 
-    private Color4 clearColor;
+    private Vector4D<float> clearColor;
 
-    public Color4 ClearColor
+    public Vector4D<float> ClearColor
     {
       get
       {
@@ -128,8 +128,8 @@ namespace Firefly
 
       pipeline = new Pipeline(textureManager, shaderManager, canvasHandler, GLContext);
 
-      ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
-      AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
+      ClearColor = new Vector4D<float>(0.0f, 0.0f, 0.0f, 1.0f);
+      AmbientLight = new Vector4D<float>(1.0f, 1.0f, 1.0f, 1.0f);
 
       UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();

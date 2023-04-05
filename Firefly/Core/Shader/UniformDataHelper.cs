@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using Silk.NET.Maths;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,9 +44,9 @@ namespace Firefly.Core.Shader
         Matrix3 mat3 = (Matrix3)Convert.ChangeType(data, typeof(Matrix3));
         GL.UniformMatrix3(location, false, ref mat3);
       }
-      else if (dataType.Equals(typeof(Matrix4)))
+      else if (dataType.Equals(typeof(Matrix4X4<float>)))
       {
-        Matrix4 mat4 = (Matrix4)Convert.ChangeType(data, typeof(Matrix4));
+        Matrix4X4<float> mat4 = (Matrix4X4<float>)Convert.ChangeType(data, typeof(Matrix4X4));
         GL.UniformMatrix4(location, false, ref mat4);
       }
       else if (dataType.Equals(typeof(bool)))

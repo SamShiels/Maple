@@ -1,11 +1,11 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Firefly.Core.Buffer
 {
-  internal class VertexArrayObject
+  internal class VertexArrayObject : RendererComponent, IDisposable
   {
     private VertexBufferObject<float> Positions { get; set; }
     private VertexBufferObject<float> TextureCoordinates { get; set; }
@@ -14,17 +14,17 @@ namespace Firefly.Core.Buffer
     private VertexBufferObject<float> Colors { get; set; }
     private IndexBufferObject Indices { get; set; }
 
-    private int vao = -1;
+    private uint vao = 1;
 
-    public VertexArrayObject(DrawType Usage, bool FixedSize)
+    public VertexArrayObject(GL GLContext, DrawType Usage, bool FixedSize) : base(GLContext)
     {
       vao = GL.GenVertexArray();
-      Positions = new VertexBufferObject<float>(Usage, FixedSize);
-      TextureCoordinates = new VertexBufferObject<float>(Usage, FixedSize);
-      Normals = new VertexBufferObject<float>(Usage, FixedSize);
-      TextureUnits = new VertexBufferObject<float>(Usage, FixedSize);
-      Colors = new VertexBufferObject<float>(Usage, FixedSize);
-      Indices = new IndexBufferObject(Usage, FixedSize);
+      Positions = new VertexBufferObject<float>(GLContext, Usage, FixedSize);
+      TextureCoordinates = new VertexBufferObject<float>(GLContext, Usage, FixedSize);
+      Normals = new VertexBufferObject<float>(GLContext, Usage, FixedSize);
+      TextureUnits = new VertexBufferObject<float>(GLContext, Usage, FixedSize);
+      Colors = new VertexBufferObject<float>(GLContext, Usage, FixedSize);
+      Indices = new IndexBufferObject(GLContext, Usage, FixedSize);
     }
 
     /// <summary>
@@ -119,34 +119,34 @@ namespace Firefly.Core.Buffer
 
       // bind the positions buffer and enable the positions attribute pointer
       Positions.Bind();
-      EnableAttribute(0, 3, VertexAttribPointerType.Float, 3 * sizeof(float));
+      EnableAttribute(0, 3, GLEnum.Float, 3 * sizeof(float));
 
       // bind the texture coordinates buffer and enable the attribute pointer
       if (TextureCoordinates.GetBufferSizeBytes() >= 0)
       {
         TextureCoordinates.Bind();
-        EnableAttribute(1, 2, VertexAttribPointerType.Float, 2 * sizeof(float));
+        EnableAttribute(1, 2, GLEnum.Float, 2 * sizeof(float));
       }
 
       // bind the normals buffer and enable the attribute pointer
       if (Normals.GetBufferSizeBytes() >= 0)
       {
         Normals.Bind();
-        EnableAttribute(2, 3, VertexAttribPointerType.Float, 3 * sizeof(float));
+        EnableAttribute(2, 3, GLEnum.Float, 3 * sizeof(float));
       }
 
       // bind the colour buffer and enable the attribute pointer
       if (Colors.GetBufferSizeBytes() >= 0)
       {
         Colors.Bind();
-        EnableAttribute(4, 4, VertexAttribPointerType.Float, 4 * sizeof(float));
+        EnableAttribute(4, 4, GLEnum.Float, 4 * sizeof(float));
       }
 
       // bind the texture units buffer and enable the attribute pointer
       if (TextureUnits.GetBufferSizeBytes() >= 0)
       {
         TextureUnits.Bind();
-        EnableAttribute(3, 1, VertexAttribPointerType.Float, 1 * sizeof(float));
+        EnableAttribute(3, 1, GLEnum.Float, 1 * sizeof(float));
       }
 
       if (Indices.GetBufferSizeBytes() >= 0)
@@ -197,14 +197,14 @@ namespace Firefly.Core.Buffer
     /// <summary>
     /// Delete the buffers.
     /// </summary>
-    public void Delete()
+    public void Dispose()
     {
-      Positions.DestroyBuffer();
-      TextureCoordinates.DestroyBuffer();
-      Normals.DestroyBuffer();
-      Colors.DestroyBuffer();
-      TextureUnits.DestroyBuffer();
-      Indices.DestroyBuffer();
+      Positions.Dispose();
+      TextureCoordinates.Dispose();
+      Normals.Dispose();
+      Colors.Dispose();
+      TextureUnits.Dispose();
+      Indices.Dispose();
 
       GL.BindVertexArray(0);
       GL.DeleteVertexArray(vao);
@@ -216,10 +216,10 @@ namespace Firefly.Core.Buffer
     /// <param name="location">The attribute location.</param>
     /// <param name="dimensions">The amount of dimensions we are using.</param>
     /// <param name="type">The data type contained within the bound buffer.</param>
-    private void EnableAttribute(int location, int dimensions, VertexAttribPointerType type, int stride)
+    private unsafe void EnableAttribute(uint location, int dimensions, GLEnum type, uint stride)
     {
       GL.EnableVertexAttribArray(location);
-      GL.VertexAttribPointer(location, dimensions, type, false, stride, 0);
+      GL.VertexAttribPointer(location, dimensions, type, false, stride, (void*)0);
     }
   }
 }

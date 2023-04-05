@@ -14,7 +14,7 @@ using Firefly.Core;
 
 namespace CameraExample
 {
-  public class Example : Window
+  public class Example : GameWindow
   {
     private WorldObject cameraContainer;
 

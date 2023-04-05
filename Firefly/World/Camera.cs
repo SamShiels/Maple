@@ -1,6 +1,7 @@
 ﻿using Firefly.Core;
 using Firefly.Texturing;
 using Firefly.Utilities;
+using Silk.NET.Maths;
 using System.Drawing;
 using System.Numerics;
 
@@ -16,7 +17,7 @@ namespace Firefly.World
 
     public ProjectionType ProjectionType = ProjectionType.Perspective;
 
-    public Color BackgroundColor = Color.Black;
+    public Vector4D<float> BackgroundColor = new Vector4D<float>();
     public Cubemap Skybox;
 
     private float nearClipPlane = 0.01f;
@@ -88,7 +89,7 @@ namespace Firefly.World
       }
     }
 
-    public Matrix4x4 projectionMatrix;
+    public Matrix4X4<float> projectionMatrix;
 
     public RenderTexture RenderTexture { get; set; }
 

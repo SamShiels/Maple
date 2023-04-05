@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
 namespace Firefly.Core.Buffer
@@ -8,7 +8,7 @@ namespace Firefly.Core.Buffer
     private int[] fixedData;
     private List<int> dynamicData;
 
-    public IndexBufferObject(DrawType DrawType, bool FixedSize) : base(DrawType, FixedSize) {
+    public IndexBufferObject(GL GLContext, DrawType DrawType, bool FixedSize) : base(GLContext, DrawType, FixedSize) {
 
 
       if (FixedSize)
@@ -24,8 +24,9 @@ namespace Firefly.Core.Buffer
     /// <summary>
     /// Bind OpenGL to this buffer.
     /// </summary>
-    public override void Bind() {
-      GL.BindBuffer(BufferTarget.ElementArrayBuffer, GLBuffer);
+    public override void Bind()
+    {
+      GL.BindBuffer(GLEnum.ElementArrayBuffer, GLBuffer);
     }
 
     /// <summary>
@@ -50,16 +51,22 @@ namespace Firefly.Core.Buffer
     /// <summary>
     /// Upload list to the GPU.
     /// </summary>
-    public override void BufferData()
+    public unsafe override void BufferData()
     {
       Bind();
       if (FixedSize)
       {
-        GL.BufferData(BufferTarget.ElementArrayBuffer, fixedData.Length, fixedData, DrawType);
+        fixed (void* fixedData = this.fixedData)
+        {
+          GL.BufferData(GLEnum.ElementArrayBuffer, (nuint)this.fixedData.Length, fixedData, DrawType);
+        }
       }
       else
       {
-        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * dynamicData.Count, dynamicData.ToArray(), DrawType);
+        fixed (void* dynamicData = this.dynamicData.ToArray())
+        {
+          GL.BufferData(GLEnum.ArrayBuffer, sizeof(int) * (nuint)this.dynamicData.Count, dynamicData, DrawType);
+        }
       }
     }
 

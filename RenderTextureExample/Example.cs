@@ -13,7 +13,7 @@ using Firefly.World.Lighting;
 
 namespace RenderTextureExample
 {
-  public class Example : Window
+  public class Example : GameWindow
   {
     private MeshObject houseMesh;
     private MeshObject cubeMesh;

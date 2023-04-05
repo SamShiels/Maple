@@ -1,36 +1,36 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Firefly.Core.Buffer
 {
-  internal class VertexBufferObject<T> where T: struct
+  internal class VertexBufferObject<T> : RendererComponent, IDisposable
   {
     protected const int MaximumSize = 1048576;
 
     private float[] fixedData;
     private List<float> dynamicData;
 
-    protected BufferUsageHint DrawType;
+    protected GLEnum DrawType;
     protected bool FixedSize = true;
     protected int CurrentBufferSize;
     protected int BufferPositionBytes;
 
-    protected int GLBuffer = -1;
+    protected uint GLBuffer = 0;
 
-    public VertexBufferObject(DrawType DrawType, bool FixedSize)
+    public VertexBufferObject(GL GLContext, DrawType DrawType, bool FixedSize) : base(GLContext)
     {
       this.FixedSize = FixedSize;
       CurrentBufferSize = 0;
       BufferPositionBytes = 0;
       if (DrawType == DrawType.Dynamic)
       {
-        this.DrawType = BufferUsageHint.DynamicDraw;
+        this.DrawType = GLEnum.DynamicDraw;
       }
       else if (DrawType == DrawType.Static)
       {
-        this.DrawType = BufferUsageHint.StaticDraw;
+        this.DrawType = GLEnum.StaticDraw;
       }
 
       if (FixedSize)
@@ -56,7 +56,7 @@ namespace Firefly.Core.Buffer
     /// Bind OpenGL to this buffer.
     /// </summary>
     public virtual void Bind() {
-      GL.BindBuffer(BufferTarget.ArrayBuffer, GLBuffer);
+      GL.BindBuffer(GLEnum.ArrayBuffer, GLBuffer);
 		}
 
     /// <summary>
@@ -86,17 +86,23 @@ namespace Firefly.Core.Buffer
     /// <summary>
     /// Upload list to the GPU.
     /// </summary>
-    public virtual void BufferData()
+    public unsafe virtual void BufferData()
     {
       Bind();
 
       if (FixedSize)
       {
-        GL.BufferData(BufferTarget.ArrayBuffer, fixedData.Length, fixedData, DrawType);
+        fixed (void* fixedData = this.fixedData)
+        {
+          GL.BufferData(GLEnum.ArrayBuffer, (nuint)this.fixedData.Length, fixedData, DrawType);
+        }
       }
       else
       {
-        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * dynamicData.Count, dynamicData.ToArray(), DrawType);
+        fixed (void* dynamicData = this.dynamicData.ToArray())
+        {
+          GL.BufferData(GLEnum.ArrayBuffer, sizeof(float) * (nuint)this.dynamicData.Count, dynamicData, DrawType);
+        }
       }
     }
 
@@ -131,12 +137,9 @@ namespace Firefly.Core.Buffer
       BufferPositionBytes = 0;
     }
 
-    /// <summary>
-    /// Destroy the buffer.
-    /// </summary>
-    public virtual void DestroyBuffer()
+    public void Dispose()
     {
-      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      GL.BindBuffer(GLEnum.ArrayBuffer, 0);
       GL.DeleteBuffer(GLBuffer);
     }
   }

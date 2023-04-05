@@ -112,7 +112,7 @@ namespace Firefly.Core
       if (vaoExists)
       {
         vertexArrayObject.Reset();
-        vertexArrayObject.Delete();
+        vertexArrayObject.Dispose();
 
         VAOList.Remove(modelId);
       }

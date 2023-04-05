@@ -1,7 +1,8 @@
 ﻿using Firefly.Core;
-using OpenTK.Mathematics;
+using Silk.NET.Maths;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace Firefly.World.Lighting
@@ -13,7 +14,7 @@ namespace Firefly.World.Lighting
 
     public float Radius = 5.0f;
     public float Intensity = 1.0f;
-    public Color4 Diffuse = Color4.White;
+    public Vector4D<float> Diffuse = new Vector4D<float>(1f, 1f, 1f, 1f);
 
     public PointLight()
     {

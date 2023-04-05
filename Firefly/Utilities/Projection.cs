@@ -8,14 +8,14 @@ namespace Firefly.Utilities
   public class Projection
   {
 
-    public static Matrix4 CreatePerspectiveMatrix(float verticalFOV, float aspect, float near, float far)
+    public static Matrix4X4<float> CreatePerspectiveMatrix(float verticalFOV, float aspect, float near, float far)
     {
       float range = near - far;
       float tanHalfFOV = (float)System.Math.Tan(verticalFOV / 2.0f);
 
-      Matrix4 pers = Matrix4.CreatePerspectiveFieldOfView(verticalFOV, aspect, near, far);
+      Matrix4X4<float> pers = Matrix4X4<float>.CreatePerspectiveFieldOfView(verticalFOV, aspect, near, far);
 
-      //Matrix4 matrix = new Matrix4(
+      //Matrix4X4<float> matrix = new Matrix4(
       //  1.0f / (tanHalfFOV * aspect),
       //  0.0f,
       //  0.0f,
@@ -40,7 +40,7 @@ namespace Firefly.Utilities
       return pers;
     }
 
-    public static Matrix4 CreateOrthographicMatrix(float orthoSize, float aspect, float near, float far)
+    public static Matrix4X4<float> CreateOrthographicMatrix(float orthoSize, float aspect, float near, float far)
     {
       float width = orthoSize * aspect;
       float height = orthoSize;
@@ -49,7 +49,7 @@ namespace Firefly.Utilities
       float bt = 1 / height;
       float nf = 1 / (near - far);
 
-      Matrix4 matrix = new Matrix4(
+      Matrix4X4<float> matrix = new Matrix4X4<float>(
         2.0f * lr,
         0.0f,
         0.0f,

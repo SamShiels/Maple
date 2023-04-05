@@ -1,8 +1,4 @@
-﻿using Firefly.World.Lighting;
-using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Silk.NET.Maths;
 
 namespace Firefly.Core.Lighting
 {
@@ -17,12 +13,12 @@ namespace Firefly.Core.Lighting
       AllocateMemory(memoryAllocation);
     }
 
-    public void BufferLightData(Color4 ambientLight)
+    public void BufferLightData(Vector4D<float> ambientLight)
     {
       float[] lightsArray = new float[AMBIENT_LIGHT_FLOAT_COUNT];
-      lightsArray[0] = ambientLight.R;
-      lightsArray[1] = ambientLight.G;
-      lightsArray[2] = ambientLight.B;
+      lightsArray[0] = ambientLight.X;
+      lightsArray[1] = ambientLight.Y;
+      lightsArray[2] = ambientLight.Z;
       lightsArray[3] = 1f;
 
       BufferData(lightsArray);

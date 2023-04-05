@@ -11,6 +11,7 @@ using Firefly.Core.Lighting;
 using Firefly.World.Scene;
 using Silk.NET.OpenGL;
 using Silk.NET.Maths;
+using System.Numerics;
 
 namespace Firefly.Core
 {
@@ -34,8 +35,8 @@ namespace Firefly.Core
     private int resolutionWidth;
     private int resolutionHeight;
 
-    private Color4 clearColor;
-    private Color4 ambientLight;
+    private Vector4D<float> clearColor;
+    private Vector4D<float> ambientLight;
     private List<PointLight> lighting;
 
     /// <summary>
@@ -61,7 +62,7 @@ namespace Firefly.Core
     /// Updates the ambient light.
     /// </summary>
     /// <param name="ambientLight"></param>
-    public void SetAmbientLight(Color4 ambientLight)
+    public void SetAmbientLight(Vector4D<float> ambientLight)
     {
       this.ambientLight = ambientLight;
       ambientLightBufferHandler.BufferLightData(ambientLight);
@@ -71,7 +72,7 @@ namespace Firefly.Core
     /// Updates the clear color.
     /// </summary>
     /// <param name="clearColor"></param>
-    public void SetClearColor(Color4 clearColor)
+    public void SetClearColor(Vector4D<float> clearColor)
     {
       this.clearColor = clearColor;
     }
@@ -107,14 +108,14 @@ namespace Firefly.Core
       }
       AssignCamera(scene.Camera);
 
-      Color4 c = clearColor;
-      GL.ClearColor(c.R, c.G, c.B, 1.0f);
+      Vector4D<float> c = clearColor;
+      GL.ClearColor(c.X, c.Y, c.Z, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
       Cubemap skybox = scene.Camera.Skybox;
       if (skybox != null)
       {
-        Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+        Matrix4X4<float> projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
         skyboxHandler.DrawSkybox(skybox, scene.Camera.Transform.GetLocalRotationMatrix(), projectionMatrix.Inverted());
       }
 
@@ -205,9 +206,9 @@ namespace Firefly.Core
             modelBufferHandler.BufferModel(mesh.Model);
             modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
 
-            Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
+            Matrix4X4<float> modelMatrix = mesh.Transform.GetLocalMatrix();
 
-            Render(mesh.Material, shaderComponent, mesh.Model.Indices.Length, modelMatrix);
+            Render(mesh.Material, shaderComponent, (uint)mesh.Model.Indices.Length, modelMatrix);
             textureManager.ClearAllTextureSlots();
           }
         }
@@ -237,13 +238,13 @@ namespace Firefly.Core
         shaderComponent.Use();
 
         dynamicBatchHandler.UploadSamplerPositions();
-        Render(material, shaderComponent, batchSize, Matrix4.Identity);
+        Render(material, shaderComponent, (uint)batchSize, Matrix4X4<float>.Identity);
         dynamicBatchHandler.Reset();
         textureManager.ClearAllTextureSlots();
       }
     }
 
-    private void Render(Material material, ShaderComponent shaderComponent, uint count, Matrix4 modelMatrix)
+    private void Render(Material material, ShaderComponent shaderComponent, uint count, Matrix4X4<float> modelMatrix)
     {
       pointLightBufferHandler.BufferLightData(lighting);
       // Reset viewport
@@ -255,15 +256,15 @@ namespace Firefly.Core
       if (material.DepthFunction != Rendering.DepthFunction.None)
       {
         GL.Enable(EnableCap.DepthTest);
-        GL.DepthFunc(material.DepthFunction);
+        GL.DepthFunc((GLEnum)material.DepthFunction);
       }
 
       GL.Enable(EnableCap.Blend);
       GL.BlendEquation(GLEnum.FuncAdd);
       GL.BlendFuncSeparate(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha, GLEnum.One, GLEnum.OneMinusSrcAlpha);
 
-      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
+      Matrix4X4<float> projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+      Matrix4X4<float> viewMatrix = cameraHandler.GetViewMatrix();
 
       int screenToClipLocation = shaderComponent.GetUniformLocation("u_projectionMatrix");
       GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
@@ -305,7 +306,7 @@ namespace Firefly.Core
       }
     }
 
-    private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 pm)
+    private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4X4<float> pm)
     {
       float[] bounds = mesh.Component.WorldBounds;
 

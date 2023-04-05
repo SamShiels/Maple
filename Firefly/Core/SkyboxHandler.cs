@@ -3,6 +3,7 @@ using Firefly.Core.Shader;
 using Firefly.Core.Texture;
 using Firefly.Rendering;
 using Firefly.Texturing;
+using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 
 namespace Firefly.Core
@@ -56,7 +57,7 @@ namespace Firefly.Core
       textureComponent = new TextureComponent();
     }
 
-    public void DrawSkybox(Cubemap cubemap, Matrix4 cameraLocalToWorldMatrix, Matrix4 projection)
+    public void DrawSkybox(Cubemap cubemap, Matrix4X4<float> cameraLocalToWorldMatrix, Matrix4X4<float> projection)
     {
       if (!initialized)
       {
@@ -70,21 +71,21 @@ namespace Firefly.Core
 
       int projLocation = shader.GetUniformLocation("u_projectionMatrix");
       // Take the current camera's projection matrix and rotate it
-      Matrix4 rotationMatrix = cameraLocalToWorldMatrix;
-      Matrix4 projectionRotated = projection * rotationMatrix;
+      Matrix4X4<float> rotationMatrix = cameraLocalToWorldMatrix;
+      Matrix4X4<float> projectionRotated = projection * rotationMatrix;
 
       GL.UniformMatrix4(projLocation, false, ref projectionRotated);
 
       // Apply the skybox texture to unit 0 and draw using our dedicated VAO
       textureComponent.SetUnit(TextureUnit.Texture0);
-      GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 6);
+      GL.DrawArrays(GLEnum.Triangles, 0, 6);
     }
 
     private void CreateVBOs()
     {
       VAO = GL.GenVertexArray();
       GL.BindVertexArray(VAO);
-      Positions = new VertexBufferObject<float>(DrawType.Static, false);
+      Positions = new VertexBufferObject<float>(GL, DrawType.Static, false);
 
       Positions.PushData(new float[] { -1.0f, -1.0f,
                                         1.0f, -1.0f,

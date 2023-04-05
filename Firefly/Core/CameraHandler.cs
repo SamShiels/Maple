@@ -1,8 +1,9 @@
 ﻿using Firefly.Utilities;
 using Firefly.World;
-using OpenTK.Mathematics;
+using Silk.NET.Maths;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Firefly.Core
@@ -21,8 +22,8 @@ namespace Firefly.Core
     private float lastRotationY;
     private float lastRotationZ;
 
-    private Matrix4 projectionMatrix;
-    private Matrix4 viewMatrix;
+    private Matrix4X4<float> projectionMatrix;
+    private Matrix4X4<float> viewMatrix;
 
     private bool initialized;
 
@@ -38,12 +39,12 @@ namespace Firefly.Core
       this.camera = camera;
     }
 
-    public Matrix4 GetProjectionMatrix(float aspectRatio)
+    public Matrix4X4<float> GetProjectionMatrix(float aspectRatio)
     {
       if (camera == null)
       {
         Console.WriteLine("No camera has been assigned!");
-        return Matrix4.Identity;
+        return Matrix4X4<float>.Identity;
       }
 
       if (lastCameraId != camera.Id || lastCameraDirtyId != camera.DirtyId || lastAspectRatio != aspectRatio)
@@ -66,12 +67,12 @@ namespace Firefly.Core
       return projectionMatrix;
     }
 
-    public Matrix4 GetViewMatrix()
+    public Matrix4X4<float> GetViewMatrix()
     {
       if (camera == null)
       {
         Console.WriteLine("No camera has been assigned!");
-        return Matrix4.Identity;
+        return Matrix4X4<float>.Identity;
       }
 
       float xPosition = camera.Transform.Position.X;
@@ -85,20 +86,20 @@ namespace Firefly.Core
       if (!initialized || (xPosition != lastPositionX || yPosition != lastPositionY || zPosition != lastPositionZ || xRotation != lastRotationX || yRotation != lastRotationY || zRotation != lastRotationZ))
       {
 
-        Vector3 front = new Vector3(
+        Vector3D<float> front = new Vector3D<float>(
           (float)System.Math.Cos(xRotation) * (float)System.Math.Sin(yRotation),
           (float)System.Math.Sin(xRotation),
           (float)System.Math.Cos(xRotation) * (float)System.Math.Cos(yRotation)
           );
 
-        front.Normalize();
-        Vector3 rightAxis = Vector3.Normalize(Vector3.Cross(front, Vector3.UnitY));
-        Vector3 upAxis = Vector3.Normalize(Vector3.Cross(rightAxis, front));
+        front = Vector3D.Normalize(front);
+        Vector3D<float> rightAxis = Vector3D.Normalize(Vector3D.Cross(front, new Vector3D<float>(0, 1f, 0)));
+        Vector3D<float> upAxis = Vector3D.Normalize(Vector3D.Cross(rightAxis, front));
 
-        //viewMatrix = Matrix4.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
-        //viewMatrix = Matrix4.CreateRotationZ(-zRotation) * viewMatrix;
+        //viewMatrix = Matrix4X4<float>.LookAt(camera.Transform.Position, camera.Transform.Position + front, upAxis);
+        //viewMatrix = Matrix4X4<float>.CreateRotationZ(-zRotation) * viewMatrix;
         viewMatrix = camera.Transform.GetLocalMatrix().Inverted();
-        //viewMatrix = Matrix4.Mult(viewMatrix, camera.Transform.GetLocalMatrix());
+        //viewMatrix = Matrix4X4<float>.Mult(viewMatrix, camera.Transform.GetLocalMatrix());
 
         lastPositionX = xPosition;
         lastPositionY = yPosition;
@@ -109,21 +110,21 @@ namespace Firefly.Core
         lastRotationZ = zRotation;
       }
 
-      //Matrix4 viewMatrix = new Matrix4(
+      //Matrix4X4<float> viewMatrix = new Matrix4X4<float>(
       //    rightAxis.X,        rightAxis.Y,        rightAxis.Z,        0f,
       //    upAxis.X,           upAxis.Y,           upAxis.Z,           0f,
       //    front.X,            front.Y,            front.Z,            0f,
       //    0f,                 0f,                 0f,                 1f
       //  );
 
-      //Matrix4 translationMatrix = new Matrix4(
+      //Matrix4X4<float> translationMatrix = new Matrix4X4<float>(
       //    1f, 0f, 0f, xPosition,
       //    0f, 1f, 0f, yPosition,
       //    0f, 0f, 1f, zPosition,
       //    0f, 0f, 0f, 1f
       //  );
 
-      //return Matrix4.Mult(viewMatrix, translationMatrix);
+      //return Matrix4X4<float>.Mult(viewMatrix, translationMatrix);
       return viewMatrix;
     }
   }
