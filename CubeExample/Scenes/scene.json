@@ -28,7 +28,7 @@
           "localScale": [ 1, 1, 1 ],
           "type": "PointLight",
           "properties": {
-            "radius": 5,
+            "radius": 1,
             "intensity": 1,
             "diffuse": [ 1, 1, 1 ]
           },

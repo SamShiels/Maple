@@ -25,6 +25,7 @@ namespace CubeExample
     {
       base.OnLoad();
 
+      game.renderer.AmbientLight = new Color4(1f, 0.0f, 0.0f, 1f);
       SceneLoader sceneLoader = new SceneLoader(Assembly.GetExecutingAssembly());
       Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene.json");
 

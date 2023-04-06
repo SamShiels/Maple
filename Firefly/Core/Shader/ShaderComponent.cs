@@ -96,7 +96,7 @@ namespace Firefly.Core.Shader
     {
 			if (pointLightUniformLocation != -1)
 			{
-				//GL.UniformBlockBinding(program, pointLightUniformLocation, blockBindingPoint);
+				GL.UniformBlockBinding(program, pointLightUniformLocation, blockBindingPoint);
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace Firefly.Core.Shader
 		{
 			if (ambientLightUniformLocation != -1)
 			{
-				//GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
+				GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
 			}
 		}
 

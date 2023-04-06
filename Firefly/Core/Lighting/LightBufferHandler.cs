@@ -12,13 +12,10 @@ namespace Firefly.Core.Lighting
     private int blockIndex;
     private int bufferHandle;
 
-    private int totalByteAllocation;
-
     /// <summary>
     /// Create a new instance of LightBufferHandler
     /// </summary>
     /// <param name="blockIndex">The block index to bind to.</param>
-    /// <param name="totalByteAllocation">The total amount of bytes allocated for this light buffer.</param>
     internal LightBufferHandler(int blockIndex)
     {
       this.blockIndex = blockIndex;
@@ -31,7 +28,6 @@ namespace Firefly.Core.Lighting
       GL.BufferData(BufferTarget.UniformBuffer, totalByteAllocation, IntPtr.Zero, BufferUsageHint.DynamicDraw);
       GL.BindBufferBase(BufferRangeTarget.UniformBuffer, blockIndex, bufferHandle);
       GL.BindBuffer(BufferTarget.UniformBuffer, 0);
-      this.totalByteAllocation = totalByteAllocation;
     }
 
     protected void BufferData(float[] lightData)
