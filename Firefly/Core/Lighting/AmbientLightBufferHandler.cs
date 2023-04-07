@@ -25,11 +25,6 @@ namespace Firefly.Core.Lighting
       lightsArray[2] = ambientLight.B;
       lightsArray[3] = 1f;
 
-      Console.WriteLine(lightsArray[0]);
-      Console.WriteLine(lightsArray[1]);
-      Console.WriteLine(lightsArray[2]);
-      Console.WriteLine(lightsArray[3]);
-
       BufferData(lightsArray);
     }
   }
