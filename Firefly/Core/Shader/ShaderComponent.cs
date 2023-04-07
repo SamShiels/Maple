@@ -21,8 +21,9 @@ namespace Firefly.Core.Shader
 
 		private int pointLightUniformLocation;
 		private int ambientLightUniformLocation;
+		private int directionalLightUniformLocation;
 
-		public ShaderComponent(string vertexShaderSource, string fragmentShaderSource, Rendering.Uniform[] uniforms, Dictionary<string, string> shaderChunks)
+    public ShaderComponent(string vertexShaderSource, string fragmentShaderSource, Rendering.Uniform[] uniforms, Dictionary<string, string> shaderChunks)
     {
       this.vertexShaderSource = vertexShaderSource;
       this.fragmentShaderSource = fragmentShaderSource;
@@ -87,10 +88,12 @@ namespace Firefly.Core.Shader
 
 			pointLightUniformLocation = GL.GetUniformBlockIndex(program, "PointLightBlock");
 			ambientLightUniformLocation = GL.GetUniformBlockIndex(program, "AmbientLightBlock");
+      directionalLightUniformLocation = GL.GetUniformBlockIndex(program, "DirectionalLightBlock");
 
-			uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
+      uniformLocations.Add("PointLightBlock", GL.GetUniformBlockIndex(program, "PointLightBlock"));
 			uniformLocations.Add("AmbientLightBlock", GL.GetUniformBlockIndex(program, "AmbientLightBlock"));
-		}
+			uniformLocations.Add("DirectionalLightBlock", GL.GetUniformBlockIndex(program, "DirectionalLightBlock"));
+    }
 
 		public void TryBindPointLightUniform(int blockBindingPoint)
     {
@@ -98,20 +101,28 @@ namespace Firefly.Core.Shader
 			{
 				GL.UniformBlockBinding(program, pointLightUniformLocation, blockBindingPoint);
 			}
-		}
+    }
 
-		public void TryBindAmbientLightUniform(int blockBindingPoint)
-		{
-			if (ambientLightUniformLocation != -1)
-			{
-				GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
-			}
-		}
+    public void TryBindAmbientLightUniform(int blockBindingPoint)
+    {
+      if (ambientLightUniformLocation != -1)
+      {
+        GL.UniformBlockBinding(program, ambientLightUniformLocation, blockBindingPoint);
+      }
+    }
 
-		/// <summary>
-		/// Checks if this shader uses the texture unit attribute.
-		/// </summary>
-		private void CheckTextureUnits()
+    public void TryBindDirectionalLightUniform(int blockBindingPoint)
+    {
+      if (directionalLightUniformLocation != -1)
+      {
+        GL.UniformBlockBinding(program, directionalLightUniformLocation, blockBindingPoint);
+      }
+    }
+
+    /// <summary>
+    /// Checks if this shader uses the texture unit attribute.
+    /// </summary>
+    private void CheckTextureUnits()
     {
 			bool texUnitLocation = vertexShaderSource.Contains("a_texUnit");
 			usesTextureUnits = texUnitLocation;

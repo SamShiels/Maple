@@ -9,7 +9,6 @@ namespace Firefly.Core.Lighting
   internal class AmbientLightBufferHandler : LightBufferHandler
   {
     const int AMBIENT_LIGHT_FLOAT_COUNT = 4;
-    const int DIRECTIONAL_LIGHT_FLOAT_COUNT = 4;
 
     internal AmbientLightBufferHandler(int blockIndex) : base(blockIndex)
     {

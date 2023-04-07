@@ -28,11 +28,17 @@ namespace Firefly.World.Scene
       get; private set;
     }
 
+    public List<DirectionalLight> DirectionalLights
+    {
+      get; private set;
+    }
+
     public SceneObject()
     {
       RootObject = new WorldObject();
       Cameras = new List<Camera>();
       Lights = new List<PointLight>();
+      DirectionalLights = new List<DirectionalLight>();
     }
 
     public void AddObject(WorldObject worldObject, WorldObject parent = null)
@@ -49,6 +55,11 @@ namespace Firefly.World.Scene
       if (worldObject.GetType().Name == "PointLight")
       {
         Lights.Add((PointLight)worldObject);
+      }
+
+      if (worldObject.GetType().Name == "DirectionalLight")
+      {
+        DirectionalLights.Add((DirectionalLight)worldObject);
       }
 
       if (worldObject.GetType().Name == "Camera")

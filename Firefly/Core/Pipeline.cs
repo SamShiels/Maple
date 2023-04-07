@@ -28,6 +28,7 @@ namespace Firefly.Core
     private MeshBufferHandler modelBufferHandler;
     private PointLightBufferHandler pointLightBufferHandler;
     private AmbientLightBufferHandler ambientLightBufferHandler;
+    private DirectionalLightBufferHandler directionalLightBufferHandler;
     private CameraHandler cameraHandler;
     private SkyboxHandler skyboxHandler;
 
@@ -36,7 +37,8 @@ namespace Firefly.Core
 
     private Color4 clearColor;
     private Color4 ambientLight;
-    private List<PointLight> lighting;
+    private List<PointLight> pointLights;
+    private List<DirectionalLight> directionalLights;
 
     /// <summary>
     /// Constructor
@@ -50,6 +52,7 @@ namespace Firefly.Core
       modelBufferHandler = new MeshBufferHandler(textureManager, shaderManager);
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
+      directionalLightBufferHandler = new DirectionalLightBufferHandler(2);
 
       renderTextureManager = new RenderTextureManager(textureManager);
 
@@ -82,7 +85,8 @@ namespace Firefly.Core
     /// <param name="obj"></param>
     public void RenderScene(SceneObject scene, bool raw)
     {
-      lighting = scene.Lights;
+      pointLights = scene.Lights;
+      directionalLights = scene.DirectionalLights;
 
       //for (int i = 0; i < scene.Cameras.Count; i++)
       //{
@@ -183,32 +187,38 @@ namespace Firefly.Core
         MeshObject mesh = (MeshObject)obj;
         if (mesh.Model != null && mesh.Material != null && mesh.Visible)
         {
-          if (dynamicBatchHandler.IsMeshBatchable(mesh))
+          Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+          Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
+
+          if (IsMeshWithinFrustum(mesh, projectionMatrix, viewMatrix))
           {
-            // The mesh can be batched
-            if (!dynamicBatchHandler.IsMeshCompatible(mesh))
+            if (dynamicBatchHandler.IsMeshBatchable(mesh))
             {
-              // The mesh can be uploaded to the current buffer
-              FlushBatchBuffers();
+              // The mesh can be batched
+              if (!dynamicBatchHandler.IsMeshCompatible(mesh))
+              {
+                // The mesh can be uploaded to the current buffer
+                FlushBatchBuffers();
+              }
+
+              dynamicBatchHandler.AddToBatch(mesh);
             }
+            else
+            {
+              uint modelId = mesh.Model.Id;
 
-            dynamicBatchHandler.AddToBatch(mesh);
-          }
-          else
-          {
-            uint modelId = mesh.Model.Id;
+              ShaderComponent shaderComponent = shaderManager.GetComponent(mesh.Material);
+              shaderComponent.Use();
 
-            ShaderComponent shaderComponent = shaderManager.GetComponent(mesh.Material);
-            shaderComponent.Use();
+              // Buffer method for larger objects
+              modelBufferHandler.BufferModel(mesh.Model);
+              modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
 
-            // Buffer method for larger objects
-            modelBufferHandler.BufferModel(mesh.Model);
-            modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
+              Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
-            Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
-
-            Render(mesh.Material, shaderComponent, mesh.Model.Indices.Length, modelMatrix);
-            textureManager.ClearAllTextureSlots();
+              Render(mesh.Material, shaderComponent, mesh.Model.Indices.Length, modelMatrix);
+              textureManager.ClearAllTextureSlots();
+            }
           }
         }
       }
@@ -245,7 +255,8 @@ namespace Firefly.Core
 
     private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix)
     {
-      pointLightBufferHandler.BufferLightData(lighting);
+      pointLightBufferHandler.BufferLightData(pointLights);
+      directionalLightBufferHandler.BufferLightData(directionalLights);
       // Reset viewport
       GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
       // Cull back faces
@@ -274,6 +285,7 @@ namespace Firefly.Core
 
       shaderComponent.TryBindPointLightUniform(0);
       shaderComponent.TryBindAmbientLightUniform(1);
+      shaderComponent.TryBindDirectionalLightUniform(2);
 
       if (material.Uniforms != null)
       {
@@ -305,30 +317,31 @@ namespace Firefly.Core
       }
     }
 
-    private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 pm)
+    private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 projectionMatrix, Matrix4 viewMatrix)
     {
       float[] bounds = mesh.Component.WorldBounds;
+      bool withinView = true;
 
-      bool withinView = false;
+      // Maybe cache this?
+      Matrix4 viewProjectionMatrix = Matrix4.Mult(projectionMatrix, viewMatrix);
 
       for (int bound = 0; bound < bounds.Length; bound += 3)
-      {
-        float x = bounds[bound];
+      { 
+        float x = bounds[bound    ];
         float y = bounds[bound + 1];
         float z = bounds[bound + 2];
 
-        (float, float, float) pos = Utilities.Math.TransformPoint(pm, x, y, z);
+        Vector3 boundPoint = new Vector3(x, y, z);
+        Vector3 point = Vector3.TransformPosition(boundPoint, viewProjectionMatrix);
 
-        Console.WriteLine(pos.Item2);
-
-        if ((pos.Item1 > -1 && pos.Item1 < 1) && (pos.Item2 > -1 && pos.Item2 < 1) && (pos.Item3 > -1 && pos.Item3 < 1))
+        if ((point.X > -1 && point.X < 1) && (point.Y > -1 && point.Y < 1) && (point.Z > -1 && point.Z < 1))
         {
           withinView = true;
           break;
         }
       }
 
-      Console.WriteLine("Culled " + !withinView);
+      //Console.WriteLine("Culled " + !withinView);
 
       return withinView;
     }

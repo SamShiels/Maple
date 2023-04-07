@@ -32,6 +32,10 @@ namespace Firefly.Core.Lighting
 
     protected void BufferData(float[] lightData)
     {
+      if (lightData == null || lightData.Length == 0)
+      {
+        return;
+      }
       GL.BindBuffer(BufferTarget.UniformBuffer, bufferHandle);
       GL.BufferSubData(BufferTarget.UniformBuffer, IntPtr.Zero, lightData.Length * 4, lightData);
       GL.BindBuffer(BufferTarget.UniformBuffer, 0);
