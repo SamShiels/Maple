@@ -41,7 +41,7 @@ namespace Firefly.Core.Texture
       {
         //UpdateSettings();
       }
-      if (texture.GetType().Name == "Texture")
+      if (texture.GetType() == typeof(Texturing.Texture))
       {
         GL.BindTexture(TextureTarget.Texture2D, GLTexture);
         if (!Uploaded)
@@ -50,7 +50,7 @@ namespace Firefly.Core.Texture
           UploadTexture(texture);
         }
       }
-      else if (texture.GetType().Name == "Cubemap")
+      else if (texture.GetType() == typeof(Cubemap))
       {
         GL.BindTexture(TextureTarget.TextureCubeMap, GLTexture);
         if (!Uploaded)

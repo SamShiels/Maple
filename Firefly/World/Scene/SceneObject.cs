@@ -52,17 +52,17 @@ namespace Firefly.World.Scene
         parent.Transform.AddChild(worldObject.Transform);
       }
 
-      if (worldObject.GetType().Name == "PointLight")
+      if (worldObject.GetType() == typeof(PointLight))
       {
         Lights.Add((PointLight)worldObject);
       }
 
-      if (worldObject.GetType().Name == "DirectionalLight")
+      if (worldObject.GetType() == typeof(DirectionalLight))
       {
         DirectionalLights.Add((DirectionalLight)worldObject);
       }
 
-      if (worldObject.GetType().Name == "Camera")
+      if (worldObject.GetType() == typeof(Camera))
       {
         Cameras.Add((Camera)worldObject);
       }

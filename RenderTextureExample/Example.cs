@@ -32,8 +32,8 @@ namespace RenderTextureExample
       Image house = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("RenderTextureExample.Resources.house.png"));
       Texture textureHouse = new Texture(house);
       RenderTexture renderTexture = new RenderTexture();
-      renderTexture.Width = 1000;
-      renderTexture.Height = 1000;
+      renderTexture.Width = 2000;
+      renderTexture.Height = 2000;
 
       Uniform directionalLight = new Uniform("u_lightDirection", new Vector3(0.1f, 0.5f, 1.0f));
       Uniform shininess = new Uniform("u_shininess", 0.5f);
