@@ -27,6 +27,7 @@ namespace RenderTextureExample
     {
       base.OnLoad();
       OBJLoader loader = new OBJLoader();
+      game.renderer.AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
       Image house = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("RenderTextureExample.Resources.house.png"));
       Texture textureHouse = new Texture(house);
@@ -45,8 +46,8 @@ namespace RenderTextureExample
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
-      houseMesh.Transform.Position = new Vector3(100f, 0f, 10f);
-      houseMesh.Transform.Rotation = new Vector3(0f, (float)Math.PI / 2f, 0f);
+      houseMesh.Transform.Position = new Vector3(100f, 0f, -10f);
+      houseMesh.Transform.EulerAngles = new Vector3(0f, (float)Math.PI / 2f, 0f);
       houseMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
       houseMesh.Textures = new Texture[] { textureHouse };
       houseMesh.Material = material;
@@ -60,8 +61,8 @@ namespace RenderTextureExample
 
       cubeMesh = new MeshObject();
       cubeMesh.Model = cubeModel;
-      cubeMesh.Transform.Position = new Vector3(0f, 0f, 10f);
-      cubeMesh.Transform.Rotation = new Vector3(0f, 0f, 0f);
+      cubeMesh.Transform.Position = new Vector3(0f, 0f, -10f);
+      cubeMesh.Transform.EulerAngles = new Vector3(0f, 0f, 0f);
       cubeMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
       cubeMesh.Textures = new Texture[] { renderTexture };
       cubeMesh.Material = material;
@@ -69,7 +70,7 @@ namespace RenderTextureExample
       game.scene.AddObject(cubeMesh);
 
       light = new PointLight();
-      light.Transform.Position = new Vector3(0f, 0f, 10f);
+      light.Transform.Position = new Vector3(0f, 0f, -10f);
       light.Diffuse = Color4.Red;
       light.Radius = 1f;
       light.Intensity = 1f;

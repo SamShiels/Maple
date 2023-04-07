@@ -23,7 +23,6 @@ namespace Firefly.Core
     private TextureManager textureManager;
     private ShaderManager shaderManager;
     private CanvasHandler canvasHandler;
-    private RenderTextureManager renderTextureManager;
     private DynamicBatchHandler dynamicBatchHandler;
     private MeshBufferHandler modelBufferHandler;
     private PointLightBufferHandler pointLightBufferHandler;
@@ -53,8 +52,6 @@ namespace Firefly.Core
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
       directionalLightBufferHandler = new DirectionalLightBufferHandler(2);
-
-      renderTextureManager = new RenderTextureManager(textureManager);
 
       cameraHandler = new CameraHandler();
       skyboxHandler = new SkyboxHandler(shaderManager, textureManager);
@@ -88,22 +85,22 @@ namespace Firefly.Core
       pointLights = scene.Lights;
       directionalLights = scene.DirectionalLights;
 
-      //for (int i = 0; i < scene.Cameras.Count; i++)
-      //{
-      //  Camera camera = scene.Cameras[i];
-      //  RenderTexture renderTexture = camera.RenderTexture;
-      //  if (camera.RenderTexture == null)
-      //  {
-      //    continue;
-      //  }
-      //  renderTextureManager.BindRenderTexture(renderTexture);
-      //  GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
-      //  GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-      //  GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-      //  AssignCamera(camera);
-      //  BufferObject(scene.RootObject);
-      //  FlushBatchBuffers();
-      //}
+      for (int i = 0; i < scene.Cameras.Count; i++)
+      {
+        Camera camera = scene.Cameras[i];
+        RenderTexture renderTexture = camera.RenderTexture;
+        if (camera.RenderTexture == null)
+        {
+          continue;
+        }
+        textureManager.BindFrameBuffer(renderTexture);
+        GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
+        GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        AssignCamera(camera);
+        BufferObject(scene.RootObject);
+        FlushBatchBuffers();
+      }
 
       if (!raw)
       {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Firefly.Texturing;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Firefly.Core.Texture
@@ -11,6 +12,10 @@ namespace Firefly.Core.Texture
     /// Texture components used for binding.
     /// </summary>
     private Dictionary<int, TextureComponent> textureComponents;
+    /// <summary>
+    /// Texture components used for binding.
+    /// </summary>
+    private Dictionary<int, RenderTextureComponent> renderTextureComponents;
     /// <summary>
     /// A list of bound textures.
     /// </summary>
@@ -28,6 +33,7 @@ namespace Firefly.Core.Texture
     public TextureManager()
     {
       textureComponents = new Dictionary<int, TextureComponent>();
+      renderTextureComponents = new Dictionary<int, RenderTextureComponent>();
       maximumTextureUnits = GL.GetInteger(GetPName.MaxTextureImageUnits);
       activeTextures = new List<int>();
       nextAvailableTextureUnit = 0;
@@ -64,6 +70,36 @@ namespace Firefly.Core.Texture
     /// Bind to a texture. Upload it to the GPU if it doesn't exist.
     /// </summary>
     /// <param name="texture"></param>
+    public void BindFrameBuffer(RenderTexture renderTexture)
+    {
+      int id = renderTexture.Id;
+      RenderTextureComponent component;
+      if (!renderTextureComponents.TryGetValue(id, out component))
+      {
+        component = new RenderTextureComponent(this, renderTexture);
+        renderTextureComponents.Add(id, component);
+      }
+
+      component.BindFrameBuffer();
+    }
+
+    /// <summary>
+    /// Bind to a texture. Upload it to the GPU if it doesn't exist.
+    /// </summary>
+    /// <param name="texture"></param>
+    private void BindRenderTexture(RenderTexture renderTexture)
+    {
+      int id = renderTexture.Id;
+      if (renderTextureComponents.TryGetValue(id, out RenderTextureComponent component))
+      {
+        component.BindRenderTexture();
+      }
+    }
+
+    /// <summary>
+    /// Bind to a texture. Upload it to the GPU if it doesn't exist.
+    /// </summary>
+    /// <param name="texture"></param>
     public int UseTexture(Texturing.TextureBase texture)
     {
       int id = texture.Id;
@@ -80,6 +116,11 @@ namespace Firefly.Core.Texture
         // this texture has not been bound
         TextureUnit slot = TextureUnit.Texture0 + nextAvailableTextureUnit;
         component.SetUnit(slot);
+
+        if (texture.GetType() == typeof(RenderTexture))
+        {
+          BindRenderTexture(texture as RenderTexture);
+        }
 
         nextAvailableTextureUnit = (nextAvailableTextureUnit + 1) % (maximumTextureUnits);
         if (activeTextures.Count == maximumTextureUnits)

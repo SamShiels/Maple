@@ -91,5 +91,5 @@ void main()
     {
         diffuse += CalculateDirectionalLight(directionalLights[i]);
     }
-    FragColor = vec4(diffuse, 1.0);
+    FragColor = texture(u_images[0], texcoord) * max(ambientLight, vec4(diffuse, 1.0));
 }

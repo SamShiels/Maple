@@ -199,11 +199,10 @@ namespace Firefly
     private static void DebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
     {
       string messageString = Marshal.PtrToStringAnsi(message, length);
-      Console.WriteLine($"{severity} {type} | {messageString}");
 
-      if (type == DebugType.DebugTypeError)
+      if (type == DebugType.DebugTypeError || severity != DebugSeverity.DontCare)
       {
-        Console.WriteLine(messageString);
+        Console.WriteLine($"{severity} {type} | {messageString}");
       }
     }
 

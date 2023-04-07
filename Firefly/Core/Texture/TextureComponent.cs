@@ -23,7 +23,10 @@ namespace Firefly.Core.Texture
     {
       texture = Texture;
 
-      GLTexture = GL.GenTexture();
+      if (texture.GetType().Name != "RenderTexture")
+      {
+        GLTexture = GL.GenTexture();
+      }
       Initialized = true;
 
       return GLTexture;
@@ -111,17 +114,6 @@ namespace Firefly.Core.Texture
       }
 
       UpdateSettings(cubemap);
-      Uploaded = true;
-    }
-
-    private void UploadRenderTexture()
-    {
-      RenderTexture renderTexture = (RenderTexture)texture;
-      int width = renderTexture.Width;
-      int height = renderTexture.Height;
-
-      UpdateSettings(renderTexture);
-      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
       Uploaded = true;
     }
   }

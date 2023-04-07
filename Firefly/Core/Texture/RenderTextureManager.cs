@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Firefly.Core.Texture
@@ -24,17 +25,30 @@ namespace Firefly.Core.Texture
     /// Bind to a texture. Upload it to the GPU if it doesn't exist.
     /// </summary>
     /// <param name="texture"></param>
-    public void BindRenderTexture(RenderTexture renderTexture)
+    public void BindFrameBuffer(RenderTexture renderTexture)
     {
       int id = renderTexture.Id;
       RenderTextureComponent component;
       if (!textureComponents.TryGetValue(id, out component))
       {
-        component = new RenderTextureComponent(textureManager);
+        component = new RenderTextureComponent(textureManager, renderTexture);
         textureComponents.Add(id, component);
       }
 
-      component.BindRenderTexture(renderTexture);
+      component.BindFrameBuffer();
+    }
+
+    /// <summary>
+    /// Bind to a texture. Upload it to the GPU if it doesn't exist.
+    /// </summary>
+    /// <param name="texture"></param>
+    public void BindRenderTexture(RenderTexture renderTexture)
+    {
+      int id = renderTexture.Id;
+      if (textureComponents.TryGetValue(id, out RenderTextureComponent component))
+      {
+        component.BindRenderTexture();
+      }
     }
   }
 }
