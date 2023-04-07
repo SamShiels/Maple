@@ -72,17 +72,31 @@ namespace Firefly.World.Mesh
       return model;
     }
 
-    private static void ExtractVertex(string indexString, List<float> modelPositions, List<float> positionCache, List<float> modelTexcoords, List<float> texcoordCache, List<float> modelNormals, List<float> normalCache, List<int> modelIndices)
+    private void ExtractVertex(string faceStringLine, List<float> modelPositions, List<float> positionCache, List<float> modelTexcoords, List<float> texcoordCache, List<float> modelNormals, List<float> normalCache, List<int> modelIndices)
     {
-      string[] indexArray = indexString.Split('/');
-      int positionIndex = (int.Parse(indexArray[0], CultureInfo.InvariantCulture.NumberFormat) - 1) * 3;
-      int texcoordIndex = (int.Parse(indexArray[1], CultureInfo.InvariantCulture.NumberFormat) - 1) * 2;
-      int normalIndex = (int.Parse(indexArray[2], CultureInfo.InvariantCulture.NumberFormat) - 1) * 3;
+      string[] faceIndices = faceStringLine.Split('/');
+
+      string positionIndexString = faceIndices[0];
+      int positionIndex = (int.Parse(positionIndexString, CultureInfo.InvariantCulture.NumberFormat) - 1) * 3;
+      modelPositions.AddRange(new float[] { positionCache[positionIndex], positionCache[positionIndex + 1], positionCache[positionIndex + 2] });
+
+      string textureCoordinateIndexString = faceIndices[1];
+
+      if (!string.IsNullOrEmpty(textureCoordinateIndexString))
+      {
+        int texcoordIndex = (int.Parse(textureCoordinateIndexString, CultureInfo.InvariantCulture.NumberFormat) - 1) * 2;
+        modelTexcoords.AddRange(new float[] { texcoordCache[texcoordIndex], texcoordCache[texcoordIndex + 1] });
+      }
+
+      string normalIndexString = faceIndices[2];
+
+      if (!string.IsNullOrEmpty(normalIndexString))
+      {
+        int normalIndex = (int.Parse(normalIndexString, CultureInfo.InvariantCulture.NumberFormat) - 1) * 3;
+        modelNormals.AddRange(new float[] { normalCache[normalIndex], normalCache[normalIndex + 1], normalCache[normalIndex + 2] });
+      }
 
       // Extract the vertex data from the caches and add it to our model lists
-      modelPositions.AddRange(new float[] { positionCache[positionIndex], positionCache[positionIndex + 1], positionCache[positionIndex + 2] });
-      modelTexcoords.AddRange(new float[] { texcoordCache[texcoordIndex], texcoordCache[texcoordIndex + 1] });
-      modelNormals.AddRange(new float[] { normalCache[normalIndex], normalCache[normalIndex + 1], normalCache[normalIndex + 2] });
       modelIndices.Add(modelIndices.Count);
     }
   }
