@@ -66,7 +66,7 @@ namespace CameraExample
     {
       //cameraContainer.Transform.Position = new Vector3(0.0f, 0, 0.0f);
       //cameraContainer.Transform.Position = new Vector3(0.0f, 0f, -displacement * 5);
-      game.camera.Transform.EulerAngles = new Vector3(-displacement / 3, 0.0f, -displacement / 2);
+      game.camera.Transform.EulerAngles = new Vector3(-displacement / 6, 0.0f, -displacement / 4);
       displacement += 0.01f;
       //game.camera.FieldOfView = (float)(Math.Sin(displacement) + 2.0f);
       base.OnUpdateFrame(args);

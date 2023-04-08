@@ -317,11 +317,17 @@ namespace Firefly.Core
 
     private bool IsMeshWithinFrustum(MeshObject mesh, Matrix4 projectionMatrix, Matrix4 viewMatrix)
     {
+      if (!mesh.EnableFrustumCulling)
+      {
+        mesh.IsRendered = true;
+        return true;
+      }
+
       float[] bounds = mesh.Component.WorldBounds;
-      bool withinView = true;
+      bool withinView = false;
 
       // Maybe cache this?
-      Matrix4 viewProjectionMatrix = Matrix4.Mult(projectionMatrix, viewMatrix);
+      Matrix4 viewProjectionMatrix = Matrix4.Mult(viewMatrix, projectionMatrix);
 
       for (int bound = 0; bound < bounds.Length; bound += 3)
       { 
@@ -329,17 +335,21 @@ namespace Firefly.Core
         float y = bounds[bound + 1];
         float z = bounds[bound + 2];
 
-        Vector3 boundPoint = new Vector3(x, y, z);
-        Vector3 point = Vector3.TransformPosition(boundPoint, viewProjectionMatrix);
+        Vector4 boundPoint = new Vector4(x, y, z, 1f);
+        Vector4 point = Vector4.TransformRow(boundPoint, viewProjectionMatrix);
 
-        if ((point.X > -1 && point.X < 1) && (point.Y > -1 && point.Y < 1) && (point.Z > -1 && point.Z < 1))
+        point.X /= point.W;
+        point.Y /= point.W;
+        point.Z /= point.W;
+
+        if ((point.X > -1.25 && point.X < 1.25) && (point.Y > -1.25 && point.Y < 1.25) && (point.Z > -1.25 && point.Z < 1.25))
         {
           withinView = true;
           break;
         }
       }
 
-      //Console.WriteLine("Culled " + !withinView);
+      mesh.IsRendered = withinView;
 
       return withinView;
     }

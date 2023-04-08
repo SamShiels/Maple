@@ -32,8 +32,14 @@ namespace CubeExample
       SceneObject scene = sceneLoader.CreateScene(sceneJson, game.scene);
     }
 
+    private float time = 0;
+
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
+      WorldObject cube = game.scene.RootObject.Transform.GetChildren()[1].Owner;
+      cube.Transform.Position = new Vector3((float)Math.Sin(time / 100) * 30, 0.0f, -10);
+      game.camera.Transform.Position = new Vector3((float)Math.Cos(time / 100) * 30, 0.0f, 0f);
+      time++;
       base.OnUpdateFrame(args);
     }
 

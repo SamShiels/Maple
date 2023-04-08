@@ -20,6 +20,18 @@
         "textures": [ "kronk.jpg" ],
         "material": "diffuse"
       }
+    },
+    {
+      "name": "cube2",
+      "position": [ -100, 1, -5 ],
+      "rotation": [ 0, 0, 0 ],
+      "localScale": [ 1, 1, 1 ],
+      "type": "MeshObject",
+      "properties": {
+        "modelName": "cube.obj",
+        "textures": [ "kronk.jpg" ],
+        "material": "diffuse"
+      }
     }
   ],
   "assets": {
