@@ -94,33 +94,15 @@ namespace Firefly.Core
           continue;
         }
         textureManager.BindFrameBuffer(renderTexture);
-        GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
-        GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        AssignCamera(camera);
-        BufferObject(scene.RootObject);
-        FlushBatchBuffers();
+        //GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
+        RenderCameraView(camera, scene.RootObject);
       }
 
       if (!raw)
       {
         canvasHandler.BindFrameBuffer();
       }
-      AssignCamera(scene.Camera);
-
-      Color4 c = clearColor;
-      GL.ClearColor(c.R, c.G, c.B, 1.0f);
-      GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-      Cubemap skybox = scene.Camera.Skybox;
-      if (skybox != null)
-      {
-        Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-        skyboxHandler.DrawSkybox(skybox, scene.Camera.Transform.GetLocalRotationMatrix(), projectionMatrix.Inverted());
-      }
-
-      BufferObject(scene.RootObject);
-      FlushBatchBuffers();
+      RenderCameraView(scene.Camera, scene.RootObject);
       if (!raw)
       {
         canvasHandler.DrawCanvas();
@@ -154,6 +136,25 @@ namespace Firefly.Core
     public void DeleteModel(Model model)
     {
       modelBufferHandler.BufferModel(model);
+    }
+
+    private void RenderCameraView(Camera camera, WorldObject rootObject)
+    {
+      AssignCamera(camera);
+
+      Color4 c = camera.BackgroundColor;
+      GL.ClearColor(c.R, c.G, c.B, 1.0f);
+      GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+      Cubemap skybox = camera.Skybox;
+      if (skybox != null)
+      {
+        Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+        skyboxHandler.DrawSkybox(skybox, camera.Transform.GetLocalRotationMatrix(), projectionMatrix.Inverted());
+      }
+
+      BufferObject(rootObject);
+      FlushBatchBuffers();
     }
 
     /// <summary>

@@ -46,7 +46,7 @@ namespace RenderTextureExample
 
       houseMesh = new MeshObject();
       houseMesh.Model = houseModel;
-      houseMesh.Transform.Position = new Vector3(100f, 0f, -10f);
+      houseMesh.Transform.Position = new Vector3(100f, 0f, -1f);
       houseMesh.Transform.EulerAngles = new Vector3(0f, (float)Math.PI / 2f, 0f);
       houseMesh.Transform.LocalScale = new Vector3(2f, 2f, 2f);
       houseMesh.Textures = new Texture[] { textureHouse };
@@ -55,6 +55,7 @@ namespace RenderTextureExample
       Camera textureCamera = new Camera();
       textureCamera.RenderTexture = renderTexture;
       textureCamera.Transform.Position = new Vector3(100f, 0f, 0f);
+      textureCamera.BackgroundColor = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
 
       game.scene.AddObject(houseMesh);
       game.scene.AddObject(textureCamera);
@@ -62,20 +63,11 @@ namespace RenderTextureExample
       cubeMesh = new MeshObject();
       cubeMesh.Model = cubeModel;
       cubeMesh.Transform.Position = new Vector3(0f, 0f, -10f);
-      cubeMesh.Transform.EulerAngles = new Vector3(0f, 0f, 0f);
       cubeMesh.Transform.LocalScale = new Vector3(1f, 1f, 1f);
       cubeMesh.Textures = new Texture[] { renderTexture };
       cubeMesh.Material = material;
 
       game.scene.AddObject(cubeMesh);
-
-      light = new PointLight();
-      light.Transform.Position = new Vector3(0f, 0f, -10f);
-      light.Diffuse = Color4.Red;
-      light.Radius = 1f;
-      light.Intensity = 1f;
-
-      game.scene.AddObject(light);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -89,6 +81,7 @@ namespace RenderTextureExample
     {
       Time += 0.01f;
       float positionX = (float)Math.Sin(Time) * 10f;
+      cubeMesh.Transform.EulerAngles = new Vector3(0.0f, Time, 0.0f);
       //houseMesh.Transform.Position = new Vector3(positionX, 0f, 10f);
 
       if (Time > 5)
