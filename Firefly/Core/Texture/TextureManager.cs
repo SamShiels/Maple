@@ -30,11 +30,11 @@ namespace Firefly.Core.Texture
     /// </summary>
     private int maximumTextureUnits;
 
-    public TextureManager()
+    public TextureManager(int shadowMapCapacity = 4)
     {
       textureComponents = new Dictionary<int, TextureComponent>();
       renderTextureComponents = new Dictionary<int, RenderTextureComponent>();
-      maximumTextureUnits = GL.GetInteger(GetPName.MaxTextureImageUnits);
+      maximumTextureUnits = GL.GetInteger(GetPName.MaxTextureImageUnits) - shadowMapCapacity;
       activeTextures = new List<int>();
       nextAvailableTextureUnit = 0;
     }
@@ -70,7 +70,7 @@ namespace Firefly.Core.Texture
     /// Bind to a texture. Upload it to the GPU if it doesn't exist.
     /// </summary>
     /// <param name="texture"></param>
-    public void BindFrameBuffer(RenderTexture renderTexture)
+    public void BindRenderTextureFrameBuffer(RenderTexture renderTexture)
     {
       int id = renderTexture.Id;
       RenderTextureComponent component;

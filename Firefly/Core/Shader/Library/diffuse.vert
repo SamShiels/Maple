@@ -9,8 +9,10 @@ out vec3 normal;
 uniform mat4 u_modelMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
+uniform mat4 u_lightSpaceMatrix;
 
 out vec3 FragWorldPosition;
+out vec4 FragPositionInLightSpace;
 
 void main()
 {
@@ -22,5 +24,7 @@ void main()
 	vec4 screenPosition = u_projectionMatrix * u_viewMatrix * worldPosition;
 
     FragWorldPosition = worldPosition.xyz;
+    FragPositionInLightSpace = u_lightSpaceMatrix * vec4(FragWorldPosition, 1.0);
+
     gl_Position = screenPosition;
 }

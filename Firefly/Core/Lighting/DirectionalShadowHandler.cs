@@ -5,14 +5,15 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Firefly.Core.Texture;
+using Firefly.Texturing;
+using System.Reflection.Metadata;
+using Firefly.Core.Shader;
 
 namespace Firefly.Core.Lighting
 {
   internal class DirectionalShadowHandler
   {
-    private int depthTextureHandle;
-    private int FBOHandle;
-
     private bool initialized = false;
 
     private const int width = 1024;
@@ -21,13 +22,51 @@ namespace Firefly.Core.Lighting
     private Rendering.Shader depthShader;
     private Material depthMaterial;
 
-    public DirectionalShadowHandler()
+    private int maxTextureUnits;
+    private int maxShadowMapCount;
+
+    private Dictionary<uint, DirectionalLight> cachedLights;
+    private Dictionary<uint, int> FBOHandles;
+    private List<int> depthTextureHandles;
+
+    public DirectionalShadowHandler(int maxTextureUnits, int maxShadowMapCount)
     {
+      this.maxTextureUnits = maxTextureUnits;
+      this.maxShadowMapCount = maxShadowMapCount;
+
+      depthTextureHandles = new List<int>();
+      FBOHandles = new Dictionary<uint, int>();
+
+      cachedLights = new Dictionary<uint, DirectionalLight>();
+
+      string vs = @"
+        #version 450 core
+        layout (location = 0) in vec3 a_Position;
+          
+        uniform mat4 lightSpaceMatrix;
+        uniform mat4 u_modelMatrix;
+
+        void main()
+        {
+          gl_Position = lightSpaceMatrix * u_modelMatrix * vec4(a_Position, 1.0);
+        }
+      ";
+
+      string fs = @"
+        #version 450 core
+
+        void main()
+        {
+          // gl_FragDepth = gl_FragCoord.z;
+        }
+      ";
+
+      depthShader = new Rendering.Shader(vs, fs);
+      depthMaterial = new Material(depthShader);
     }
 
     public Matrix4 GetLightProjectionMatrix(DirectionalLight light, Vector3 assignedCameraPosition)
     {
-      Vector3 lightEulerAngles = light.Transform.EulerAngles;
       Matrix4 lightProjectionMatrix = Matrix4.CreateOrthographic(20f, 20f, -10f, 10f);
 
       return lightProjectionMatrix;
@@ -35,60 +74,65 @@ namespace Firefly.Core.Lighting
 
     public Material GetDepthMaterial()
     {
-      Initialize();
       return depthMaterial;
     }
 
-    public void Bind()
+    public void BindFrameBuffer(DirectionalLight light)
     {
-      Initialize();
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
+      Initialize(light);
+
+      if (FBOHandles.TryGetValue(light.Id, out int handle))
+      {
+        GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
+      }
     }
 
-    private void Initialize()
+    public void BindDepthMap()
     {
-      if (!initialized)
+      for (int i = 0; i < Math.Min(depthTextureHandles.Count, 4); i++)
       {
-        depthTextureHandle = GL.GenTexture();
+        GL.ActiveTexture(TextureUnit.Texture0 + maxTextureUnits + i);
+        GL.BindTexture(TextureTarget.Texture2D, depthTextureHandles[i]);
+      }
+    }
+
+    public void UploadSamplerPositions(ShaderComponent shader)
+    {
+      int samplerLocation = shader.GetUniformLocation("u_shadowMaps");
+      if (samplerLocation > -1)
+      {
+        int[] samplers = new int[Math.Min(depthTextureHandles.Count, 4)];
+        for (int i = 0; i < Math.Min(depthTextureHandles.Count, 4); i++)
+        {
+          samplers[i] = maxTextureUnits + i;
+        }
+        GL.Uniform1(samplerLocation, samplers.Length, samplers);
+      }
+    }
+
+    private void Initialize(DirectionalLight light)
+    {
+      uint lightId = light.Id;
+      if (!cachedLights.ContainsKey(lightId))
+      {
+        int depthTextureHandle = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, depthTextureHandle);
         GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent24, width, height, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+        depthTextureHandles.Add(depthTextureHandle);
 
-        FBOHandle = GL.GenFramebuffer();
+        int FBOHandle = GL.GenFramebuffer();
         GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBOHandle);
         GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthTextureHandle, 0);
         GL.DrawBuffer(DrawBufferMode.None);
         GL.ReadBuffer(ReadBufferMode.None);
         GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        FBOHandles.Add(lightId, FBOHandle);
 
-        string vs = @"
-          #version 450 core
-          layout (location = 0) in vec3 a_Position;
-          
-          uniform mat4 lightSpaceMatrix;
-          uniform mat4 u_modelMatrix;
-
-          void main()
-          {
-            gl_Position = lightSpaceMatrix * u_modelMatrix * vec4(a_Position, 1.0);
-          }
-        ";
-
-        string fs = @"
-          #version 450 core
-
-          void main()
-          {
-            // gl_FragDepth = gl_FragCoord.z;
-          }
-        ";
-
-        depthShader = new Rendering.Shader(vs, fs);
-        depthMaterial = new Material(depthShader);
-        initialized = true;
+        cachedLights.Add(lightId, light);
       }
     }
   }

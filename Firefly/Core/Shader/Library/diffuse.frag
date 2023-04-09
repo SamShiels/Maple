@@ -2,6 +2,7 @@
 
 out vec4 FragColor;
 in vec3 FragWorldPosition;
+in vec4 FragPositionInLightSpace;
 
 in vec2 texcoord;
 in vec3 normal;
@@ -37,6 +38,7 @@ layout (std140) uniform AmbientLightBlock {
 
 uniform vec3 u_lightDirection;
 uniform sampler2D u_images[1];
+uniform sampler2D u_shadowMaps[1];
 
 vec3 CalculateDirectionalLight(DirectionalLight directionalLight)
 {
@@ -80,6 +82,11 @@ vec3 CalculatePointLight(PointLight pointLight)
     return lightColor * angle * lightDistanceFactor * lightIntensity;
 }
 
+float CalculateDirectionalShadow(vec4 fragPositionInLightSpace)
+{
+    return 0.0;
+}
+
 void main()
 {
     vec3 diffuse = vec3(0.0);
@@ -91,5 +98,7 @@ void main()
     {
         diffuse += CalculateDirectionalLight(directionalLights[i]);
     }
-    FragColor = texture(u_images[0], texcoord) * max(ambientLight, vec4(diffuse, 1.0));
+
+
+    FragColor = texture(u_shadowMaps[0], texcoord) * max(ambientLight, vec4(diffuse - CalculateDirectionalShadow(FragPositionInLightSpace), 1.0));
 }

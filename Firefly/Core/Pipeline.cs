@@ -35,8 +35,6 @@ namespace Firefly.Core
     private int resolutionWidth;
     private int resolutionHeight;
 
-    private Color4 clearColor;
-    private Color4 ambientLight;
     private List<PointLight> pointLights;
     private List<DirectionalLight> directionalLights;
 
@@ -54,7 +52,7 @@ namespace Firefly.Core
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
       directionalLightBufferHandler = new DirectionalLightBufferHandler(2);
 
-      directionalShadowHandler = new DirectionalShadowHandler();
+      directionalShadowHandler = new DirectionalShadowHandler(textureManager.GetMaxTextureUnitCount(), 4);
 
       cameraHandler = new CameraHandler();
       skyboxHandler = new SkyboxHandler(shaderManager, textureManager);
@@ -66,7 +64,6 @@ namespace Firefly.Core
     /// <param name="ambientLight"></param>
     public void SetAmbientLight(Color4 ambientLight)
     {
-      this.ambientLight = ambientLight;
       ambientLightBufferHandler.BufferLightData(ambientLight);
     }
 
@@ -76,7 +73,6 @@ namespace Firefly.Core
     /// <param name="clearColor"></param>
     public void SetClearColor(Color4 clearColor)
     {
-      this.clearColor = clearColor;
     }
 
     /// <summary>
@@ -86,7 +82,8 @@ namespace Firefly.Core
     public void RenderScene(SceneObject scene, bool raw)
     {
       pointLights = scene.Lights;
-      directionalLights = scene.DirectionalLights;
+
+      RenderShadowMaps(scene);
 
       for (int i = 0; i < scene.Cameras.Count; i++)
       {
@@ -96,27 +93,9 @@ namespace Firefly.Core
         {
           continue;
         }
-        textureManager.BindFrameBuffer(renderTexture);
+        textureManager.BindRenderTextureFrameBuffer(renderTexture);
         //GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
         RenderCameraView(camera, scene.RootObject);
-      }
-
-      for (int i = 0; i < directionalLights.Count; i++)
-      {
-        DirectionalLight light = directionalLights[i];
-        if (!light.CastShadows)
-        {
-          continue;
-        }
-        directionalShadowHandler.Bind();
-
-        Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[i], scene.Camera.Transform.Position);
-        Matrix4 lightView = light.Transform.GetLocalMatrix();
-        Material lightDepthMaterial = directionalShadowHandler.GetDepthMaterial();
-
-        GL.Clear(ClearBufferMask.DepthBufferBit);
-        BufferObject(scene.RootObject, lightProjection, lightView);
-        FlushBatchBuffers(lightProjection, lightView, lightDepthMaterial);
       }
 
       if (!raw)
@@ -127,6 +106,32 @@ namespace Firefly.Core
       if (!raw)
       {
         canvasHandler.DrawCanvas();
+      }
+    }
+
+    private void RenderShadowMaps(SceneObject scene)
+    {
+      directionalLights = scene.DirectionalLights;
+
+      for (int i = 0; i < directionalLights.Count; i++)
+      {
+        DirectionalLight light = directionalLights[i];
+        if (!light.CastShadows)
+        {
+          continue;
+        }
+        directionalShadowHandler.BindFrameBuffer(light);
+
+        Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[i], scene.Camera.Transform.Position);
+        Matrix4 lightView = light.Transform.GetLocalMatrix();
+        Matrix4 lightMatrix = lightProjection * lightView;
+
+        Material lightDepthMaterial = directionalShadowHandler.GetDepthMaterial();
+
+        GL.Clear(ClearBufferMask.DepthBufferBit);
+        BufferObject(scene.RootObject, lightProjection, lightView, lightMatrix);
+        FlushBatchBuffers(lightProjection, lightView, lightMatrix, lightDepthMaterial);
+
       }
     }
 
@@ -175,8 +180,10 @@ namespace Firefly.Core
         skyboxHandler.DrawSkybox(skybox, camera.Transform.GetLocalRotationMatrix(), projectionMatrix.Inverted());
       }
 
-      BufferObject(rootObject, projectionMatrix, viewMatrix);
-      FlushBatchBuffers(projectionMatrix, viewMatrix);
+      directionalShadowHandler.BindDepthMap();
+
+      BufferObject(rootObject, projectionMatrix, viewMatrix, Matrix4.Identity);
+      FlushBatchBuffers(projectionMatrix, viewMatrix, Matrix4.Identity);
     }
 
     /// <summary>
@@ -200,7 +207,7 @@ namespace Firefly.Core
     /// Evaluate an object and add it to the appropriate buffer.
     /// </summary>
     /// <param name="obj">The object to buffer</param>
-    private void BufferObject(WorldObject obj, Matrix4 projectionMatrix, Matrix4 viewMatrix, Material forcedMaterial = null)
+    private void BufferObject(WorldObject obj, Matrix4 projectionMatrix, Matrix4 viewMatrix, Matrix4 lightMatrix, Material forcedMaterial = null)
     {
       if (obj is MeshObject)
       {
@@ -215,7 +222,7 @@ namespace Firefly.Core
               if (!dynamicBatchHandler.IsMeshCompatible(mesh))
               {
                 // The mesh cannot be uploaded to the current buffer. Flush this batch (render it) and begin a new one.
-                FlushBatchBuffers(projectionMatrix, viewMatrix, forcedMaterial);
+                FlushBatchBuffers(projectionMatrix, viewMatrix, lightMatrix, forcedMaterial);
               }
 
               dynamicBatchHandler.AddToBatch(mesh);
@@ -234,7 +241,7 @@ namespace Firefly.Core
 
               Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
-              Render(usedMaterial, shaderComponent, mesh.Model.Indices.Length, modelMatrix, projectionMatrix, viewMatrix);
+              Render(usedMaterial, shaderComponent, mesh.Model.Indices.Length, modelMatrix, projectionMatrix, viewMatrix, lightMatrix);
               textureManager.ClearAllTextureSlots();
             }
           }
@@ -247,14 +254,14 @@ namespace Firefly.Core
       for (int i = 0; i < children.Count; i++)
       {
         WorldObject owner = children[i].Owner;
-        BufferObject(owner, projectionMatrix, viewMatrix, forcedMaterial);
+        BufferObject(owner, projectionMatrix, viewMatrix, lightMatrix, forcedMaterial);
       }
     }
 
     /// <summary>
     /// Render out all of the batched objects and reset the buffers.
     /// </summary>
-    private void FlushBatchBuffers(Matrix4 projectionMatrix, Matrix4 viewMatrix, Material forcedMaterial = null)
+    private void FlushBatchBuffers(Matrix4 projectionMatrix, Matrix4 viewMatrix, Matrix4 lightMatrix, Material forcedMaterial = null)
     {
       int batchSize = dynamicBatchHandler.GetBatchSize();
       if (batchSize > 0) {
@@ -268,13 +275,13 @@ namespace Firefly.Core
         shaderComponent.Use();
 
         dynamicBatchHandler.UploadSamplerPositions();
-        Render(forcedMaterial, shaderComponent, batchSize, Matrix4.Identity, projectionMatrix, viewMatrix);
+        Render(forcedMaterial, shaderComponent, batchSize, Matrix4.Identity, projectionMatrix, viewMatrix, lightMatrix);
         dynamicBatchHandler.Reset();
         textureManager.ClearAllTextureSlots();
       }
     }
 
-    private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix, Matrix4 projectionMatrix, Matrix4 viewMatrix)
+    private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix, Matrix4 projectionMatrix, Matrix4 viewMatrix, Matrix4 lightMatrix)
     {
       pointLightBufferHandler.BufferLightData(pointLights);
       directionalLightBufferHandler.BufferLightData(directionalLights);
@@ -300,6 +307,10 @@ namespace Firefly.Core
       GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
       GL.UniformMatrix4(viewMatrixLocation, false, ref viewMatrix);
+      int lightMatrixLocation = shaderComponent.GetUniformLocation("u_lightMatrix");
+      GL.UniformMatrix4(lightMatrixLocation, false, ref lightMatrix);
+
+      directionalShadowHandler.UploadSamplerPositions(shaderComponent);
 
       shaderComponent.TryBindPointLightUniform(0);
       shaderComponent.TryBindAmbientLightUniform(1);
@@ -310,7 +321,7 @@ namespace Firefly.Core
         for (int i = 0; i < material.Uniforms.Length; i++)
         {
           Uniform uniform = material.Uniforms[i];
-          if (uniform.name == "u_images" || uniform.name == "u_projectionMatrix" || uniform.name == "u_modelMatrix" || uniform.name == "u_viewMatrix")
+          if (uniform.name == "u_images" || uniform.name == "u_projectionMatrix" || uniform.name == "u_modelMatrix" || uniform.name == "u_viewMatrix" || uniform.name == "u_lightMatrix")
           {
             // Naughty naughty! We are trying to use builtin uniforms
             Console.WriteLine(uniform.name + " cannot be used because it conflicts with built in uniforms.");

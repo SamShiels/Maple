@@ -69,15 +69,25 @@ namespace Firefly.Core.Shader
 			uniformLocations.Add("u_projectionMatrix", screenToClipLocation);
 			int modelMatrixLocation = GL.GetUniformLocation(program, "u_modelMatrix");
 			uniformLocations.Add("u_modelMatrix", modelMatrixLocation);
-			int viewMatrixLocation = GL.GetUniformLocation(program, "u_viewMatrix");
-			uniformLocations.Add("u_viewMatrix", viewMatrixLocation);
-			int imagesLocation = GL.GetUniformLocation(program, "u_images");
+      int viewMatrixLocation = GL.GetUniformLocation(program, "u_viewMatrix");
+      uniformLocations.Add("u_viewMatrix", viewMatrixLocation);
+      int lightMatrixLocation = GL.GetUniformLocation(program, "u_lightMatrix");
+			if (lightMatrixLocation != -1)
+			{
+        uniformLocations.Add("u_lightMatrix", lightMatrixLocation);
+      }
+      int imagesLocation = GL.GetUniformLocation(program, "u_images");
 			if (imagesLocation != -1)
 			{
 				uniformLocations.Add("u_images", imagesLocation);
-			}
+      }
+      int shadowMapLocation = GL.GetUniformLocation(program, "u_shadowMaps");
+      if (shadowMapLocation != -1)
+      {
+        uniformLocations.Add("u_shadowMaps", shadowMapLocation);
+      }
 
-			if (uniforms != null) {
+      if (uniforms != null) {
 				for (int i = 0; i < uniforms.Length; i++)
 				{
 					Rendering.Uniform uniform = uniforms[i];

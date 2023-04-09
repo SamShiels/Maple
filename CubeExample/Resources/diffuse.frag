@@ -1,7 +1,8 @@
 ﻿#version 450 core
 
 out vec4 FragColor;
-in vec3 FragPos;
+in vec3 FragWorldPosition;
+in vec4 FragPositionInLightSpace;
 
 in vec2 texcoord;
 in vec3 normal;
@@ -11,14 +12,24 @@ struct PointLight {
     vec4 colorIntensity;
 };
 
+struct DirectionalLight {
+    vec4 directionIntensity;
+    vec4 color;
+};
+
 struct AmbientLight {
     vec4 color;
 };
 
 const int POINT_LIGHT_COUNT = 32;
+const int DIRECTIONAL_LIGHT_COUNT = 4;
 
 layout (std140) uniform PointLightBlock {
-	PointLight lights[POINT_LIGHT_COUNT];
+	PointLight pointLights[POINT_LIGHT_COUNT];
+};
+
+layout (std140) uniform DirectionalLightBlock {
+	DirectionalLight directionalLights[DIRECTIONAL_LIGHT_COUNT];
 };
 
 layout (std140) uniform AmbientLightBlock {
@@ -27,35 +38,80 @@ layout (std140) uniform AmbientLightBlock {
 
 uniform vec3 u_lightDirection;
 uniform sampler2D u_images[1];
+uniform sampler2D u_shadowMaps[1];
 
-vec3 CalculatePointLight(PointLight pointLight, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalculateDirectionalLight(DirectionalLight directionalLight)
 {
-    vec3 position = pointLight.positionRange.xyz;
-    float range = pointLight.positionRange.w;
-    vec3 color = pointLight.colorIntensity.xyz;
-    float intensity = pointLight.colorIntensity.w;
+    vec3 lightDirection = directionalLight.directionIntensity.xyz;
+    float lightIntensity = directionalLight.directionIntensity.w;
 
-    vec3 lightDir = normalize(position - fragPos);
-    float diff = max(dot(normal, lightDir), 0.0);
+    if (lightIntensity == 0.0) {
+        return vec3(0.0);
+    }
 
-    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 lightColor = directionalLight.color.xyz;
 
-    float distance = length(position - fragPos);
-    float atten = 1.0 / (distance / range / intensity);
+    float angle = max(dot(normalize(normal), normalize(lightDirection)), 0.0);
 
-    return color * atten;
+    return lightColor * angle * lightIntensity;
+}
+
+vec3 CalculatePointLight(PointLight pointLight)
+{
+    vec3 lightPosition = pointLight.positionRange.xyz;
+    float lightRange = pointLight.positionRange.w;
+
+    if (lightRange == 0.0) {
+		return vec3(0.0);
+	}
+
+    vec3 lightColor = pointLight.colorIntensity.xyz;
+    float lightIntensity = pointLight.colorIntensity.w;
+
+    vec3 lightDirToFragPosition = lightPosition - FragWorldPosition;
+    float lightDistance = length(lightDirToFragPosition);
+
+    if (lightDistance > lightRange) {
+        return vec3(0.0);
+    }
+
+    float angle = max(dot(normalize(normal), normalize(lightDirToFragPosition)), 0.0);
+
+    float lightDistanceFactor = min(1.0 - lightDistance / lightRange, 1.0);
+
+    return lightColor * angle * lightDistanceFactor * lightIntensity;
+}
+
+float CalculateDirectionalShadow(vec4 fragPositionInLightSpace)
+{
+    vec3 projectedCoords = fragPositionInLightSpace.xyz / fragPositionInLightSpace.w;
+
+    projectedCoords = projectedCoords * 0.5 + 0.5;
+    float closestDepth = texture(u_shadowMaps[0], projectedCoords.xy).r;
+    float currentDepth = projectedCoords.z;
+    float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
 }
 
 void main()
 {
-    vec3 norm = normalize(normal);
-    vec3 viewDir = normalize(vec3(0.0) - FragPos);
-
     vec3 diffuse = vec3(0.0);
     for (int i = 0; i < POINT_LIGHT_COUNT; i++)
     {
-        diffuse += CalculatePointLight(lights[i], norm, FragPos, viewDir);
+        diffuse += CalculatePointLight(pointLights[i]);
     }
-    vec4 albedo = texture(u_images[0], texcoord);
-    FragColor = albedo * vec4(max(diffuse, ambientLight.rgb), 1.0);
+    for (int i = 0; i < DIRECTIONAL_LIGHT_COUNT; i++)
+    {
+        diffuse += CalculateDirectionalLight(directionalLights[i]);
+    }
+
+    float shadow = CalculateDirectionalShadow(FragPositionInLightSpace);
+
+    if (shadow == 1.0) {
+        FragColor = vec4(vec3(0.0), 1.0);
+    } else {
+
+    FragColor = texture(u_images[0], texcoord) * vec4(diffuse, 1.0);
+    }
 }
