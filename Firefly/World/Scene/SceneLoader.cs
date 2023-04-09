@@ -103,10 +103,16 @@ namespace Firefly.World.Scene
 			if (worldObject.type == "MeshObject")
 			{
 				newObject = InstantiateMeshObject(sceneAssets.materials, worldObject);
-			} else if (worldObject.type == "PointLight")
+      }
+      else if (worldObject.type == "PointLight")
       {
-				newObject = InstantiatePointLight(worldObject);
-			} else
+        newObject = InstantiatePointLight(worldObject);
+      }
+      else if (worldObject.type == "DirectionalLight")
+      {
+        newObject = InstantiateDirectionalLight(worldObject);
+      }
+      else
       {
 				return;
 			}
@@ -166,31 +172,53 @@ namespace Firefly.World.Scene
 			meshObject.Material = material;
 
 			return meshObject;
-		}
+    }
 
-		private PointLight InstantiatePointLight(SceneDataModels.WorldObject worldObject)
-		{
-			PointLight pointLight = new PointLight();
+    private PointLight InstantiatePointLight(SceneDataModels.WorldObject worldObject)
+    {
+      PointLight pointLight = new PointLight();
 
-			JsonElement pointLightProperties = worldObject.properties;
-			float radius = pointLightProperties.GetProperty("radius").GetSingle();
-			float intensity = pointLightProperties.GetProperty("intensity").GetSingle();
-			JsonElement diffuseElement = pointLightProperties.GetProperty("diffuse");
+      JsonElement pointLightProperties = worldObject.properties;
+      float radius = pointLightProperties.GetProperty("radius").GetSingle();
+      float intensity = pointLightProperties.GetProperty("intensity").GetSingle();
+      JsonElement diffuseElement = pointLightProperties.GetProperty("diffuse");
 
-			float r = diffuseElement[0].GetSingle();
-			float g = diffuseElement[1].GetSingle();
-			float b = diffuseElement[2].GetSingle();
+      float r = diffuseElement[0].GetSingle();
+      float g = diffuseElement[1].GetSingle();
+      float b = diffuseElement[2].GetSingle();
 
-			Color4 diffuseColor = new Color4(r, g, b, 1f);
+      Color4 diffuseColor = new Color4(r, g, b, 1f);
 
-			pointLight.Radius = radius;
-			pointLight.Intensity = intensity;
-			pointLight.Diffuse = diffuseColor;
+      pointLight.Radius = radius;
+      pointLight.Intensity = intensity;
+      pointLight.Diffuse = diffuseColor;
 
-			return pointLight;
-		}
+      return pointLight;
+    }
 
-		public Model GetModel(string modelName)
+    private DirectionalLight InstantiateDirectionalLight(SceneDataModels.WorldObject worldObject)
+    {
+      DirectionalLight directionalLight = new DirectionalLight();
+
+      JsonElement pointLightProperties = worldObject.properties;
+      bool castShadows = pointLightProperties.GetProperty("castShadows").GetBoolean();
+      float intensity = pointLightProperties.GetProperty("intensity").GetSingle();
+      JsonElement diffuseElement = pointLightProperties.GetProperty("diffuse");
+
+      float r = diffuseElement[0].GetSingle();
+      float g = diffuseElement[1].GetSingle();
+      float b = diffuseElement[2].GetSingle();
+
+      Color4 diffuseColor = new Color4(r, g, b, 1f);
+
+      directionalLight.CastShadows = castShadows;
+      directionalLight.Intensity = intensity;
+      directionalLight.Diffuse = diffuseColor;
+
+      return directionalLight;
+    }
+
+    public Model GetModel(string modelName)
     {
 			models.TryGetValue(modelName, out Model model);
 			return model;

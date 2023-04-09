@@ -13,6 +13,7 @@ namespace Firefly.World.Lighting
 
     public float Intensity = 1.0f;
     public Color4 Diffuse = Color4.White;
+    public bool CastShadows = true;
 
     public DirectionalLight()
     {

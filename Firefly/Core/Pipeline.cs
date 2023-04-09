@@ -28,6 +28,7 @@ namespace Firefly.Core
     private PointLightBufferHandler pointLightBufferHandler;
     private AmbientLightBufferHandler ambientLightBufferHandler;
     private DirectionalLightBufferHandler directionalLightBufferHandler;
+    private DirectionalShadowHandler directionalShadowHandler;
     private CameraHandler cameraHandler;
     private SkyboxHandler skyboxHandler;
 
@@ -52,6 +53,8 @@ namespace Firefly.Core
       pointLightBufferHandler = new PointLightBufferHandler(0);
       ambientLightBufferHandler = new AmbientLightBufferHandler(1);
       directionalLightBufferHandler = new DirectionalLightBufferHandler(2);
+
+      directionalShadowHandler = new DirectionalShadowHandler();
 
       cameraHandler = new CameraHandler();
       skyboxHandler = new SkyboxHandler(shaderManager, textureManager);
@@ -96,6 +99,24 @@ namespace Firefly.Core
         textureManager.BindFrameBuffer(renderTexture);
         //GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
         RenderCameraView(camera, scene.RootObject);
+      }
+
+      for (int i = 0; i < directionalLights.Count; i++)
+      {
+        DirectionalLight light = directionalLights[i];
+        if (!light.CastShadows)
+        {
+          continue;
+        }
+        directionalShadowHandler.Bind();
+
+        Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[i], scene.Camera.Transform.Position);
+        Matrix4 lightView = light.Transform.GetLocalMatrix();
+        Material lightDepthMaterial = directionalShadowHandler.GetDepthMaterial();
+
+        GL.Clear(ClearBufferMask.DepthBufferBit);
+        BufferObject(scene.RootObject, lightProjection, lightView);
+        FlushBatchBuffers(lightProjection, lightView, lightDepthMaterial);
       }
 
       if (!raw)
@@ -146,15 +167,16 @@ namespace Firefly.Core
       GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
+      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
       Cubemap skybox = camera.Skybox;
       if (skybox != null)
       {
-        Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
         skyboxHandler.DrawSkybox(skybox, camera.Transform.GetLocalRotationMatrix(), projectionMatrix.Inverted());
       }
 
-      BufferObject(rootObject);
-      FlushBatchBuffers();
+      BufferObject(rootObject, projectionMatrix, viewMatrix);
+      FlushBatchBuffers(projectionMatrix, viewMatrix);
     }
 
     /// <summary>
@@ -178,16 +200,13 @@ namespace Firefly.Core
     /// Evaluate an object and add it to the appropriate buffer.
     /// </summary>
     /// <param name="obj">The object to buffer</param>
-    private void BufferObject(WorldObject obj)
+    private void BufferObject(WorldObject obj, Matrix4 projectionMatrix, Matrix4 viewMatrix, Material forcedMaterial = null)
     {
       if (obj is MeshObject)
       {
         MeshObject mesh = (MeshObject)obj;
         if (mesh.Model != null && mesh.Material != null && mesh.Visible)
         {
-          Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-          Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
-
           if (IsMeshWithinFrustum(mesh, projectionMatrix, viewMatrix))
           {
             if (dynamicBatchHandler.IsMeshBatchable(mesh))
@@ -195,8 +214,8 @@ namespace Firefly.Core
               // The mesh can be batched
               if (!dynamicBatchHandler.IsMeshCompatible(mesh))
               {
-                // The mesh can be uploaded to the current buffer
-                FlushBatchBuffers();
+                // The mesh cannot be uploaded to the current buffer. Flush this batch (render it) and begin a new one.
+                FlushBatchBuffers(projectionMatrix, viewMatrix, forcedMaterial);
               }
 
               dynamicBatchHandler.AddToBatch(mesh);
@@ -204,17 +223,18 @@ namespace Firefly.Core
             else
             {
               uint modelId = mesh.Model.Id;
+              Material usedMaterial = forcedMaterial ?? mesh.Material;
 
-              ShaderComponent shaderComponent = shaderManager.GetComponent(mesh.Material);
+              ShaderComponent shaderComponent = shaderManager.GetComponent(usedMaterial);
               shaderComponent.Use();
 
               // Buffer method for larger objects
               modelBufferHandler.BufferModel(mesh.Model);
-              modelBufferHandler.BindModel(modelId, mesh.Textures, mesh.Material);
+              modelBufferHandler.BindModel(modelId, mesh.Textures, usedMaterial);
 
               Matrix4 modelMatrix = mesh.Transform.GetLocalMatrix();
 
-              Render(mesh.Material, shaderComponent, mesh.Model.Indices.Length, modelMatrix);
+              Render(usedMaterial, shaderComponent, mesh.Model.Indices.Length, modelMatrix, projectionMatrix, viewMatrix);
               textureManager.ClearAllTextureSlots();
             }
           }
@@ -227,31 +247,34 @@ namespace Firefly.Core
       for (int i = 0; i < children.Count; i++)
       {
         WorldObject owner = children[i].Owner;
-        BufferObject(owner);
+        BufferObject(owner, projectionMatrix, viewMatrix, forcedMaterial);
       }
     }
 
     /// <summary>
     /// Render out all of the batched objects and reset the buffers.
     /// </summary>
-    private void FlushBatchBuffers()
+    private void FlushBatchBuffers(Matrix4 projectionMatrix, Matrix4 viewMatrix, Material forcedMaterial = null)
     {
       int batchSize = dynamicBatchHandler.GetBatchSize();
       if (batchSize > 0) {
         dynamicBatchHandler.BindAndEnablePointers();
 
-        Material material = dynamicBatchHandler.GetBatchMaterial();
-        ShaderComponent shaderComponent = shaderManager.GetComponent(material);
+        if (forcedMaterial == null)
+        {
+          forcedMaterial = dynamicBatchHandler.GetBatchMaterial();
+        }
+        ShaderComponent shaderComponent = shaderManager.GetComponent(forcedMaterial);
         shaderComponent.Use();
 
         dynamicBatchHandler.UploadSamplerPositions();
-        Render(material, shaderComponent, batchSize, Matrix4.Identity);
+        Render(forcedMaterial, shaderComponent, batchSize, Matrix4.Identity, projectionMatrix, viewMatrix);
         dynamicBatchHandler.Reset();
         textureManager.ClearAllTextureSlots();
       }
     }
 
-    private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix)
+    private void Render(Material material, ShaderComponent shaderComponent, int count, Matrix4 modelMatrix, Matrix4 projectionMatrix, Matrix4 viewMatrix)
     {
       pointLightBufferHandler.BufferLightData(pointLights);
       directionalLightBufferHandler.BufferLightData(directionalLights);
@@ -271,13 +294,10 @@ namespace Firefly.Core
       GL.BlendEquation(BlendEquationMode.FuncAdd);
       GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
 
-      Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
-      Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
-
-      int screenToClipLocation = shaderComponent.GetUniformLocation("u_projectionMatrix");
-      GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int modelMatrixLocation = shaderComponent.GetUniformLocation("u_modelMatrix");
       GL.UniformMatrix4(modelMatrixLocation, false, ref modelMatrix);
+      int screenToClipLocation = shaderComponent.GetUniformLocation("u_projectionMatrix");
+      GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
       GL.UniformMatrix4(viewMatrixLocation, false, ref viewMatrix);
 

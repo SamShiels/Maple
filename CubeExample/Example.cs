@@ -39,7 +39,7 @@ namespace CubeExample
       WorldObject cube = game.scene.RootObject.Transform.GetChildren()[1].Owner;
       cube.Transform.Position = new Vector3((float)Math.Sin(time / 100) * 30, 0.0f, -10);
       game.camera.Transform.Position = new Vector3((float)Math.Cos(time / 100) * 30, 0.0f, 0f);
-      time++;
+      //time++;
       base.OnUpdateFrame(args);
     }
 
