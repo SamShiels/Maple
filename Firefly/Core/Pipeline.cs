@@ -120,18 +120,18 @@ namespace Firefly.Core
         {
           continue;
         }
+
         directionalShadowHandler.BindFrameBuffer(light);
 
-        Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[i], scene.Camera.Transform.Position);
-        Matrix4 lightView = light.Transform.GetLocalMatrix();
-        Matrix4 lightMatrix = lightProjection * lightView;
+        Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[i]);
+        Matrix4 lightView = Matrix4.Identity;// directionalShadowHandler.GetLightViewMatrix(directionalLights[i]);
+        Matrix4 lightMatrix = Matrix4.Mult(lightView, lightProjection);
 
         Material lightDepthMaterial = directionalShadowHandler.GetDepthMaterial();
 
         GL.Clear(ClearBufferMask.DepthBufferBit);
         BufferObject(scene.RootObject, lightProjection, lightView, lightMatrix);
-        FlushBatchBuffers(lightProjection, lightView, lightMatrix, lightDepthMaterial);
-
+        FlushBatchBuffers(lightProjection, lightView, lightMatrix);
       }
     }
 
@@ -182,8 +182,20 @@ namespace Firefly.Core
 
       directionalShadowHandler.BindDepthMap();
 
-      BufferObject(rootObject, projectionMatrix, viewMatrix, Matrix4.Identity);
-      FlushBatchBuffers(projectionMatrix, viewMatrix, Matrix4.Identity);
+      Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[0]);
+      Matrix4 lightView = Matrix4.Identity;
+      Matrix4 lightMatrix = Matrix4.Mult(lightView, lightProjection);
+
+      for (int i = 0; i < rootObject.Transform.GetChildren().Count; i++)
+      {
+        Vector4 test = Vector4.TransformRow(new Vector4(rootObject.Transform.GetChildren()[i].Position, 1.0f), lightMatrix);
+        test.X = test.X * 0.5f + 0.5f;
+        test.Y = test.Y * 0.5f + 0.5f;
+        Console.WriteLine(test);
+      }
+
+      BufferObject(rootObject, projectionMatrix, viewMatrix, lightMatrix);
+      FlushBatchBuffers(projectionMatrix, viewMatrix, lightMatrix);
     }
 
     /// <summary>
@@ -307,7 +319,7 @@ namespace Firefly.Core
       GL.UniformMatrix4(screenToClipLocation, false, ref projectionMatrix);
       int viewMatrixLocation = shaderComponent.GetUniformLocation("u_viewMatrix");
       GL.UniformMatrix4(viewMatrixLocation, false, ref viewMatrix);
-      int lightMatrixLocation = shaderComponent.GetUniformLocation("u_lightMatrix");
+      int lightMatrixLocation = shaderComponent.GetUniformLocation("u_lightSpaceMatrix");
       GL.UniformMatrix4(lightMatrixLocation, false, ref lightMatrix);
 
       directionalShadowHandler.UploadSamplerPositions(shaderComponent);
@@ -353,9 +365,10 @@ namespace Firefly.Core
         mesh.IsRendered = true;
         return true;
       }
+      return true;
 
       float[] bounds = mesh.Component.WorldBounds;
-      bool withinView = false;
+      bool withinView = true;
 
       // Maybe cache this?
       Matrix4 viewProjectionMatrix = Matrix4.Mult(viewMatrix, projectionMatrix);

@@ -71,10 +71,10 @@ namespace Firefly.Core.Shader
 			uniformLocations.Add("u_modelMatrix", modelMatrixLocation);
       int viewMatrixLocation = GL.GetUniformLocation(program, "u_viewMatrix");
       uniformLocations.Add("u_viewMatrix", viewMatrixLocation);
-      int lightMatrixLocation = GL.GetUniformLocation(program, "u_lightMatrix");
+      int lightMatrixLocation = GL.GetUniformLocation(program, "u_lightSpaceMatrix");
 			if (lightMatrixLocation != -1)
 			{
-        uniformLocations.Add("u_lightMatrix", lightMatrixLocation);
+        uniformLocations.Add("u_lightSpaceMatrix", lightMatrixLocation);
       }
       int imagesLocation = GL.GetUniformLocation(program, "u_images");
 			if (imagesLocation != -1)

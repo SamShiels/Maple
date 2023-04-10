@@ -43,9 +43,10 @@ namespace Firefly.Core.Lighting
 
         int floatArrayPosition = i * directionalLightFloatAmount;
 
-        float x = light.Transform.EulerAngles.X;
-        float y = light.Transform.EulerAngles.Y;
-        float z = light.Transform.EulerAngles.Z;
+        Vector3 forward = light.Transform.Forward;
+        float x = forward.X;
+        float y = forward.Y;
+        float z = forward.Z;
 
         float r = light.Diffuse.R;
         float g = light.Diffuse.G;

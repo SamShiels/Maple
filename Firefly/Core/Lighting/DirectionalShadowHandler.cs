@@ -16,8 +16,8 @@ namespace Firefly.Core.Lighting
   {
     private bool initialized = false;
 
-    private const int width = 1024;
-    private const int height = 1024;
+    private const int width = 2048;
+    private const int height = 2048;
 
     private Rendering.Shader depthShader;
     private Material depthMaterial;
@@ -43,12 +43,12 @@ namespace Firefly.Core.Lighting
         #version 450 core
         layout (location = 0) in vec3 a_Position;
           
-        uniform mat4 lightSpaceMatrix;
+        uniform mat4 u_lightMatrix;
         uniform mat4 u_modelMatrix;
 
         void main()
         {
-          gl_Position = lightSpaceMatrix * u_modelMatrix * vec4(a_Position, 1.0);
+          gl_Position = u_modelMatrix * vec4(a_Position, 1.0);
         }
       ";
 
@@ -65,11 +65,16 @@ namespace Firefly.Core.Lighting
       depthMaterial = new Material(depthShader);
     }
 
-    public Matrix4 GetLightProjectionMatrix(DirectionalLight light, Vector3 assignedCameraPosition)
+    public Matrix4 GetLightProjectionMatrix(DirectionalLight light)
     {
-      Matrix4 lightProjectionMatrix = Matrix4.CreateOrthographic(20f, 20f, -10f, 10f);
-
+      Matrix4 lightProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-10f, 10f, -10f, 10f, -20f, 20f);
       return lightProjectionMatrix;
+    }
+
+    public Matrix4 GetLightViewMatrix(DirectionalLight light)
+    {
+      Matrix4 viewMatrix = Matrix4.LookAt(light.Transform.Forward, Vector3.Zero, Vector3.UnitY);
+      return viewMatrix;
     }
 
     public Material GetDepthMaterial()
@@ -83,6 +88,7 @@ namespace Firefly.Core.Lighting
 
       if (FBOHandles.TryGetValue(light.Id, out int handle))
       {
+        GL.Viewport(0, 0, width, height);
         GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
       }
     }

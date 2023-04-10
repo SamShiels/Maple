@@ -29,6 +29,28 @@ namespace CubeExample
       Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene.json");
 
       SceneObject scene = sceneLoader.CreateScene(sceneJson, game.scene);
+      OBJLoader loader = new OBJLoader();
+
+      Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
+      Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.kronk.jpg"));
+      Texture texture = new Texture(kronk);
+
+      for (int x = 0; x < 5; x++)
+      {
+        for (int y = 0; y < 5; y++)
+        {
+          for (int z = 0; z < 5; z++)
+          {
+            MeshObject cube = new MeshObject();
+            cube.Model = model;
+            cube.Transform.Position = new Vector3(x * 5 - 12.5f, y * 5 - 12.5f, z * 5 - 12.5f);
+            cube.Textures = new Texture[] { texture };
+            Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
+            cube.Material = material;
+            scene.AddObject(cube);
+          }
+        }
+      }
     }
 
     private float time = 0;

@@ -24,7 +24,7 @@ void main()
 	vec4 screenPosition = u_projectionMatrix * u_viewMatrix * worldPosition;
 
     FragWorldPosition = worldPosition.xyz;
-    FragPositionInLightSpace = u_lightSpaceMatrix * vec4(FragWorldPosition, 1.0);
+    FragPositionInLightSpace = u_lightSpaceMatrix * worldPosition;
 
     gl_Position = screenPosition;
 }

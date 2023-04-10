@@ -4,51 +4,15 @@
     "fov": 1.0,
     "farClip": 1000,
     "nearClip":  0.001,
-    "position": [ 0, 0, 0 ],
+    "position": [ 0, 0, 50 ],
     "rotation": [ 0, 0, 0 ],
     "skybox": "Langholmen"
   },
   "worldObjects": [
     {
-      "name": "cube",
-      "position": [ 1, 1, -5 ],
-      "rotation": [ 0, 0, 0 ],
-      "localScale": [ 1, 1, 1 ],
-      "type": "MeshObject",
-      "properties": {
-        "modelName": "cube.obj",
-        "textures": [ "kronk.jpg" ],
-        "material": "diffuse"
-      }
-    },
-    {
-      "name": "cube2",
-      "position": [ -100, 1, -5 ],
-      "rotation": [ 0, 0, 0 ],
-      "localScale": [ 1, 1, 1 ],
-      "type": "MeshObject",
-      "properties": {
-        "modelName": "cube.obj",
-        "textures": [ "kronk.jpg" ],
-        "material": "diffuse"
-      }
-    },
-    {
-      "name": "floor",
-      "position": [ 0, -4, -5 ],
-      "rotation": [ 0, 0, 0 ],
-      "localScale": [ 20, 1, 20 ],
-      "type": "MeshObject",
-      "properties": {
-        "modelName": "cube.obj",
-        "textures": [ "kronk.jpg" ],
-        "material": "diffuse"
-      }
-    },
-    {
       "name": "light",
       "position": [ 0, 0, 5 ],
-      "rotation": [ 0.1, 1, 0 ],
+      "rotation": [ -1, 0.4, 0 ],
       "localScale": [ 1, 1, 1 ],
       "type": "DirectionalLight",
       "properties": {

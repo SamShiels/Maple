@@ -94,6 +94,7 @@ namespace Firefly.World
     {
       get
       {
+        CalculateLocalMatrix();
         return forward;
       }
     }
@@ -103,6 +104,7 @@ namespace Firefly.World
     {
       get
       {
+        CalculateLocalMatrix();
         return up;
       }
     }
@@ -112,6 +114,7 @@ namespace Firefly.World
     {
       get
       {
+        CalculateLocalMatrix();
         return right;
       }
     }
@@ -217,10 +220,7 @@ namespace Firefly.World
     /// <returns></returns>
     public Matrix4 GetLocalMatrix()
     {
-      if (LastDirtyId != DirtyId)
-      {
-        CalculateLocalMatrix();
-      }
+      CalculateLocalMatrix();
 
       return LocalToWorldMatrix;
     }
@@ -231,10 +231,7 @@ namespace Firefly.World
     /// <returns></returns>
     public Matrix4 GetLocalRotationMatrix()
     {
-      if (LastDirtyId != DirtyId)
-      {
-        CalculateLocalMatrix();
-      }
+      CalculateLocalMatrix();
 
       return LocalToWorldRotationMatrix;
     }
@@ -244,72 +241,75 @@ namespace Firefly.World
     /// </summary>
     private void CalculateLocalMatrix()
     {
-      //float positionX = position.X;
-      //float positionY = position.Y;
-      //float positionZ = position.Z;
-      //Matrix4 Translation = new Matrix4(1, 0, 0, positionX,
-      //                                  0, 1, 0, positionY,
-      //                                  0, 0, 1, positionZ,
-      //                                  0, 0, 0, 1);
-
-      //float scaleX = localScale.X;
-      //float scaleY = localScale.Y;
-      //float scaleZ = localScale.Z;
-      //Matrix4 Scale = new Matrix4(scaleX, 0, 0, 0,
-      //                            0, scaleY, 0, 0,
-      //                            0, 0, scaleZ, 0,
-      //                            0, 0, 0, 1);
-
-      //float rotationX = rotation.X;
-      //float rotationY = rotation.Y;
-      //float rotationZ = rotation.Z;
-
-      //float rxCos = (float)Math.Cos(rotationX);
-      //float rxSin = (float)Math.Sin(rotationX);
-      //Matrix4 Rx = new Matrix4(1, 0, 0, 0,
-      //                         0, rxCos, -rxSin, 0,
-      //                         0, rxSin, rxCos, 0,
-      //                         0, 0, 0, 1);
-
-      //float ryCos = (float)Math.Cos(rotationY);
-      //float rySin = (float)Math.Sin(rotationY);
-      //Matrix4 Ry = new Matrix4(ryCos, 0, rySin, 0,
-      //                         0, 1, 0, 0,
-      //                        -rySin, 0, ryCos, 0,
-      //                         0, 0, 0, 1);
-
-      //float rzCos = (float)Math.Cos(rotationZ);
-      //float rzSin = (float)Math.Sin(rotationZ);
-      //Matrix4 Rz = new Matrix4(rzCos, -rzSin, 0, 0,
-      //                         rzSin, rzCos, 0, 0,
-      //                         0, 0, 1, 0,
-      //                         0, 0, 0, 1);
-
-      //Matrix4 Rotation = Matrix4.Mult(Rz, Matrix4.Mult(Ry, Rx));
-
-      float rotationX = eulerAngles.X;
-      float rotationY = eulerAngles.Y;
-      float rotationZ = eulerAngles.Z;
-
-      Matrix4 scaleMatrix = Matrix4.CreateScale(localScale);
-      Matrix4 rotationMatrix = Matrix4.CreateFromQuaternion(rotation);
-      Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
-      LocalToWorldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-      LocalToWorldRotationMatrix = rotationMatrix;
-      //LocalToWorldMatrix = Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));
-      //LocalToWorldNormalMatrix = new Matrix4(LocalToWorldMatrix.Row0, LocalToWorldMatrix.Row1, LocalToWorldMatrix.Row2, LocalToWorldMatrix.Row3);
-      //LocalToWorldNormalMatrix.Transpose();
-      //LocalToWorldNormalMatrix.Invert();
-      if (parent != null)
+      if (LastDirtyId != DirtyId)
       {
-        LocalToWorldMatrix = Matrix4.Mult(LocalToWorldMatrix, parent.GetLocalMatrix());
-        LocalToWorldRotationMatrix = Matrix4.Mult(LocalToWorldRotationMatrix, parent.GetLocalRotationMatrix());
-      }
+        //float positionX = position.X;
+        //float positionY = position.Y;
+        //float positionZ = position.Z;
+        //Matrix4 Translation = new Matrix4(1, 0, 0, positionX,
+        //                                  0, 1, 0, positionY,
+        //                                  0, 0, 1, positionZ,
+        //                                  0, 0, 0, 1);
 
-      right = Vector3.TransformVector(Vector3.UnitX, LocalToWorldRotationMatrix);
-      up = Vector3.TransformVector(Vector3.UnitY, LocalToWorldRotationMatrix);
-      forward = Vector3.TransformVector(Vector3.UnitZ, LocalToWorldRotationMatrix);
-      LastDirtyId = DirtyId;
+        //float scaleX = localScale.X;
+        //float scaleY = localScale.Y;
+        //float scaleZ = localScale.Z;
+        //Matrix4 Scale = new Matrix4(scaleX, 0, 0, 0,
+        //                            0, scaleY, 0, 0,
+        //                            0, 0, scaleZ, 0,
+        //                            0, 0, 0, 1);
+
+        //float rotationX = rotation.X;
+        //float rotationY = rotation.Y;
+        //float rotationZ = rotation.Z;
+
+        //float rxCos = (float)Math.Cos(rotationX);
+        //float rxSin = (float)Math.Sin(rotationX);
+        //Matrix4 Rx = new Matrix4(1, 0, 0, 0,
+        //                         0, rxCos, -rxSin, 0,
+        //                         0, rxSin, rxCos, 0,
+        //                         0, 0, 0, 1);
+
+        //float ryCos = (float)Math.Cos(rotationY);
+        //float rySin = (float)Math.Sin(rotationY);
+        //Matrix4 Ry = new Matrix4(ryCos, 0, rySin, 0,
+        //                         0, 1, 0, 0,
+        //                        -rySin, 0, ryCos, 0,
+        //                         0, 0, 0, 1);
+
+        //float rzCos = (float)Math.Cos(rotationZ);
+        //float rzSin = (float)Math.Sin(rotationZ);
+        //Matrix4 Rz = new Matrix4(rzCos, -rzSin, 0, 0,
+        //                         rzSin, rzCos, 0, 0,
+        //                         0, 0, 1, 0,
+        //                         0, 0, 0, 1);
+
+        //Matrix4 Rotation = Matrix4.Mult(Rz, Matrix4.Mult(Ry, Rx));
+
+        float rotationX = eulerAngles.X;
+        float rotationY = eulerAngles.Y;
+        float rotationZ = eulerAngles.Z;
+
+        Matrix4 scaleMatrix = Matrix4.CreateScale(localScale);
+        Matrix4 rotationMatrix = Matrix4.CreateFromQuaternion(rotation);
+        Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
+        LocalToWorldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+        LocalToWorldRotationMatrix = rotationMatrix;
+        //LocalToWorldMatrix = Matrix4.Mult(Translation, Matrix4.Mult(Scale, Rotation));
+        //LocalToWorldNormalMatrix = new Matrix4(LocalToWorldMatrix.Row0, LocalToWorldMatrix.Row1, LocalToWorldMatrix.Row2, LocalToWorldMatrix.Row3);
+        //LocalToWorldNormalMatrix.Transpose();
+        //LocalToWorldNormalMatrix.Invert();
+        if (parent != null)
+        {
+          LocalToWorldMatrix = Matrix4.Mult(LocalToWorldMatrix, parent.GetLocalMatrix());
+          LocalToWorldRotationMatrix = Matrix4.Mult(LocalToWorldRotationMatrix, parent.GetLocalRotationMatrix());
+        }
+
+        right = Vector3.TransformVector(Vector3.UnitX, LocalToWorldRotationMatrix);
+        up = Vector3.TransformVector(Vector3.UnitY, LocalToWorldRotationMatrix);
+        forward = Vector3.TransformVector(Vector3.UnitZ, LocalToWorldRotationMatrix);
+        LastDirtyId = DirtyId;
+      }
     }
 
     public void Destroy()
