@@ -43,7 +43,7 @@ namespace CubeExample
           {
             MeshObject cube = new MeshObject();
             cube.Model = model;
-            cube.Transform.Position = new Vector3(x * 5 - 12.5f, y * 5 - 12.5f, z * 5 - 12.5f);
+            cube.Transform.Position = new Vector3(x * 5 - 10f, y * 5 - 10f, z * 5 - 10f);
             cube.Textures = new Texture[] { texture };
             Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
             cube.Material = material;
@@ -57,10 +57,6 @@ namespace CubeExample
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-      WorldObject cube = game.scene.RootObject.Transform.GetChildren()[1].Owner;
-      cube.Transform.Position = new Vector3((float)Math.Sin(time / 100) * 30, 0.0f, -10);
-      game.camera.Transform.Position = new Vector3((float)Math.Cos(time / 100) * 30, 0.0f, 0f);
-      //time++;
       base.OnUpdateFrame(args);
     }
 

@@ -16,8 +16,10 @@ namespace Firefly.Core.Lighting
   {
     private bool initialized = false;
 
-    private const int width = 2048;
-    private const int height = 2048;
+    private const int width = 1024;
+    private const int height = 1024;
+
+    private const int size = 40;
 
     private Rendering.Shader depthShader;
     private Material depthMaterial;
@@ -43,12 +45,12 @@ namespace Firefly.Core.Lighting
         #version 450 core
         layout (location = 0) in vec3 a_Position;
           
-        uniform mat4 u_lightMatrix;
+        uniform mat4 u_lightSpaceMatrix;
         uniform mat4 u_modelMatrix;
 
         void main()
         {
-          gl_Position = u_modelMatrix * vec4(a_Position, 1.0);
+          gl_Position = u_lightSpaceMatrix * u_modelMatrix * vec4(a_Position, 1.0);
         }
       ";
 
@@ -67,7 +69,19 @@ namespace Firefly.Core.Lighting
 
     public Matrix4 GetLightProjectionMatrix(DirectionalLight light)
     {
-      Matrix4 lightProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-10f, 10f, -10f, 10f, -20f, 20f);
+      float left = -size;
+      float right = size;
+      float bottom = -size;
+      float top = size;
+      float near = -size;
+      float far = size;
+
+      Matrix4 lightProjectionMatrix = new Matrix4(
+        2f / (right - left), 0f, 0f, -(right+left)/(right-left),
+        0, 2f / (top-bottom),    0f, -(top+bottom)/(top-bottom),
+        0f, 0f, -2f / (far-near),    -(far+near)/(far-near),
+        0f, 0f,  0f,                  1
+        );
       return lightProjectionMatrix;
     }
 
@@ -123,7 +137,7 @@ namespace Firefly.Core.Lighting
       {
         int depthTextureHandle = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, depthTextureHandle);
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent24, width, height, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent16, width, height, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);

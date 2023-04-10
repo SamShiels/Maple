@@ -124,14 +124,14 @@ namespace Firefly.Core
         directionalShadowHandler.BindFrameBuffer(light);
 
         Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[i]);
-        Matrix4 lightView = Matrix4.Identity;// directionalShadowHandler.GetLightViewMatrix(directionalLights[i]);
+        Matrix4 lightView = directionalShadowHandler.GetLightViewMatrix(directionalLights[i]);
         Matrix4 lightMatrix = Matrix4.Mult(lightView, lightProjection);
 
         Material lightDepthMaterial = directionalShadowHandler.GetDepthMaterial();
 
         GL.Clear(ClearBufferMask.DepthBufferBit);
-        BufferObject(scene.RootObject, lightProjection, lightView, lightMatrix);
-        FlushBatchBuffers(lightProjection, lightView, lightMatrix);
+        BufferObject(scene.RootObject, lightProjection, lightView, lightMatrix, lightDepthMaterial);
+        FlushBatchBuffers(lightProjection, lightView, lightMatrix, lightDepthMaterial);
       }
     }
 
@@ -171,6 +171,8 @@ namespace Firefly.Core
       Color4 c = camera.BackgroundColor;
       GL.ClearColor(c.R, c.G, c.B, 1.0f);
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+      // Reset viewport
+      GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
 
       Matrix4 projectionMatrix = cameraHandler.GetProjectionMatrix((float)resolutionWidth / (float)resolutionHeight);
       Matrix4 viewMatrix = cameraHandler.GetViewMatrix();
@@ -183,7 +185,7 @@ namespace Firefly.Core
       directionalShadowHandler.BindDepthMap();
 
       Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[0]);
-      Matrix4 lightView = Matrix4.Identity;
+      Matrix4 lightView = directionalShadowHandler.GetLightViewMatrix(directionalLights[0]);
       Matrix4 lightMatrix = Matrix4.Mult(lightView, lightProjection);
 
       for (int i = 0; i < rootObject.Transform.GetChildren().Count; i++)
@@ -297,8 +299,6 @@ namespace Firefly.Core
     {
       pointLightBufferHandler.BufferLightData(pointLights);
       directionalLightBufferHandler.BufferLightData(directionalLights);
-      // Reset viewport
-      GL.Viewport(0, 0, resolutionWidth, resolutionHeight);
       // Cull back faces
       GL.Enable(EnableCap.CullFace);
 
