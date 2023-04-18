@@ -119,6 +119,12 @@ namespace Firefly
 
     public Renderer(int windowWidth, int windowHeight)
     {
+      _debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
+
+      GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
+      GL.Enable(EnableCap.DebugOutput);
+      GL.Enable(EnableCap.DebugOutputSynchronous);
+
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
 
@@ -131,15 +137,9 @@ namespace Firefly
 
       ClearColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
       AmbientLight = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
-
-      UpdateGLViewport(windowWidth, windowHeight);
       ResolutionUpdated();
 
-      _debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
-
-      GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
-      GL.Enable(EnableCap.DebugOutput);
-      GL.Enable(EnableCap.DebugOutputSynchronous);
+      UpdateGLViewport(windowWidth, windowHeight);
     }
 
     /// <summary>

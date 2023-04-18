@@ -88,7 +88,7 @@ float CalculateDirectionalShadow(vec4 fragPositionInLightSpace)
 
     projectedCoords = projectedCoords * 0.5 + 0.5;
     float closestDepth = texture(u_shadowMaps[0], projectedCoords.xy).r;
-    float currentDepth = projectedCoords.z;
+    float currentDepth = projectedCoords.z - 0.005;
     float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
 
     return shadow;
@@ -108,10 +108,6 @@ void main()
 
     float shadow = CalculateDirectionalShadow(FragPositionInLightSpace);
 
-    vec3 projectedCoords = FragPositionInLightSpace.xyz / FragPositionInLightSpace.w;
-
-    projectedCoords = projectedCoords * 0.5 + 0.5;
-    float closestDepth = texture(u_shadowMaps[0], projectedCoords.xy).r;
-
-    FragColor = texture(u_shadowMaps[0], projectedCoords.xy);
+    vec4 lighting = vec4(diffuse - shadow, 1.0);
+    FragColor = texture(u_images[0], texcoord) * lighting;
 }

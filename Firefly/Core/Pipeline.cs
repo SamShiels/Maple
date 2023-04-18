@@ -94,7 +94,6 @@ namespace Firefly.Core
           continue;
         }
         textureManager.BindRenderTextureFrameBuffer(renderTexture);
-        //GL.Viewport(0, 0, renderTexture.Width, renderTexture.Height);
         RenderCameraView(camera, scene.RootObject);
       }
 
@@ -184,16 +183,13 @@ namespace Firefly.Core
 
       directionalShadowHandler.BindDepthMap();
 
-      Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[0]);
-      Matrix4 lightView = directionalShadowHandler.GetLightViewMatrix(directionalLights[0]);
-      Matrix4 lightMatrix = Matrix4.Mult(lightView, lightProjection);
+      Matrix4 lightMatrix = Matrix4.Identity;
 
-      for (int i = 0; i < rootObject.Transform.GetChildren().Count; i++)
+      if (directionalLights.Count > 0)
       {
-        Vector4 test = Vector4.TransformRow(new Vector4(rootObject.Transform.GetChildren()[i].Position, 1.0f), lightMatrix);
-        test.X = test.X * 0.5f + 0.5f;
-        test.Y = test.Y * 0.5f + 0.5f;
-        Console.WriteLine(test);
+        Matrix4 lightProjection = directionalShadowHandler.GetLightProjectionMatrix(directionalLights[0]);
+        Matrix4 lightView = directionalShadowHandler.GetLightViewMatrix(directionalLights[0]);
+        lightMatrix = Matrix4.Mult(lightView, lightProjection);
       }
 
       BufferObject(rootObject, projectionMatrix, viewMatrix, lightMatrix);

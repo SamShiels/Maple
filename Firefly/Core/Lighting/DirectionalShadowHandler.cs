@@ -16,10 +16,10 @@ namespace Firefly.Core.Lighting
   {
     private bool initialized = false;
 
-    private const int width = 1024;
-    private const int height = 1024;
+    private const int width = 2048;
+    private const int height = 2048;
 
-    private const int size = 40;
+    private const int size = 100;
 
     private Rendering.Shader depthShader;
     private Material depthMaterial;
@@ -88,7 +88,8 @@ namespace Firefly.Core.Lighting
     public Matrix4 GetLightViewMatrix(DirectionalLight light)
     {
       Matrix4 viewMatrix = Matrix4.LookAt(light.Transform.Forward, Vector3.Zero, Vector3.UnitY);
-      return viewMatrix;
+      Matrix4 translation = Matrix4.CreateTranslation(light.Transform.Position);
+      return viewMatrix * translation;
     }
 
     public Material GetDepthMaterial()

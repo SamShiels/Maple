@@ -79,7 +79,7 @@ namespace ExampleBase
       Material material = new Material(CRT);
       canvasMaterial = material;
       renderer = new Renderer(windowWidth, windowHeight);
-      renderer.AmbientLight = new Color4(0.02f, 0.02f, 0.02f, 1.0f);
+      renderer.AmbientLight = new Color4(0.2f, 0.2f, 0.2f, 1.0f);
       renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
       scene = new SceneObject();
       camera = new Camera();

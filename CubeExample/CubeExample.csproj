@@ -80,6 +80,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTK" Version="4.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ExampleBase\ExampleBase.csproj" />
   </ItemGroup>
 
