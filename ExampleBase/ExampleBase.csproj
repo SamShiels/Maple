@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <None Remove="Resources\cube.obj" />
+    <None Remove="Resources\house.obj" />
+    <None Remove="Resources\house.png" />
     <None Remove="Resources\kronk.jpg" />
     <None Remove="Resources\Langholmen\negx.jpg" />
     <None Remove="Resources\Langholmen\negy.jpg" />
@@ -17,6 +19,12 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\cube.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\house.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\house.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\kronk.jpg">
