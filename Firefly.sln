@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Firefly.Test", "Firefly.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderTextureExample", "RenderTextureExample\RenderTextureExample.csproj", "{6CA95A04-AD3C-4D3A-8DC6-085840E71922}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraExample", "CameraExample\CameraExample.csproj", "{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraExample", "CameraExample\CameraExample.csproj", "{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{074B0E6D-E630-4B20-83A5-B228C5129A87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basic", "Basic", "{BB6BF158-573B-41FE-BB4B-17C13349D2DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +64,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{418286F4-200F-4D5F-BC26-A28DB22F1818} = {074B0E6D-E630-4B20-83A5-B228C5129A87}
+		{94539C28-CD50-4D38-91AC-B3B2AB8F598E} = {BB6BF158-573B-41FE-BB4B-17C13349D2DE}
+		{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267} = {074B0E6D-E630-4B20-83A5-B228C5129A87}
+		{6CA95A04-AD3C-4D3A-8DC6-085840E71922} = {074B0E6D-E630-4B20-83A5-B228C5129A87}
+		{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA} = {BB6BF158-573B-41FE-BB4B-17C13349D2DE}
+		{BB6BF158-573B-41FE-BB4B-17C13349D2DE} = {074B0E6D-E630-4B20-83A5-B228C5129A87}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EB8ED738-76A9-499E-ACB3-4BF3417DEAC9}

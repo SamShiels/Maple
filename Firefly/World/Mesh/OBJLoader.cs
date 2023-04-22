@@ -21,6 +21,11 @@ namespace Firefly.World.Mesh
       List<float> texcoordCache = new List<float>();
       List<float> normalCache = new List<float>();
 
+      if (stream == null)
+      {
+        throw new ArgumentNullException("stream");
+      }
+
       using (StreamReader reader = new StreamReader(stream))
       {
         string contents = reader.ReadToEnd();

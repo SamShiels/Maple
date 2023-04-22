@@ -31,8 +31,8 @@ namespace CubeExample
       SceneObject scene = sceneLoader.CreateScene(sceneJson, game.scene);
       OBJLoader loader = new OBJLoader();
 
-      Model model = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.cube.obj"));
-      Image kronk = new Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Resources.kronk.jpg"));
+      Model model = loader.Load(game.resourceLoader.GetResourceStream("cube.obj"));
+      Image kronk = new Image(game.resourceLoader.GetResourceStream("kronk.jpg"));
       Texture texture = new Texture(kronk);
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
 

@@ -6,6 +6,7 @@ using System;
 using Firefly.Utilities;
 using Firefly.World;
 using Firefly.World.Scene;
+using System.Reflection;
 
 namespace ExampleBase
 {
@@ -15,6 +16,7 @@ namespace ExampleBase
     public SceneObject scene { set; get; }
 
     public Camera camera;
+    public ResourceLoader resourceLoader;
 
     private int windowWidth;
     private int windowHeight;
@@ -25,6 +27,8 @@ namespace ExampleBase
     {
       this.windowWidth = windowWidth;
       this.windowHeight = windowHeight;
+
+      resourceLoader = new ResourceLoader();
     }
 
     public virtual void OnLoad()
