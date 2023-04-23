@@ -108,6 +108,8 @@ namespace Firefly
       }
     }
 
+    public ShaderLibrary ShaderLibrary { get; private set; }
+
     /// <summary>
     /// The current width of the window.
     /// </summary>
@@ -127,6 +129,8 @@ namespace Firefly
 
       textureManager = new TextureManager();
       shaderManager = new ShaderManager(textureManager.GetFreeTextureUnitCount());
+
+      ShaderLibrary = new ShaderLibrary();
 
       Material canvasMaterial = new Material(ShaderLibrary.Instance.GetShader("canvas"));
       resolutionWidth = windowWidth;

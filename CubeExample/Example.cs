@@ -32,8 +32,8 @@ namespace CubeExample
       OBJLoader loader = new OBJLoader();
 
       Model model = loader.Load(game.resourceLoader.GetResourceStream("cube.obj"));
-      Image kronk = new Image(game.resourceLoader.GetResourceStream("kronk.jpg"));
-      Texture texture = new Texture(kronk);
+      Image brick = new Image(game.resourceLoader.GetResourceStream("brick.png"));
+      Texture texture = new Texture(brick);
       Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
 
       for (int x = 0; x < 5; x++)

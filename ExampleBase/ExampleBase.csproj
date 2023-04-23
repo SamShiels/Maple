@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\brick.png" />
     <None Remove="Resources\cube.obj" />
     <None Remove="Resources\house.obj" />
     <None Remove="Resources\house.png" />
@@ -18,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\brick.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\cube.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
