@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\brick-height.png" />
+    <None Remove="Resources\brick-normal.png" />
     <None Remove="Resources\brick.png" />
     <None Remove="Resources\cube.obj" />
     <None Remove="Resources\house.obj" />
@@ -19,6 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\brick-height.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\brick-normal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

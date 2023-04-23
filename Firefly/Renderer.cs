@@ -132,7 +132,7 @@ namespace Firefly
 
       ShaderLibrary = new ShaderLibrary();
 
-      Material canvasMaterial = new Material(ShaderLibrary.Instance.GetShader("canvas"));
+      Material canvasMaterial = new Material(ShaderLibrary.GetShader("canvas"));
       resolutionWidth = windowWidth;
       resolutionHeight = windowHeight;
       canvasHandler = new CanvasHandler(shaderManager, canvasMaterial, resolutionWidth, resolutionHeight, windowWidth, windowHeight, msaaSamples, 0);

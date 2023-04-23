@@ -11,19 +11,6 @@ namespace Firefly.Rendering
     private Dictionary<string, Shader> library;
     private Assembly executingAssembly;
 
-    private static ShaderLibrary instance = null;
-    public static ShaderLibrary Instance
-    {
-      get
-      {
-        if (instance == null)
-        {
-          instance = new ShaderLibrary();
-        }
-        return instance;
-      }
-    }
-
     public ShaderLibrary()
     {
       library = new Dictionary<string, Shader>();
