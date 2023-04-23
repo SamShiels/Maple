@@ -34,7 +34,7 @@ namespace PBR
 
       MeshObject cube = new MeshObject();
       cube.Model = model;
-      cube.Transform.Position = new Vector3(0f, 0f, 0f);
+      cube.Transform.Position = new Vector3(0f, 0f, -10f);
       cube.Transform.LocalScale = new Vector3(1f, 1f, 1f);
       cube.Textures = new Texture[] { brick };
       cube.Material = material;

@@ -33,8 +33,6 @@ namespace ExampleBase
 
     public virtual void OnLoad()
     {
-      Uniform invertColours = new Uniform("u_invert", true);
-
       string vs = @"
         #version 450 core
         layout (location = 0) in vec3 a_Position;
@@ -75,6 +73,7 @@ namespace ExampleBase
       scene = new SceneObject();
       camera = new Camera();
       camera.CanvasMaterial = material;
+      camera.BackgroundColor = new Color4(0.2f, 0.2f, 0.2f, 1.0f);
       camera.Transform.Position = new Vector3(0.0f, 0.0f, 0.0f);
       scene.AssignCamera(camera);
     }
