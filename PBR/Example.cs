@@ -36,7 +36,7 @@ namespace PBR
       cube.Model = model;
       cube.Transform.Position = new Vector3(0f, 0f, -10f);
       cube.Transform.LocalScale = new Vector3(1f, 1f, 1f);
-      cube.Textures = new Texture[] { brick };
+      cube.Textures = new Texture[] { brick, brickHeight };
       cube.Material = material;
       game.scene.AddObject(cube);
     }
