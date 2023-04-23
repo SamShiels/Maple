@@ -14,7 +14,7 @@ using Firefly.World.Scene;
 using System.Text.Json;
 using System.IO;
 
-namespace CubeExample
+namespace PBR
 {
   public class Example : Window
   {
@@ -36,18 +36,13 @@ namespace CubeExample
       cube.Model = model;
       cube.Transform.Position = new Vector3(0f, 0f, 0f);
       cube.Transform.LocalScale = new Vector3(1f, 1f, 1f);
-      cube.Textures = new Texture[] { brick, brickHeight, brickNormal };
+      cube.Textures = new Texture[] { brick };
       cube.Material = material;
       game.scene.AddObject(cube);
     }
 
-    private float time = 0;
-
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-      game.scene.DirectionalLights[0].Transform.EulerAngles = new Vector3(time / 100f, 0.4f, 0f);
-      //game.scene.Camera.Transform.Position = new Vector3(0f, 0f, (float)Math.Sin(time / 150f) * 50f);
-      time++;
       base.OnUpdateFrame(args);
     }
 
