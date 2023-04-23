@@ -59,7 +59,7 @@ namespace ExampleBase
 
         void main()
         { 
-          FragColor = vec4(1.0 - vec3(texture(frameBufferTexture, texCoords)), 1.0);
+          FragColor = vec4(vec3(texture(frameBufferTexture, texCoords)), 1.0);
         }
       ";
       //vec2 curvature = curveFunction(texCoords);
