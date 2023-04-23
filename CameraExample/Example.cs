@@ -56,6 +56,7 @@ namespace CameraExample
         cameraContainer.Transform.AddChild(cube.Transform);
       }
 
+      game.renderer.AmbientLight = new Color4(0.6f, 0.6f, 0.6f, 1.0f);
      // cameraContainer.Transform.AddChild(game.camera.Transform);
     }
 

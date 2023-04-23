@@ -16,7 +16,7 @@ out vec4 FragPositionInLightSpace;
 
 void main()
 {
-    vec4 worldNormal = vec4(a_normal.xyz, 1.0) * transpose(inverse(u_modelMatrix));
+    vec4 worldNormal = transpose(inverse(u_modelMatrix)) * vec4(a_normal.xyz, 1.0);
     normal = normalize(vec3(worldNormal.xyz));
     texcoord = a_texcoord;
     

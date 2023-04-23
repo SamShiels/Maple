@@ -37,7 +37,7 @@ layout (std140) uniform AmbientLightBlock {
 };
 
 uniform vec3 u_lightDirection;
-uniform sampler2D u_images[1];
+uniform sampler2D u_images[2];
 uniform sampler2D u_shadowMaps[1];
 
 vec3 CalculateDirectionalLight(DirectionalLight directionalLight)
@@ -51,12 +51,12 @@ vec3 CalculateDirectionalLight(DirectionalLight directionalLight)
 
     vec3 lightColor = directionalLight.color.xyz;
 
-    float angle = max(dot(normalize(normal), normalize(lightDirection)), 0.0);
+    float angle = max(dot(normal, normalize(lightDirection)), 0.0);
 
     return lightColor * angle * lightIntensity;
 }
 
-vec3 CalculatePointLight(PointLight pointLight)
+vec3 CalculatePointLight(PointLight pointLight, vec3 calculatedNormal)
 {
     vec3 lightPosition = pointLight.positionRange.xyz;
     float lightRange = pointLight.positionRange.w;
@@ -75,7 +75,7 @@ vec3 CalculatePointLight(PointLight pointLight)
         return vec3(0.0);
     }
 
-    float angle = max(dot(normalize(normal), normalize(lightDirToFragPosition)), 0.0);
+    float angle = max(dot(normal, normalize(lightDirToFragPosition)), 0.0);
 
     float lightDistanceFactor = min(1.0 - lightDistance / lightRange, 1.0);
 
@@ -97,9 +97,15 @@ float CalculateDirectionalShadow(vec4 fragPositionInLightSpace)
 void main()
 {
     vec3 diffuse = vec3(0.0);
+    vec3 calculatedNormal = normal;
+
+    vec3 normalMap = texture(u_images[1], texcoord).rgb;
+
+    //calculatedNormal = calculatedNormal + normalMap;
+
     for (int i = 0; i < POINT_LIGHT_COUNT; i++)
     {
-        diffuse += CalculatePointLight(pointLights[i]);
+        diffuse += CalculatePointLight(pointLights[i], calculatedNormal);
     }
     for (int i = 0; i < DIRECTIONAL_LIGHT_COUNT; i++)
     {
@@ -108,6 +114,6 @@ void main()
 
     float shadow = CalculateDirectionalShadow(FragPositionInLightSpace);
 
-    vec4 lighting = vec4(diffuse - shadow, 1.0);
+    vec4 lighting = max(vec4(diffuse - shadow, 1.0), ambientLight);
     FragColor = texture(u_images[0], texcoord) * lighting;
 }

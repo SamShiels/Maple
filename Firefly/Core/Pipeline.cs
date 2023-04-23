@@ -198,14 +198,6 @@ namespace Firefly.Core
     }
 
     /// <summary>
-    /// 
-    /// </summary>
-    private void Clear()
-    {
-
-    }
-
-    /// <summary>
     /// Assign the view matrix from the camera's local matrix.
     /// </summary>
     /// <param name="camera"></param>
@@ -362,7 +354,6 @@ namespace Firefly.Core
         mesh.IsRendered = true;
         return true;
       }
-      return true;
 
       float[] bounds = mesh.Component.WorldBounds;
       bool withinView = true;

@@ -61,11 +61,11 @@ namespace CubeExample
       game.scene.AddObject(floor);
     }
 
-    private float time = 0;
+    private float time = 90f;
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-      game.scene.DirectionalLights[0].Transform.EulerAngles = new Vector3(time / 100f, 0.4f, 0f);
+      game.scene.DirectionalLights[0].Transform.EulerAngles = new Vector3(-time, 20f, 20f);
       //game.scene.Camera.Transform.Position = new Vector3(0f, 0f, (float)Math.Sin(time / 150f) * 50f);
       time++;
       base.OnUpdateFrame(args);

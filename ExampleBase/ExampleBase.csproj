@@ -8,6 +8,8 @@
     <None Remove="Resources\brick-height.png" />
     <None Remove="Resources\brick-normal.png" />
     <None Remove="Resources\brick.png" />
+    <None Remove="Resources\brickwall.jpg" />
+    <None Remove="Resources\brickwall_normal.jpg" />
     <None Remove="Resources\cube.obj" />
     <None Remove="Resources\house.obj" />
     <None Remove="Resources\house.png" />
@@ -21,6 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\brickwall_normal.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Resources\brick-height.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -28,6 +36,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\brick.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\brickwall.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\cube.obj">
