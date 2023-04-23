@@ -166,6 +166,7 @@ namespace Firefly.Core
     private void RenderCameraView(Camera camera, WorldObject rootObject)
     {
       AssignCamera(camera);
+      canvasHandler.UpdateMaterial(camera.CanvasMaterial);
 
       Color4 c = camera.BackgroundColor;
       GL.ClearColor(c.R, c.G, c.B, 1.0f);

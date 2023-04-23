@@ -27,13 +27,14 @@ namespace Firefly.Core
     private bool initialised = false;
 
     private ShaderManager shaderManager;
-    private Material currentMaterial;
+    private Material defaultCanvasMaterial;
+    private Material cameraMaterial;
 
     private int VAO;
     private VertexBufferObject<float> Positions { get; set; }
     private VertexBufferObject<float> TextureCoordinates { get; set; }
 
-    public CanvasHandler(ShaderManager shaderManager, Material canvasMaterial, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, int defaultFrameBufferHandle)
+    public CanvasHandler(ShaderManager shaderManager, Rendering.Shader defaultCanvasShader, int textureResolutionWidth, int textureResolutionHeight, int windowWidth, int windowHeight, int numberOfSamples, int defaultFrameBufferHandle)
     {
       this.textureResolutionWidth = textureResolutionWidth;
       this.textureResolutionHeight = textureResolutionHeight;
@@ -44,7 +45,7 @@ namespace Firefly.Core
       initialised = false;
 
       this.shaderManager = shaderManager;
-      currentMaterial = canvasMaterial;
+      defaultCanvasMaterial = new Material(defaultCanvasShader);
     }
 
     #region Public Methods
@@ -63,7 +64,10 @@ namespace Firefly.Core
     /// </summary>
     public void DrawCanvas()
     {
-      ShaderComponent shader = shaderManager.GetComponent(currentMaterial);
+      // Use the default material if there isn't one assigned to the camera
+      Material material = cameraMaterial ?? defaultCanvasMaterial;
+      ShaderComponent shader = shaderManager.GetComponent(material);
+
       GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, MultiSampleFBOHandle);
       GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, FBOHandle);
       GL.BlitFramebuffer(0, 0, textureResolutionWidth, textureResolutionHeight, 0, 0, textureResolutionWidth, textureResolutionHeight, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
@@ -73,7 +77,6 @@ namespace Firefly.Core
       GL.Clear(ClearBufferMask.ColorBufferBit);
       GL.BindVertexArray(VAO);
       shader.Use();
-      Material material = currentMaterial;
 
       if (material.Uniforms != null)
       {
@@ -133,7 +136,7 @@ namespace Firefly.Core
 
     public void UpdateMaterial(Material material)
     {
-      currentMaterial = material;
+      cameraMaterial = material;
     }
 
     #endregion

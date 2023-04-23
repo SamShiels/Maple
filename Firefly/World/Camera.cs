@@ -1,4 +1,5 @@
 ﻿using Firefly.Core;
+using Firefly.Rendering;
 using Firefly.Texturing;
 using Firefly.Utilities;
 using OpenTK.Mathematics;
@@ -17,6 +18,7 @@ namespace Firefly.World
 
     public Color4 BackgroundColor = Color4.Black;
     public Cubemap Skybox;
+    public Material CanvasMaterial;
 
     private float nearClipPlane = 0.01f;
     /// <summary>

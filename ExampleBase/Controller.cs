@@ -51,28 +51,15 @@ namespace ExampleBase
 
       string fs = @"
         #version 450 core
-        #define PI 3.1415926538
-
         in vec2 texCoords;
 
         out vec4 FragColor;
 
-        uniform vec2 curvature;
         uniform sampler2D frameBufferTexture;
-
-        vec2 curveFunction(vec2 texUV)
-        {
-          texUV = texUV * 2.0 - 1.0;
-          vec2 offset = abs(texUV) / curvature;
-          texUV = texUV + texUV * offset * offset;
-          texUV = texUV * 0.5 + 0.5;
-          return texUV;
-        }
 
         void main()
         { 
-          vec4 canvasColor = vec4(texture(frameBufferTexture, texCoords));
-          FragColor = canvasColor;
+          FragColor = vec4(1.0 - vec3(texture(frameBufferTexture, texCoords)), 1.0);
         }
       ";
       //vec2 curvature = curveFunction(texCoords);
@@ -87,6 +74,7 @@ namespace ExampleBase
       renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
       scene = new SceneObject();
       camera = new Camera();
+      camera.CanvasMaterial = material;
       camera.Transform.Position = new Vector3(0.0f, 0.0f, 0.0f);
       scene.AssignCamera(camera);
     }

@@ -51,7 +51,7 @@ namespace CameraExample
         cube.Model = model;
         cube.Transform.Position = new Vector3(0f, 3f, -i * 4 - 5);
         cube.Textures = new Texture[] { texture };
-        Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), null);
+        Material material = new Material(game.renderer.ShaderLibrary.GetShader("diffuse"), null);
         cube.Material = material;
         cameraContainer.Transform.AddChild(cube.Transform);
       }
