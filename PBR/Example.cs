@@ -45,11 +45,11 @@ namespace PBR
       PointLight light = new PointLight();
       light.Transform.Position = new Vector3(3f, 0f, 0f);
       light.Radius = 10f;
-      //game.scene.AddObject(light);
+      game.scene.AddObject(light);
 
       DirectionalLight directionalLight = new DirectionalLight();
       directionalLight.Transform.EulerAngles = new Vector3(-30f, 0f, 30f);
-      game.scene.AddObject(directionalLight);
+      //game.scene.AddObject(directionalLight);
     }
 
     private float time = 0.0f;
@@ -57,7 +57,7 @@ namespace PBR
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
       cube.Transform.EulerAngles = new Vector3(0.0f, time, 0.0f);
-      time += 0.4f;
+      time += 0.04f;
       base.OnUpdateFrame(args);
     }
 
