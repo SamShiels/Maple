@@ -25,6 +25,7 @@ jobs:
   package:
   
     runs-on: ubuntu-latest
+    needs: [build]
     
     steps:
     - uses: actions/checkout@v3
@@ -34,7 +35,7 @@ jobs:
   publish:
   
     runs-on: ubuntu-latest
-    
+    needs: [package]
     steps:
     - name: Get version
       id: package_version
