@@ -29,4 +29,4 @@ jobs:
 
     - uses: actions/checkout@v3
     - name: Publish to GitHub Packages
-      run: dotnet nuget push "Maple/bin/Release/Maple.${{ steps.test.package_version.version }}.nupkg" --source "github"
+      run: dotnet nuget push "Maple/bin/Release/Maple.0.0.11.nupkg" --source "github"
