@@ -36,7 +36,7 @@ jobs:
         #   "1.1.1.1": Bump all the parts of the version.  2.3.4.5 => 3.4.5.6 
         # default: "0.0.1.0"
         # required: false
-        version_mask: "0.0.0.1"
+        version_mask: "0.0.1.0"
 
         # Overwrite the bumped version. Use this input option to overwrite the version or part of the version. 
         # If you want to modified all versions in the version files to a specifed version number, you should use this input option. 
