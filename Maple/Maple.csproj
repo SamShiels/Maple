@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/SamShiels/Maple.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/SamShiels/Maple</PackageProjectUrl>
-    <Version>0.0.12</Version>
+    <Version>0.0.13</Version>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
