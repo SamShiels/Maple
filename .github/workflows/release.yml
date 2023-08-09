@@ -27,7 +27,7 @@ jobs:
           PROJECT_FILE_PATH: Maple/Maple.csproj
 
           # Configuration to build and package
-          BUILD_CONFIGURATION: Release
+          INPUT_BUILD_CONFIGURATION: Release
 
           # Platform target to compile (default is empty/AnyCPU)
           # BUILD_PLATFORM: x64
