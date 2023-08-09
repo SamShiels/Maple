@@ -2,7 +2,7 @@ name: Publish Maple to GitHub Packages
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "Rebrand" ]
   pull_request:
     branches: [ "master" ]
 
