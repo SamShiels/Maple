@@ -12,7 +12,17 @@
       "stopAtEntry": false,
       "console": "internalConsole"
     },
-
+    {
+      "name": "LightingExample",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/LightingExample/bin/Debug/net6.0/LightingExample.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/LightingExample",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
     {
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes

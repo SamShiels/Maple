@@ -33,7 +33,7 @@ namespace SpriteExample
       Uniform shininess = new Uniform("u_shininess", 0.5f);
       Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
 
-      Material material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
+      Material material = new Material(game.renderer.ShaderLibrary.GetShader("diffuse"), uniforms);
 
       houseModel = loader.Load(Assembly.GetExecutingAssembly().GetManifestResourceStream("LightingExample.Resources.house.obj"));
 
