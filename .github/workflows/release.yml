@@ -21,21 +21,11 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore -c Release
-      
-  package:
-  
-    runs-on: ubuntu-latest
-    needs: [build]
-    
-    steps:
-    - uses: actions/checkout@v3
-    - name: Create NuGet package
-      run: dotnet pack --configuration Release
   
   publish:
   
     runs-on: ubuntu-latest
-    needs: [package]
+    needs: [build]
     steps:
     - name: Get version
       id: package_version
