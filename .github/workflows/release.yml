@@ -7,33 +7,54 @@ on:
       - 'Rebrand'       # Run the workflow when pushing to the main branch
 
 jobs:
-  build:
-
+  publish:
+    name: build, pack & publish
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1.5.0
-      with:
-        dotnet-version: 6.0.x
-        # Authenticates packages to push to GPR
-        source-url: https://nuget.pkg.github.com/SamShiels/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.token }}
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
-    - name: Pack
-      run: dotnet pack --no-build --configuration Release
-    - name: PushNuget
-      run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.TOKEN }} --skip-duplicate
-    - name: PushGithub
-      # The github token is automatically being pulled from the workflow
-      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.TOKEN }}
+      - uses: actions/checkout@v2
+
+      # - name: Setup dotnet
+      #   uses: actions/setup-dotnet@v1
+      #   with:
+      #     dotnet-version: 3.1.200
+
+      # Publish
+      - name: publish on version change
+        id: publish_nuget
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          # Filepath of the project to be packaged, relative to root of repository
+          PROJECT_FILE_PATH: Maple/Maple.csproj
+
+          # Configuration to build and package
+          BUILD_CONFIGURATION: Release
+
+          # Platform target to compile (default is empty/AnyCPU)
+          # BUILD_PLATFORM: x64
+
+          # NuGet package id, used for version detection & defaults to project name
+          # PACKAGE_NAME: Core
+
+          # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
+          # VERSION_FILE_PATH: Directory.Build.props
+
+          # Regex pattern to extract version info in a capturing group
+          # VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
+
+          # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
+          # VERSION_STATIC: 1.0.0
+
+          # Flag to toggle git tagging, enabled by default
+          # TAG_COMMIT: true
+
+          # Format of the git tag, [*] gets replaced with actual version
+          # TAG_FORMAT: v*
+
+          # API key to authenticate with NuGet server
+          NUGET_KEY: ${{secrets.TOKEN}}
+
+          # NuGet server uri hosting the packages, defaults to https://api.nuget.org
+          # NUGET_SOURCE: https://api.nuget.org
+
+          # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
+          # INCLUDE_SYMBOLS: false
