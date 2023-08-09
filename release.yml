@@ -40,8 +40,8 @@ jobs:
       id: package_version
       uses: KageKirin/get-csproj-version@v1.0.0
       with:
-        file: Maple.csproj # Specify your .csproj file path
+        file: Maple/Maple.csproj # Specify your .csproj file path
 
     - uses: actions/checkout@v3
     - name: Publish to GitHub Packages
-       run: dotnet nuget push "bin/Release/Maple.${{ steps.test.package_version.version }}.nupkg" --source "github"
+       run: dotnet nuget push "Maple/bin/Release/Maple.${{ steps.test.package_version.version }}.nupkg" --source "github"
