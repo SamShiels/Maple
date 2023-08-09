@@ -5,25 +5,21 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple", "Maple\Maple.csproj", "{62E1F7FB-A6BD-44D2-B817-19861C074D0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleBase", "ExampleBase\ExampleBase.csproj", "{418286F4-200F-4D5F-BC26-A28DB22F1818}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleBase", "Maple.Examples\ExampleBase\ExampleBase.csproj", "{418286F4-200F-4D5F-BC26-A28DB22F1818}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeExample", "CubeExample\CubeExample.csproj", "{94539C28-CD50-4D38-91AC-B3B2AB8F598E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubeExample", "Maple.Examples\CubeExample\CubeExample.csproj", "{94539C28-CD50-4D38-91AC-B3B2AB8F598E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightingExample", "LightingExample\LightingExample.csproj", "{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightingExample", "Maple.Examples\LightingExample\LightingExample.csproj", "{6C2733CC-4B4E-48DE-82F3-8FF45A2A9267}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SceneEditor", "SceneEditor\SceneEditor.csproj", "{200AAADD-6F5A-453C-85FC-0857D07E20A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderTextureExample", "Maple.Examples\RenderTextureExample\RenderTextureExample.csproj", "{6CA95A04-AD3C-4D3A-8DC6-085840E71922}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple.Test", "Maple.Test\Maple.Test.csproj", "{3A2891CC-1E51-4FB6-B027-E44051E28E2F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderTextureExample", "RenderTextureExample\RenderTextureExample.csproj", "{6CA95A04-AD3C-4D3A-8DC6-085840E71922}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraExample", "CameraExample\CameraExample.csproj", "{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraExample", "Maple.Examples\CameraExample\CameraExample.csproj", "{69CAFEB7-8568-4E6B-9E5B-5A7AA919E0DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{074B0E6D-E630-4B20-83A5-B228C5129A87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basic", "Basic", "{BB6BF158-573B-41FE-BB4B-17C13349D2DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBR", "PBR\PBR.csproj", "{52741CBF-CA4E-4717-83FA-D3F0DA0D17C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBR", "Maple.Examples\PBR\PBR.csproj", "{52741CBF-CA4E-4717-83FA-D3F0DA0D17C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
