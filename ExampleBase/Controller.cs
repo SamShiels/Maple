@@ -1,11 +1,11 @@
 ﻿using OpenTK.Mathematics;
-using Firefly;
-using Firefly.Core;
-using Firefly.Rendering;
+using Maple;
+using Maple.Core;
+using Maple.Rendering;
 using System;
-using Firefly.Utilities;
-using Firefly.World;
-using Firefly.World.Scene;
+using Maple.Utilities;
+using Maple.World;
+using Maple.World.Scene;
 using System.Reflection;
 
 namespace ExampleBase

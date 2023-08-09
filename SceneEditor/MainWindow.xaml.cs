@@ -1,11 +1,11 @@
-﻿using Firefly;
-using Firefly.Core;
-using Firefly.Rendering;
-using Firefly.Texturing;
-using Firefly.Utilities;
-using Firefly.World;
-using Firefly.World.Lighting;
-using Firefly.World.Mesh;
+﻿using Maple;
+using Maple.Core;
+using Maple.Rendering;
+using Maple.Texturing;
+using Maple.Utilities;
+using Maple.World;
+using Maple.World.Lighting;
+using Maple.World.Mesh;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
@@ -90,7 +90,7 @@ namespace SceneEditor
       Uniform[] uniforms = new Uniform[2] { directionalLight, shininess };
 
       material = new Material(ShaderLibrary.Instance.GetShader("diffuse"), uniforms);
-      Firefly.Texturing.Image house = new Firefly.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.png"));
+      Maple.Texturing.Image house = new Maple.Texturing.Image(Assembly.GetExecutingAssembly().GetManifestResourceStream("SceneEditor.Resources.house.png"));
       texture = new Texture(house);
 
       MeshObject cubeMesh = sceneManager.CreateObject<MeshObject>();

@@ -1,6 +1,6 @@
 ﻿using ExampleBase;
-using Firefly;
-using Firefly.Core;
+using Maple;
+using Maple.Core;
 
 namespace CubeExample
 {

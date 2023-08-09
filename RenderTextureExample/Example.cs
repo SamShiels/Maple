@@ -1,15 +1,15 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using Firefly;
+using Maple;
 using ExampleBase;
 using System;
-using Firefly.Texturing;
-using Firefly.Texturing.Settings;
+using Maple.Texturing;
+using Maple.Texturing.Settings;
 using System.Reflection;
-using Firefly.World;
-using Firefly.Rendering;
-using Firefly.World.Mesh;
-using Firefly.World.Lighting;
+using Maple.World;
+using Maple.Rendering;
+using Maple.World.Mesh;
+using Maple.World.Lighting;
 
 namespace RenderTextureExample
 {

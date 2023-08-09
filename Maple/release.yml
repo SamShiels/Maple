@@ -1,0 +1,47 @@
+name: Publish Maple to GitHub Packages
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+      
+  package:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create NuGet package
+      run: dotnet pack --configuration Release
+  
+  publish:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Get version
+      id: package_version
+      uses: KageKirin/get-csproj-version@v1.0.0
+      with:
+        file: Maple.csproj # Specify your .csproj file path
+
+    - uses: actions/checkout@v3
+    - name: Publish to GitHub Packages
+       run: dotnet nuget push "bin/Release/Maple.${{ steps.test.package_version.version }}.nupkg" --source "github"

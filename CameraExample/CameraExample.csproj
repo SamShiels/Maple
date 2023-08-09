@@ -49,7 +49,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExampleBase\ExampleBase.csproj" />
-    <ProjectReference Include="..\Firefly\Firefly.csproj" />
+    <ProjectReference Include="..\Maple\Maple.csproj" />
   </ItemGroup>
 
 </Project>

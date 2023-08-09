@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Firefly;
-using Firefly.Core;
-using Firefly.Rendering;
-using Firefly.Texturing;
-using Firefly.Utilities;
-using Firefly.World.Mesh;
-using Firefly.World.Scene;
+using Maple;
+using Maple.Core;
+using Maple.Rendering;
+using Maple.Texturing;
+using Maple.Utilities;
+using Maple.World.Mesh;
+using Maple.World.Scene;
 using OpenTK.Mathematics;
 
 namespace SceneEditor.Editor

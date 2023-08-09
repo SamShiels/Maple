@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SceneEditor"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:Core="clr-namespace:Firefly.Core;assembly=Firefly" x:Class="SceneEditor.MainWindow"
+        xmlns:Core="clr-namespace:Maple.Core;assembly=Maple" x:Class="SceneEditor.MainWindow"
         mc:Ignorable="d"
         Title="Scene Editor" Height="1080" Width="1920"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"

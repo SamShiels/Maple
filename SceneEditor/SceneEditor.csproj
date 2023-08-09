@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Firefly\Firefly.csproj" />
+    <ProjectReference Include="..\Maple\Maple.csproj" />
   </ItemGroup>
 
 </Project>
