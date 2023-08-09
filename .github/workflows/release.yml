@@ -24,7 +24,7 @@ jobs:
         # You can use Glob pattern string (like "**/*.csproj") or Glob patterns array json string (like "["**/*.csproj", "v1.version", "**/*.version.json", "!v2.version.json"]"). # # Patterns supported by Globby are supported. Leading ! changes the meaning of an include pattern to exclude.
         # default: "**/*.csproj"
         # required: false
-        version_file: "**/*.csproj"
+        version_file: "Maple/Maple.csproj"
         
         # Control which part of the version to be bumped. 
         # Example:
@@ -56,6 +56,6 @@ jobs:
     - name: Build
       run: dotnet build Maple -c Release
     - name: Pack nugets
-      run: dotnet pack Maple -c Release --no-build --output --version-prefix .
+      run: dotnet pack Maple -c Release --no-build --output .
     - name: Push to NuGet
       run: dotnet nuget push "*.nupkg" --api-key ${{secrets.TOKEN}} --source https://nuget.pkg.github.com/SamShiels/index.json
