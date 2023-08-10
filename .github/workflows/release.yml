@@ -1,4 +1,4 @@
-name: Publish Maple to GitHub Packages
+name: Publish
 
 on:
   release:
