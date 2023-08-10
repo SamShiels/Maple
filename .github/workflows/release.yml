@@ -15,14 +15,8 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-    - name: Bump version
-      uses: SiqiLu/dotnet-bump-version@master
-      with:
-        version_file: "Maple/Maple.csproj"
-        version_overwrite: "${{ github.event.release.tag_name }}"
-        github_token: ${{ secrets.TOKEN }}
     - name: Build
-      run: dotnet build Maple -c Release
+      run: dotnet build Maple/Maple.csproj -c Release /p:Version=${{ github.event.release.tag_name }}
     - name: Pack nugets
       run: dotnet pack Maple -c Release --no-build --output .
     - name: Push to NuGet
