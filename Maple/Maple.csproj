@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/SamShiels/Maple.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/SamShiels/Maple</PackageProjectUrl>
-    <Version>0.0.13</Version>
+    <Version>0.0.2</Version>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
