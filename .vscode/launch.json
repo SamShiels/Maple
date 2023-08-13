@@ -5,14 +5,74 @@
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-      "name": "CubeExample",
+      "name": "Cube",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build",
+      "preLaunchTask": "build-all",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/Maple.Examples/CubeExample/bin/Debug/net6.0/CubeExample.dll",
+      "program": "${workspaceFolder}/Maple.Examples/Cube/bin/Debug/net6.0/Cube.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/Maple.Examples/CubeExample",
+      "cwd": "${workspaceFolder}/Maple.Examples/Cube",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },{
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": "Scene",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-all",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/Maple.Examples/Scene/bin/Debug/net6.0/Scene.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Maple.Examples/Scene",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },{
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": "Camera",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-all",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/Maple.Examples/Camera/bin/Debug/net6.0/Camera.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Maple.Examples/Camera",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },{
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": "Lighting",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-all",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/Maple.Examples/Lighting/bin/Debug/net6.0/Lighting.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Maple.Examples/Lighting",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },{
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": "RenderTexture",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-all",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/Maple.Examples/RenderTexture/bin/Debug/net6.0/RenderTexture.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Maple.Examples/RenderTexture",
       // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
       "console": "internalConsole",
       "stopAtEntry": false

@@ -60,9 +60,6 @@ namespace ExampleBase
           FragColor = vec4(vec3(texture(frameBufferTexture, texCoords)), 1.0);
         }
       ";
-      //vec2 curvature = curveFunction(texCoords);
-
-      //float warp = sin(texCoords.x * PI) * (texCoords.x - 0.5) * -0.5;
       Shader CRT = new Shader(vs, fs);
 
       Material material = new Material(CRT);
@@ -72,7 +69,6 @@ namespace ExampleBase
       renderer.ClearColor = new Color4(0.3f, 0.2f, 0.4f, 1.0f);
       scene = new SceneObject();
       camera = new Camera();
-      camera.CanvasMaterial = material;
       camera.BackgroundColor = new Color4(0.2f, 0.2f, 0.2f, 1.0f);
       camera.Transform.Position = new Vector3(0.0f, 0.0f, 0.0f);
       scene.AssignCamera(camera);
