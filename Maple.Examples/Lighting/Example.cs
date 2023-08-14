@@ -26,7 +26,7 @@ namespace CubeExample
       base.OnLoad();
 
       SceneLoader sceneLoader = new SceneLoader(Assembly.GetExecutingAssembly());
-      Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("CubeExample.Scenes.scene.json");
+      Stream sceneJson = Assembly.GetExecutingAssembly().GetManifestResourceStream("Lighting.Scenes.scene.json");
 
       SceneObject scene = sceneLoader.CreateScene(sceneJson, game.scene);
       OBJLoader loader = new OBJLoader();
@@ -65,7 +65,7 @@ namespace CubeExample
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-      game.scene.DirectionalLights[0].Transform.EulerAngles = new Vector3(-time, 20f, 20f);
+      game.scene.DirectionalLights[0].Transform.EulerAngles = new Vector3(190f, 20f, 20f);
       //game.scene.Camera.Transform.Position = new Vector3(0f, 0f, (float)Math.Sin(time / 150f) * 50f);
       time++;
       base.OnUpdateFrame(args);
